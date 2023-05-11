@@ -1,0 +1,219 @@
+
+import Component, {ComponentSettings} from "../Component";
+import UITexture from "../../draw/UITexture";
+import Rect from "../../math/Rect";
+import Vec2 from "../../math/Vec2";
+import Color from "../../math/Color";
+import TexturePool from "../../draw/TexturePool";
+import UI_I from "../../UI_I";
+import Utils from "../../math/Utils";
+import Font from "../../draw/Font";
+
+export class ColorPickerSettings extends ComponentSettings {
+    constructor() {
+        super();
+
+        this.box.size.set(310, 256 );
+
+    }
+}
+
+export default class ColorPicker extends Component {
+    private pickTexture: UITexture;
+    private pickRect: Rect = new Rect();
+    private picCirclePos:Vec2 =new Vec2()
+
+    private hueTexture: UITexture;
+    private heuRect: Rect = new Rect();
+
+    private alphaTexture: UITexture;
+    private alphaRect: Rect = new Rect();
+    private vBarWidth: number = 20;
+    private vBarSpacing: number = 7;
+
+
+    private hsl: Array<number>
+    private color: Color
+    private colorStart =new Color()
+
+    private huePosLeft: Vec2=new Vec2()
+    private huePosRight: Vec2=new Vec2()
+    private alphaPosLeft: Vec2=new Vec2()
+    private alphaPosRight: Vec2=new Vec2()
+    private dragType: number;
+
+    constructor(id: number, color: Color, settings: ColorPickerSettings) {
+
+        super(id, settings);
+
+        this.color = color;
+        this.colorStart.copy(this.color)
+        this.size.copy(settings.box.size)
+
+
+        this.hsl = this.color.getHSVArray()
+        this.pickTexture = TexturePool.getStatic("pickRect");
+        this.pickRect.setSize(256, 256)
+        //TODO: make interface??
+        // @ts-ignore
+        this.pickTexture.setHue(this.hsl[0])
+
+        this.hueTexture = TexturePool.getStatic("heuBar");
+        this.heuRect.setSize(20, 256)
+
+        this.alphaTexture = TexturePool.getStatic("alphaBar");
+        //TODO: make interface??
+        // @ts-ignore
+        this.alphaTexture.setHSL(this.hsl[0], this.hsl[1], this.hsl[2])
+        this.alphaRect.setSize(20, 256)
+
+
+
+
+
+    }
+
+    updateColor() {
+
+        this.color.setHSV(this.hsl[0],this.hsl[1],this.hsl[2])
+        this.colorStart.copy(this.color)
+        // @ts-ignore
+        this.pickTexture.setHue(this.hsl[0])
+        // @ts-ignore
+        this.alphaTexture.setHSL(this.hsl[0], this.hsl[1], this.hsl[2])
+
+        this.setDirty();
+    }
+    updateAlpha() {
+        this.colorStart.copy(this.color)
+
+
+        this.setDirty();
+    }
+
+    updateMouse() {
+        if (this.isDown) {
+            //dragg
+            if (this.isDownThisFrame) {
+
+                if (this.pickRect.contains(UI_I.mouseListener.mousePos)) {
+                    this.dragType =1;
+                    let pickPos = UI_I.mouseListener.mousePos.clone().sub(this.pickRect.pos)
+                    pickPos.scale(1 / 256)
+                    this.hsl[1] = pickPos.x
+                    this.hsl[2] = 1 - pickPos.y
+                    this.updateColor()
+
+                } else if (this.heuRect.contains(UI_I.mouseListener.mousePos)) {
+                    this.dragType =2;
+                    let heuPos = (UI_I.mouseListener.mousePos.y -this.heuRect.pos.y ) / 256
+                    this.hsl[0] = heuPos;
+                    this.updateColor()
+                } else if (this.alphaRect.contains(UI_I.mouseListener.mousePos)) {
+                    this.dragType =3;
+                    let alphaPos = 1- ( UI_I.mouseListener.mousePos.y-this.alphaRect.pos.y ) / 256
+                    this.color.a =alphaPos;
+
+                    this.updateAlpha()
+                }else
+                {
+                    this.dragType =0;
+                }
+
+            }
+        }else
+        {
+            this.dragType =0;
+        }
+    }
+    updateOnMouseDown() {
+
+        if(this.dragType==0)return;
+        if(this.dragType==1){
+            let pickPos = UI_I.mouseListener.mousePos.clone().sub(this.pickRect.pos)
+
+            pickPos.scale(1 / 256)
+
+            pickPos.clamp(new Vec2(), new Vec2(1,1))
+            this.hsl[1] = pickPos.x
+            this.hsl[2] = 1 - pickPos.y
+            this.updateColor()
+
+        } else if(this.dragType==2)
+        {
+            let heuPos = (UI_I.mouseListener.mousePos.y -this.heuRect.pos.y ) / 256
+            this.hsl[0] = Utils.clamp(0,1,heuPos);
+            this.updateColor()
+        }
+        else if(this.dragType==3) {
+            let alphaPos = 1 - (UI_I.mouseListener.mousePos.y - this.alphaRect.pos.y) / 256
+            this.color.a = Utils.clamp(0,1,alphaPos);
+            this.updateAlpha();
+        }
+    }
+
+
+
+    layoutAbsolute() {
+        super.layoutAbsolute();
+
+        if(!this.color.equal(this.colorStart)){
+            this.hsl = this.color.getHSVArray()
+            this.updateColor()
+            console.log("dirty??")
+        }
+
+        this.pickRect.pos.copy(this.layoutRect.pos);
+        this.pickRect.setMinMax();
+
+        this.heuRect.pos.copy(this.layoutRect.pos);
+        this.heuRect.pos.x += 256 + this.vBarSpacing;
+        this.heuRect.setMinMax();
+
+        this.alphaRect.pos.copy(this.heuRect.pos);
+        this.alphaRect.pos.x += this.vBarWidth + this.vBarSpacing;
+        this.alphaRect.setMinMax();
+
+        this.picCirclePos.copy(this.pickRect.pos);
+        this.picCirclePos.sub(Font.iconSize.clone().scale(0.5));
+        this.picCirclePos.x +=256*this.hsl[1];
+        this.picCirclePos.y +=256*(1-this.hsl[2]);
+
+        this.setVerticalIndication(this.huePosLeft,this.huePosRight,this.heuRect,this.hsl[0])
+        this.setVerticalIndication(this.alphaPosLeft,this.alphaPosRight,this.alphaRect,1-this.color.a)
+    }
+
+    prepDraw() {
+        super.prepDraw()
+
+
+        UI_I.currentDrawBatch.textureBatch.addTexture(this.pickRect, this.pickTexture);
+        UI_I.currentDrawBatch.textureBatch.addTexture(this.heuRect, this.hueTexture);
+        UI_I.currentDrawBatch.textureBatch.addTexture(this.alphaRect, this.alphaTexture,);
+
+        if(this.hsl[2]<0.5 || this.hsl[1]>0.5)
+        {
+            UI_I.currentDrawBatch.textBatch.addIcon(  this.picCirclePos,5,Color.white)
+        }else{
+            UI_I.currentDrawBatch.textBatch.addIcon(  this.picCirclePos,5,Color.black)
+        }
+
+        UI_I.currentDrawBatch.textBatch.addIcon(  this.huePosLeft,3,Color.white)
+        UI_I.currentDrawBatch.textBatch.addIcon(  this.huePosRight,4,Color.white)
+
+        UI_I.currentDrawBatch.textBatch.addIcon(  this.alphaPosLeft,3,Color.white)
+        UI_I.currentDrawBatch.textBatch.addIcon(  this.alphaPosRight,4,Color.white)
+    }
+
+    private setVerticalIndication(posLeft: Vec2, posRight: Vec2, fitRect: Rect, value: number)
+    {
+        posLeft.copy(fitRect.pos)
+        posRight.copy(fitRect.pos)
+        posRight.x+=fitRect.size.x;
+
+        posRight.x-=Font.iconSize.x/2+2
+        posLeft.x-=Font.iconSize.x/2-2
+        posRight.y+=value*fitRect.size.y-Font.iconSize.y/2;
+        posLeft.y=posRight.y;
+    }
+}
