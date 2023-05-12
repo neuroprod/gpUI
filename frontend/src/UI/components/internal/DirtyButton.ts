@@ -42,7 +42,7 @@ export default class DirtyButton extends Component
 
         if(valDirty != this.valueDirty){
             this.valueDirty = valDirty;
-           
+
         }
     }
 
