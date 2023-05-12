@@ -14,10 +14,10 @@ export default class Program {
     private vertexShader: WebGLShader;
     private fragmentShader: WebGLShader;
 
-    private vertexAttribute: GLint;
-    private normalAttribute: GLint;
+    vertexAttribute: GLint;
+    normalAttribute: GLint;
 
-    private uvAttribute0: GLint;
+    uvAttribute0: GLint;
     private uvAttribute1: GLint;
     private uvAttribute2: GLint;
     private uvAttribute3: GLint;

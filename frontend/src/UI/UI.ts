@@ -41,6 +41,23 @@ export default class UI {
         UI_I.popComponent();
     }
 
+
+
+    static pushViewPort(label: string, settings?: PanelSettings) {
+        UI_I.currentComponent = UI_I.panelComp;
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new PanelSettings()
+            let comp = new Panel(UI_I.getID(label), label, settings);
+            UI_I.addComponent(comp);
+        }
+
+      //  UI.pushVerticalLayout(UI_I.getID(label) + "panelVert");
+    }
+
+    static popViewPort() {
+      //  UI_I.popComponent();
+        UI_I.popComponent();
+    }
     static pushGroup(label: string, settings?: GroupSettings) {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new GroupSettings();

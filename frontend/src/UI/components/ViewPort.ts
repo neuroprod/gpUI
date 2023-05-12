@@ -33,7 +33,7 @@ export default class ViewPort extends Panel {
 
 
     layoutAbsolute() {
-            super.layoutAbsolute()
+        super.layoutAbsolute()
 
 
         this.panelSize.width =this.layoutRect.size.x;

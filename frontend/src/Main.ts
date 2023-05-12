@@ -25,10 +25,12 @@ export default class Main {
     private clearColor: Color =new Color(0.22,0.25,0.29,1);
     private myFloat =0.5;
     private myBool =false;
+    private myText ="hello Tokyo"
 
     private parrotTextureGL: Texture;
     private parrotTexture: UITexture;
     private textTexture: UITexture;
+
     private scene: Scene;
 
 
@@ -72,7 +74,13 @@ export default class Main {
         });
         this.update();
         this.draw();
+
+        let gl = this.glMain.gl;
+        gl.disable(gl.DEPTH_TEST)
+
+        UI.pushViewPort("viewport")
         UI.draw();
+        UI.popViewPort();
     }
 
     update() {
@@ -88,7 +96,7 @@ export default class Main {
         //text
         UI.LText( "hello world "+this.myFloat ,"text")
         UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?","multiline",true)
-
+        UI.LTextInput("input text",this,"myText")
         //booleans
         if(UI.LBool(this,"myBool")){
             UI.setIndent(20)
@@ -122,11 +130,7 @@ export default class Main {
         UI.LText( UI_I.numDrawCalls+"" ,"UI DrawCalls")
         UI.LText( UI_I.processingTime+"ms" ,"UI time")
         UI.LTexture("atlas",this.textTexture)
-        if( UI.LButton("test","test")){console.log("Thanks!")}
-        if( UI.LButton("test","test2")){console.log("Thanks!")}
-        if( UI.LButton("test","test3")){console.log("Thanks!")}
-        if( UI.LButton("test","test4")){console.log("Thanks!")}
-        if( UI.LButton("test","test5")){console.log("Thanks!")}
+
 
         UI.popWindow();
 
@@ -136,6 +140,7 @@ export default class Main {
 
     draw() {
         let gl = this.glMain.gl;
+        gl.enable(gl.DEPTH_TEST);
         gl.clearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         this.scene.draw();
