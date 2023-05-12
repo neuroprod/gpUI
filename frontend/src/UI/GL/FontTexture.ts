@@ -23,7 +23,7 @@ export default class FontTexture
 
         }
 
-        this.image.src ="/charmap.png";
+        this.image.src ="charmap.png";
 
     }
 
