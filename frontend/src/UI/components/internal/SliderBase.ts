@@ -5,8 +5,8 @@ import UI_I from "../../UI_I";
 import Vec2 from "../../math/Vec2";
 import Rect from "../../math/Rect";
 import Font from "../../draw/Font";
-import {IDirtyButtonComponent} from "./DirtyButton";
-import {ISettingsComponent} from "./SettingsButton";
+
+
 
 export enum SliderType {
     FLOAT,
@@ -28,7 +28,7 @@ export class SliderBaseSettings extends ComponentSettings {
 
 }
 
-export default class SliderBase extends Component implements IDirtyButtonComponent, ISettingsComponent {
+export default class SliderBase extends Component  {
     value: number;
     private startValue: number;
     private textMaxWidth: number;
@@ -42,6 +42,7 @@ export default class SliderBase extends Component implements IDirtyButtonCompone
     private ref: any;
     private objName: string;
     private type: SliderType;
+    private changed: boolean =false;
 
     constructor(id: number, value: number, ref: any, objName: string, min: number, max: number, type: SliderType, settings: SliderBaseSettings) {
         super(id, settings);
@@ -121,6 +122,7 @@ export default class SliderBase extends Component implements IDirtyButtonCompone
             if (this.isRef) {
                 this.ref [this.objName] = this.value;
             }
+            this.changed =true;
             this.setDirty(true);
         }
     }
@@ -160,28 +162,16 @@ export default class SliderBase extends Component implements IDirtyButtonCompone
         UI_I.currentDrawBatch.textBatch.addLine(this.textPos, label, this.textMaxWidth, settings.labelColor);
 
     }
-    setValueDirty(val:boolean)
-    {
 
-    }
-    isValueDirty(): boolean {
-
-        return this.startValue != this.value;
-    }
-
-    reset(): void {
-
-        this.value = this.startValue;
-        if (this.isRef) {
-            this.ref [this.objName] = this.value
-        }
-        this.valueNorm = (this.value - this.min) / (this.max - this.min);
-        this.setDirty(true);
-    }
 
     showSettings(): void {
         console.log("implement settings popup")
     }
+    getReturnValue(): boolean {
+        let change =this.changed
+        this.changed =false
+        return change
 
+    }
 
 }

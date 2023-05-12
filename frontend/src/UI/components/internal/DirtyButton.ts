@@ -3,13 +3,7 @@ import Color from "../../math/Color";
 import UI_I from "../../UI_I";
 
 
-export interface IDirtyButtonComponent {
 
-    reset: () => void
-    isValueDirty:()=> boolean;
-    setValueDirty:(val:boolean)=> void;
-    parent:Component
-}
 export class DirtyButtonSettings extends ComponentSettings {
     public disabledColor:Color =new Color().setHex("#757474",1);
     public enabledColor:Color =new Color().setHex("#ff5f70",1);
@@ -19,41 +13,27 @@ export class DirtyButtonSettings extends ComponentSettings {
 
 export default class DirtyButton extends Component
 {
-    private comp: IDirtyButtonComponent;
 
-    private valueDirty: boolean;
-    constructor(id: number, comp:IDirtyButtonComponent, settings: DirtyButtonSettings) {
+
+    valueDirty: boolean =false;
+    constructor(id: number, settings: DirtyButtonSettings) {
         super(id, settings);
         this.size.set(4,20);
-        this.comp =comp;
+
 
     }
-    updateMouse()
-    {
 
-        if(this.isClicked)
-        {
-            this.comp.reset()
-        }
-    }
     layoutAbsolute() {
         super.layoutAbsolute();
-        let valDirty  =this.comp.isValueDirty()
 
-        if(valDirty != this.valueDirty){
-            this.valueDirty = valDirty;
-
-        }
     }
 
     prepDraw() {
 
         let settings= this.settings as DirtyButtonSettings
         let color =settings.disabledColor;
-
         if(this.valueDirty)
         {
-
             if(this.isOver)
             {
 
@@ -62,16 +42,24 @@ export default class DirtyButton extends Component
             {
                 color =settings.enabledColor;
             }
-
         }
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect,color);
-
-
     }
+    setValueDirty(val:boolean) {
+
+        if (val == this.valueDirty) return
+        this.valueDirty =val;
+        this.setDirty()
+    }
+    getReturnValue(): boolean {
+        if(this.isClicked && this.valueDirty) return true;
+        return false;
+    }
+
     destroy() {
         super.destroy();
-        this.comp=null;
+
     }
 
 

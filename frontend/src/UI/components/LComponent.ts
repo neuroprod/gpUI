@@ -28,6 +28,7 @@ export default class LComponent extends Component {
 
     private maxLabelWidth: number;
     private labelPos = new Vec2();
+    valueDirty: boolean =false;
 
 
 
@@ -68,5 +69,11 @@ export default class LComponent extends Component {
         let settings = this. settings as LComponentSettings
         UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelWidth, settings.labelColor);
 
+    }
+    setValueDirty(val:boolean) {
+
+        if (val == this.valueDirty) return
+        this.valueDirty =val;
+        //propagate
     }
 }

@@ -47,23 +47,25 @@ export default class CheckBox extends Component
 
 
     }
-    updateMouse()
-    {
-
-        if(this.isClicked)
-        {
-            this.value =!this.value;
-            this.ref[this.property] =this.value;
-
-        }
-    }
-    layoutRelative() {
-        super.layoutRelative();
-
+    onAdded() {
         if(this.ref[this.property]!=this.value)
         {
             this.value =this.ref[this.property];
         }
+    }
+
+    onMouseClicked() {
+
+        super.onMouseClicked();
+        this.value =!this.value;
+        this.ref[this.property] =this.value;
+
+    }
+
+    layoutRelative() {
+        super.layoutRelative();
+
+
 
         let settings= this.settings as ButtonBaseSettings
         if(settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -settings.box.marginLeft-settings.box.marginRight;

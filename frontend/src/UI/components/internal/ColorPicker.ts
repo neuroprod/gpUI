@@ -41,6 +41,7 @@ export default class ColorPicker extends Component {
     private alphaPosLeft: Vec2=new Vec2()
     private alphaPosRight: Vec2=new Vec2()
     private dragType: number;
+    private changed: boolean =false
 
     constructor(id: number, color: Color, settings: ColorPickerSettings) {
 
@@ -81,14 +82,19 @@ export default class ColorPicker extends Component {
         this.pickTexture.setHue(this.hsl[0])
         // @ts-ignore
         this.alphaTexture.setHSL(this.hsl[0], this.hsl[1], this.hsl[2])
-
+        this.changed =true;
         this.setDirty();
     }
     updateAlpha() {
         this.colorStart.copy(this.color)
 
-
+        this.changed =true;
         this.setDirty();
+    }
+    getReturnValue(): boolean {
+        let change =this.changed;
+        this.changed =false;
+        return change;
     }
 
     updateMouse() {
@@ -160,7 +166,7 @@ export default class ColorPicker extends Component {
         if(!this.color.equal(this.colorStart)){
             this.hsl = this.color.getHSVArray()
             this.updateColor()
-            console.log("dirty??")
+
         }
 
         this.pickRect.pos.copy(this.layoutRect.pos);

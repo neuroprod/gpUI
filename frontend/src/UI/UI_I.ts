@@ -92,17 +92,6 @@ export default class UI_I {
     }
 
 
-    static viewPort(label: string, texture: UITexture, settings: ViewPortSettings = new ViewPortSettings()): PanelSize {
-        this.currentComponent = this.panelComp;
-        if (!this.setComponent(label)) {
-            let comp = new ViewPort(this.getID(label), label, texture, settings);
-            this.addComponent(comp);
-        }
-        let retValue = this.currentComponent.getReturnValue();
-        this.popComponent();
-        return retValue;
-
-    }
 
     static dockIndicator(name: string, settings: DockIndicatorSettings) {
         this.currentComponent = this.dockingOverlayLayer;
@@ -142,6 +131,7 @@ export default class UI_I {
             this.currentComponent.useThisFrame = true;
             this.currentComponent.parent.renderOrderCount++
             this.currentComponent.setSubComponents();
+            this.currentComponent.onAdded()
             return true;
         }
         return false;
@@ -162,6 +152,7 @@ export default class UI_I {
         this.currentComponent.useThisFrame = true;
         this.currentComponent.setDirty(true);
         this.currentComponent.setSubComponents();
+        this.currentComponent.onAdded()
 
     }
 
@@ -180,9 +171,9 @@ export default class UI_I {
         return this.components.has(id);
     }
 
-    static getID(label: string) {
+    static getID(seed: string) {
 
-        return this.getHash(label + UI_I.currentComponent.id + " ");
+        return this.getHash(seed + UI_I.currentComponent.id + "");
     }
 
     static getHash(str: string) {
@@ -252,9 +243,10 @@ export default class UI_I {
 
         this.checkMouse();
         let buffer = this.keyboardListener.getBuffer()
+        let actionKey =this.keyboardListener.getActionKey()
         if(this.focusComponent)
         {
-            this.focusComponent.setKeys(buffer);
+            this.focusComponent.setKeys(buffer,actionKey);
         }
         if (this.mainComp.isDirty) {
 
@@ -307,7 +299,9 @@ export default class UI_I {
             this.mouseDownComponent.isDownThisFrame = false;
         }
         if (this.mouseListener.isDownThisFrame) {
+
             this.setMouseDownComponent();
+            this.setFocusComponent()
         }
         if (this.mouseListener.isUpThisFrame) {
 
@@ -316,6 +310,7 @@ export default class UI_I {
                 if (this.mouseOverComponent === this.mouseDownComponent) {
 
                     this.mouseDownComponent.isClicked = true;
+                    this.mouseDownComponent.onMouseClicked()
                 }
 
                 this.mouseDownComponent.isDown = false;
@@ -327,7 +322,7 @@ export default class UI_I {
 
                 this.mouseDownComponent = null;
             }
-            this.setFocusComponent();
+            //this.setFocusComponent();
 
 
         }
@@ -441,6 +436,7 @@ export default class UI_I {
 
         if (this.focusComponent) {
             this.focusComponent.isFocus = false;
+            this.focusComponent.setDirty();
         }
         this.focusComponent = this.mouseOverComponent;
 

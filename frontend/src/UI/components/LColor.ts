@@ -1,18 +1,18 @@
 import LComponent, {LComponentSettings} from "./LComponent";
 import UI_IC from "../UI_IC";
 import Color from "../math/Color";
-import {IDirtyButtonComponent} from "./internal/DirtyButton";
-import {ButtonBaseSettings} from "./internal/ButtonBase";
+
 import {ColorButtonSettings} from "./internal/ColorButton";
 import {ColorPickerPopupSettings} from "./internal/popUps/ColorPickerPopUp";
 import UI_I from "../UI_I";
+import DirtyButton from "./internal/DirtyButton";
 
 
 export class LColorSettings extends LComponentSettings
 {
 
 }
-export default class LColor extends LComponent implements IDirtyButtonComponent
+export default class LColor extends LComponent
 {
     public color:Color
     public colorStart:Color =new Color()
@@ -56,22 +56,21 @@ export default class LColor extends LComponent implements IDirtyButtonComponent
 
             UI_IC.colorPickerPopUp(this,this.popUpSettings);
         }
-        UI_IC.dirtyButton("LSdb",this);
+
+        if(UI_IC.dirtyButton("LSdb"))
+        {
+            this.color.copy(this.colorStart)
+            this.setDirty()
+            this.setValueDirty(false)
+        }
+        let btn =UI_I.currentComponent as DirtyButton
+        btn.setValueDirty( this.valueDirty);
+        UI_I.popComponent();
     }
     getReturnValue(): Color {
         return this.color;
     }
-    setValueDirty(val:boolean)
-    {
 
-    }
-    isValueDirty(): boolean {
-        return !this.color.equal(this.colorStart);
-    }
-
-    reset(): void {
-        this.color.copy(this.colorStart);
-    }
 
 
 }

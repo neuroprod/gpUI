@@ -5,9 +5,6 @@ import Utils from "../../math/Utils";
 import Vec2 from "../../math/Vec2";
 import Font from "../../draw/Font";
 
-export interface ISettingsComponent {
-    showSettings: () => void
-}
 
 export class SettingsButtonSettings extends ComponentSettings {
 
@@ -23,20 +20,14 @@ export class SettingsButtonSettings extends ComponentSettings {
 export default class SettingsButton extends Component
 {
     private iconPos=new Vec2()
-    private comp: ISettingsComponent;
-    constructor(id: number,comp:ISettingsComponent, settings: SettingsButtonSettings) {
+
+    constructor(id: number, settings: SettingsButtonSettings) {
         super(id, settings);
         this.size.set(20,20);
-        this.comp =comp;
+
     }
 
-    updateMouse()
-    {
-        if(this.isClicked)
-        {
-            this.comp.showSettings();
-        }
-    }
+
     layoutRelative()
     {
         super.layoutRelative()
@@ -59,13 +50,10 @@ export default class SettingsButton extends Component
         }
         UI_I.currentDrawBatch.textBatch.addIcon(this.iconPos,6,iconColor)
 
-
     }
-    destroy() {
-        super.destroy();
-        this.comp=null;
+    getReturnValue(): boolean {
+        return this.isClicked
     }
-
 
 
 }

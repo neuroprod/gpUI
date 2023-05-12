@@ -1,13 +1,10 @@
-import {ComponentSettings} from "./Component";
-import Vec2 from "../math/Vec2";
+
 import UI_I from "../UI_I";
 import Rect from "../math/Rect";
-import Color from "../math/Color";
-import VerticalLayout from "./VerticalLayout";
-import Font from "../draw/Font";
+
 import Panel, {PanelSettings} from "./Panel";
 
-import UITexture from "../draw/UITexture";
+
 import PanelSize from "../return/PanelSize";
 
 export class ViewPortSettings extends PanelSettings {
@@ -23,10 +20,10 @@ export default class ViewPort extends Panel {
 
     private viewPortRect:Rect =new Rect;
     private panelSize:PanelSize =new PanelSize()
-    private texture: UITexture;
-    constructor(id: number, label: string,texture:UITexture, settings: ViewPortSettings) {
+
+    constructor(id: number, label: string, settings: ViewPortSettings) {
         super(id,label, settings);
-        this.texture =texture;
+
 
 
     }
@@ -51,10 +48,10 @@ export default class ViewPort extends Panel {
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.topBarRect, this.localSettings.topBarColor);
         UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label,this.maxLabelSize, this.localSettings.labelColor);
-        UI_I.currentDrawBatch.textureBatch.addTexture(this.viewPortRect,this.texture)
+
     }
     getReturnValue()
     {
-        return this.panelSize;
+       return false;
     }
 }

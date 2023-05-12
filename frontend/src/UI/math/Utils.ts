@@ -16,6 +16,16 @@ export default class Utils
         lineRect.size.y+=2;
         UI_I.currentDrawBatch.fillBatch.addRect(lineRect, color);
     }
+    public static drawInLineRect(target:Rect,color:Color)
+    {
+        let lineRect=new Rect();
+        lineRect.copy(target);
+        lineRect.pos.x+=1;
+        lineRect.pos.y+=1;
+        lineRect.size.x-=2;
+        lineRect.size.y-=2;
+        UI_I.currentDrawBatch.fillBatch.addRect(lineRect, color);
+    }
 
     static clamp(min: number, max: number, value: number) {
         return Math.min( Math.max(min,value),max);

@@ -35,6 +35,11 @@ export default class GroupTitle extends Component
         this.label=label;
         this.isOpen =isOpen;
     }
+    onMouseClicked() {
+
+        this.isOpen =!this.isOpen
+    }
+
 
     layoutRelative() {
         super.layoutRelative();
@@ -56,10 +61,7 @@ export default class GroupTitle extends Component
         this.iconPos.x+=5
         this.iconPos.y+=Utils.getCenterPlace(Font.iconSize.y,this.layoutRect.size.y)
 
-        if(this.isClicked)
-        {
-            this.isOpen =!this.isOpen
-        }
+
     }
 
     prepDraw() {

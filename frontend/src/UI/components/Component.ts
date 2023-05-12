@@ -3,8 +3,8 @@ import Rect from "../math/Rect";
 import UI_I from "../UI_I";
 import Vec2 from "../math/Vec2";
 import Color from "../math/Color";
-import {IDirtyButtonComponent} from "./internal/DirtyButton";
-import Group from "./Group";
+
+import {ActionKey} from "../input/KeyboardListener";
 
 export class ComponentSettings {
     public box: Box = new Box();
@@ -39,13 +39,14 @@ export default class Component {
     public isOver = false;
     public isDown = false;
     public isDownThisFrame = false;
-    public isClicked = false;
+   // public isClicked = false;
     public renderOrderCount: number = 0;
     public renderOrder: number = 0;
     public needsChildrenSortingByRenderOrder = false;
     public sortIsDirty = false;
     public scrollOffset: Vec2 = new Vec2();
     protected clippingRect = new Rect();
+    isClicked: boolean;
 
     constructor(id: number, settings: ComponentSettings) {
         this.id = id;
@@ -204,7 +205,7 @@ export default class Component {
         }
     }
 
-    updateMouse() {
+   updateMouse() {
 
     }
 
@@ -243,8 +244,6 @@ export default class Component {
 
     checkMouseOverLayout(pos: Vec2) {
         let isOver = this.layoutRect.contains(pos);
-
-
         return isOver;
     }
 
@@ -277,7 +276,15 @@ export default class Component {
 
 
 
-    setKeys(buffer: string) {
+    setKeys(buffer: string,actionKey:ActionKey) {
+
+    }
+
+    onMouseClicked() {
+
+    }
+
+    onAdded() {
 
     }
 }

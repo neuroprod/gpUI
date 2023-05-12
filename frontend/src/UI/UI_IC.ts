@@ -1,7 +1,7 @@
 //internal components
 import SliderBase, {SliderBaseSettings, SliderType} from "./components/internal/SliderBase";
-import DirtyButton, {DirtyButtonSettings, IDirtyButtonComponent} from "./components/internal/DirtyButton";
-import SettingsButton, {ISettingsComponent, SettingsButtonSettings} from "./components/internal/SettingsButton";
+import DirtyButton, {DirtyButtonSettings} from "./components/internal/DirtyButton";
+import SettingsButton, { SettingsButtonSettings} from "./components/internal/SettingsButton";
 import UI_I from "./UI_I";
 import ButtonBase, {ButtonBaseSettings} from "./components/internal/ButtonBase";
 import ColorButton, {ColorButtonSettings} from "./components/internal/ColorButton";
@@ -13,6 +13,7 @@ import CheckBox, {CheckBoxSettings} from "./components/internal/CheckBox";
 import GroupTitle, {GroupTitleSettings} from "./components/internal/GroupTitle";
 import UITexture from "./draw/UITexture";
 import Texture, {TextureSettings} from "./components/internal/Texture";
+import InputBase, {InputBaseSettings} from "./components/internal/InputBase";
 
 export default class UI_IC
 {
@@ -22,9 +23,9 @@ export default class UI_IC
             let comp = new SliderBase(UI_I.getID(name),value, ref, objName, min, max,type, settings);
             UI_I.addComponent(comp);
         }
-        let comp =UI_I.currentComponent as SliderBase
+        let v =UI_I.currentComponent.getReturnValue()
         UI_I.popComponent();
-        return comp
+        return v
     }
     static colorButton(name,color , settings?: ColorButtonSettings ) {
         if (!UI_I.setComponent(name)) {
@@ -36,13 +37,16 @@ export default class UI_IC
         UI_I.popComponent();
         return comp.getReturnValue();
     }
-    static dirtyButton(name ,compD:IDirtyButtonComponent, settings?: DirtyButtonSettings ) {
+
+    //doesn't call pop!!!
+    static dirtyButton(name , settings?: DirtyButtonSettings ) {
         if (!UI_I.setComponent(name)) {
             if(!settings)settings =new DirtyButtonSettings()
-            let comp = new DirtyButton(UI_I.getID(name),compD, settings);
+            let comp = new DirtyButton(UI_I.getID(name), settings);
             UI_I.addComponent(comp);
         }
-        UI_I.popComponent();
+        let comp =UI_I.currentComponent;
+        return comp.getReturnValue();
     }
 
     static texture(name ,texture:UITexture, settings?: TextureSettings ) {
@@ -55,19 +59,32 @@ export default class UI_IC
     }
 
 
-    static settingsButton(name ,compD:ISettingsComponent, settings?: SettingsButtonSettings ) {
+    static settingsButton(name , settings?: SettingsButtonSettings ) {
         if (!UI_I.setComponent(name)) {
             if(!settings)settings = new SettingsButtonSettings()
-            let comp = new SettingsButton(UI_I.getID(name),compD, settings);
+            let comp = new SettingsButton(UI_I.getID(name), settings);
             UI_I.addComponent(comp);
         }
+        let retValue =UI_I.currentComponent.getReturnValue();
         UI_I.popComponent();
+        return retValue;
     }
 
     static groupTitle( label: string,isOpen:boolean,settings?: GroupTitleSettings) {
         if (!UI_I.setComponent(label)) {
             if(!settings)settings = new GroupTitleSettings()
             let comp = new GroupTitle(UI_I.getID(label),label,isOpen, settings);
+            UI_I.addComponent(comp);
+        }
+        let retValue =UI_I.currentComponent.getReturnValue();
+        UI_I.popComponent();
+        return retValue;
+
+    }
+    static inputBase(name:string,ref:any,prop:string,settings?: InputBaseSettings):boolean {
+        if (!UI_I.setComponent(name)) {
+            if(!settings)settings = new InputBaseSettings()
+            let comp = new InputBase(UI_I.getID(name),ref,prop, settings);
             UI_I.addComponent(comp);
         }
         let retValue =UI_I.currentComponent.getReturnValue();

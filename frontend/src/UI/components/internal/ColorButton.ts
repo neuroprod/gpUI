@@ -1,7 +1,7 @@
 import Color from "../../math/Color";
 import UI_I from "../../UI_I";
 import Utils from "../../math/Utils";
-import Vec2 from "../../math/Vec2";
+
 
 import Component, {ComponentSettings} from "../Component";
 import Rect from "../../math/Rect";
@@ -71,7 +71,7 @@ export default class ColorButton extends Component {
     }
 
     getReturnValue() {
-        return this.isClicked
+        return this.isClicked;
     }
 
 
