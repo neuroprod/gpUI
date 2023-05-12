@@ -67,6 +67,7 @@ jobs:
         run:  npm run export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
+        working-directory: ./
         with:
           path: ./out
 
