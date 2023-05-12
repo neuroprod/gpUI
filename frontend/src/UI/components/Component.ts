@@ -275,25 +275,9 @@ export default class Component {
 
     }
 
-    setParentValueDirty(bool:boolean) {
-        if(this.parent)
-        {
 
-
-           if(this["setValueDirty"])
-            {
-
-
-               // @ts-ignore
-                this.setValueDirty(bool);
-                this.setDirty(true)
-                return;
-            }
-            this.parent.setParentValueDirty(bool)
-        }
-    }
 
     setKeys(buffer: string) {
-        
+
     }
 }
