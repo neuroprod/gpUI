@@ -14,7 +14,7 @@ export default class Camera{
         this.perspectiveMatrix = mat4.create();
         this.viewMatrix = mat4.create();
 
-        this.eye = vec3.fromValues(0, 0, 5);
+        this.eye = vec3.fromValues(0, 0, 2);
         this.target = vec3.fromValues(0, 0, 0);
         this.up = vec3.fromValues(0, 1, 0);
 

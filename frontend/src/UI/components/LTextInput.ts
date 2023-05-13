@@ -56,7 +56,9 @@ export default class LTextInput extends LComponent  {
             if (typeof this.ref !== 'string') {
                 this.ref[this.prop] =this.value
             }
+            this.setValueDirty(false)
         }
+
         let btn =UI_I.currentComponent as DirtyButton
         btn.setValueDirty( this.valueDirty);
         UI_I.popComponent();

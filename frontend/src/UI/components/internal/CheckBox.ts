@@ -24,7 +24,7 @@ export default class CheckBox extends Component
 
     private label: string;
 
-    private value: boolean;
+
 
     private ref: any;
     private property: string;
@@ -33,13 +33,14 @@ export default class CheckBox extends Component
     private checkRect:Rect =new Rect();
     private textPos:Vec2 =new Vec2();
     private maxTextSize: number;
+    private changed: boolean;
     constructor(id: number,label:string, ref:any,property:string, settings: CheckBoxSettings) {
 
         super(id, settings);
 
         this.label =label;
 
-        this.value = ref[property] as boolean
+
         this.ref =ref;
         this.property = property;
 
@@ -48,18 +49,15 @@ export default class CheckBox extends Component
 
     }
     onAdded() {
-        if(this.ref[this.property]!=this.value)
-        {
-            this.value =this.ref[this.property];
-        }
+
     }
 
     onMouseClicked() {
 
         super.onMouseClicked();
-        this.value =!this.value;
-        this.ref[this.property] =this.value;
 
+        this.ref[this.property] =!this.ref[this.property];
+        this.changed =true;
     }
 
     layoutRelative() {
@@ -96,7 +94,7 @@ export default class CheckBox extends Component
 
     prepDraw() {
        let settings =this.settings as CheckBoxSettings
-        if(this.value)
+        if(this.ref[this.property])
         {
             UI_I.currentDrawBatch.textBatch.addIcon( this.checkPos,0,settings.labelColor)
         }
@@ -106,6 +104,9 @@ export default class CheckBox extends Component
 
     }
     getReturnValue(): boolean{
-        return this.value;
+        let change =this.changed
+        this.changed =false
+        return change
+
     }
 }

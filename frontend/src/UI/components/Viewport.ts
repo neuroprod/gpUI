@@ -4,7 +4,7 @@
 
 
 import Panel, {PanelSettings} from "./Panel";
-import UI_I from "../UI_I";
+
 
 
 export class ViewportSettings extends PanelSettings {
@@ -21,7 +21,7 @@ export default class Viewport extends Panel{
 
 
     startRender() {
-        UI_I.renderer.gl.viewport(100,100,100,100)
+       // UI_I.renderer.gl.viewport(100,100,100,100)
     }
     stopRender() {
 
