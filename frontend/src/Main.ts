@@ -50,7 +50,7 @@ export default class Main {
 
 
         this.scene = new Scene(this.glMain, this.preloader)
-
+        this.glMain.gl.clearColor(0,0,0,1);
     }
 
     public loadProgress(n: number) {
@@ -141,7 +141,7 @@ export default class Main {
         let gl = this.glMain.gl;
         gl.enable(gl.DEPTH_TEST);
         gl.clearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.scene.draw();
 
 
