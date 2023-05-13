@@ -16,6 +16,7 @@ import UITexture from "./draw/UITexture";
 import LTexture, {LTextureSettings} from "./components/LTexture";
 import LTextInput, {LTextInputSettings} from "./components/LTextInput";
 import Local from "./local/Local";
+import Viewport, {ViewportSettings} from "./components/Viewport";
 
 
 
@@ -25,6 +26,7 @@ export default class UI {
 
 
     static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement) {
+        let panel:Panel;
         UI_I.setWebgl(gl, canvas)
     }
 
@@ -53,18 +55,18 @@ export default class UI {
 
 
 
-   /* static pushViewPort(label: string, settings?: PanelSettings) {
+  static pushViewport(label: string, settings?: ViewportSettings) {
 
 
         UI_I.currentComponent = UI_I.panelComp;
         if (!UI_I.setComponent(label)) {
-            if (!settings) settings = new PanelSettings()
-            let comp = new ViewPort(UI_I.getID(label), label, settings);
+            if (!settings) settings = new ViewportSettings()
+            let comp = new Viewport(UI_I.getID(label), label, settings);
             UI_I.addComponent(comp);
         }
 
         UI_I.popComponent();
-      //  UI_I.popComponent();
+       UI_I.popComponent();
 
         //UI_I.popComponent();
        // let viewPort =UI_I.currentComponent as ViewPort
@@ -81,9 +83,9 @@ export default class UI {
         }
 */
 
-   // }
+   }
 
-   // static popViewPort() {
+ static popViewport() {
 /*
       if(this.renderToViewport){
           let vp = UI_I.components.get(this.viewPortId );
@@ -91,10 +93,10 @@ export default class UI {
           console.log("stopVPDraw")
       }
 
-
 */
 
-    //}
+
+    }
     static pushGroup(label: string, settings?: GroupSettings) {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new GroupSettings();

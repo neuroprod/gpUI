@@ -66,7 +66,8 @@ export default class DockManager {
     public stopDragging(panel: Panel) {
         this.dragComponent = null
         this.mainDockNode.updateLayout()
-
+        this.overlayLayer.setDirty(true)
+        this.dockLayer.setDirty(true)
     }
 
 

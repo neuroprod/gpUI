@@ -9,10 +9,10 @@ import Texture from "./glLib/Texture";
 import Font from "./UI/draw/Font";
 import UI from "./UI/UI";
 import Scene from "./scene/Scene";
+import Panel, {PanelSettings} from "./UI/components/Panel";
 
 
 export default class Main {
-
 
 
 

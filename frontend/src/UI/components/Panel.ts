@@ -12,9 +12,9 @@ import UI from "../UI";
 import {VerticalLayoutSettings} from "./VerticalLayout";
 
 export class PanelSettings extends ComponentSettings {
-    static positionOffset= new Vec2(10, 10)
 
-    public position: Vec2 = PanelSettings.positionOffset.clone();
+
+    public position: Vec2 = new Vec2(10, 10);
     public size: Vec2 = new Vec2(320, 300);
     public backgroundColor: Color = new Color().setHex("#383838", 1)
 
@@ -27,7 +27,7 @@ export class PanelSettings extends ComponentSettings {
 
     constructor() {
         super();
-        PanelSettings.positionOffset.add(new Vec2(30,30))
+        //this.position.add (PanelSettings.positionOffset)
         this.box.setPadding(3);
         this.box.paddingTop = 0;
     }
@@ -36,7 +36,7 @@ export class PanelSettings extends ComponentSettings {
 export default class Panel extends Component {
 
 
-    public localSettings: PanelSettings
+
     public label: string;
 
 
@@ -58,7 +58,7 @@ export default class Panel extends Component {
 
     constructor(id: number, label: string, settings: PanelSettings) {
         super(id, settings);
-        this.localSettings = settings;
+
         this.posOffset =settings.position.clone()
         this.size.copy( settings.size)
 
@@ -113,7 +113,8 @@ export default class Panel extends Component {
             this.posOffset.copy(UI_I.mouseListener.mousePos);
             this.posOffset.x -= this.dockSize.x / 2
             this.posOffset.y -= 10;
-            this.size.copy(this.localSettings.size)
+            let settings =this.settings as PanelSettings
+            this.size.copy(settings.size)
 
         }
 
@@ -174,7 +175,8 @@ export default class Panel extends Component {
                 dir.sub(UI_I.mouseListener.mousePos);
                 let newSize = this.startResizeSize.clone();
                 newSize.sub(dir);
-                newSize.max(this.localSettings.minSize);
+                let settings =this.settings as PanelSettings
+                newSize.max(settings.minSize);
 
                 this.size.copy(newSize);
                 this.setDirty(true);
@@ -203,11 +205,12 @@ export default class Panel extends Component {
     layoutAbsolute() {
 
         super.layoutAbsolute();
+        let settings =this.settings as PanelSettings
         this.topBarRect.copyPos(this.layoutRect.pos);
-        this.topBarRect.setSize(this.layoutRect.size.x, this.localSettings.topBarHeight);
-        this.labelPos.set(this.posAbsolute.x + this.localSettings.box.paddingLeft + 5+20, this.posAbsolute.y + this.localSettings.topBarHeight / 2 - Font.charSize.y / 2 - 1)
+        this.topBarRect.setSize(this.layoutRect.size.x, settings.topBarHeight);
+        this.labelPos.set(this.posAbsolute.x + settings.box.paddingLeft + 5+20, this.posAbsolute.y + settings.topBarHeight / 2 - Font.charSize.y / 2 - 1)
         this.resizeRect.setPos(this.layoutRect.pos.x + this.layoutRect.size.x - this.resizeRect.size.x, this.layoutRect.pos.y + this.layoutRect.size.y - this.resizeRect.size.y);
-        this.maxLabelSize = this.layoutRect.size.x - this.localSettings.box.paddingLeft - this.localSettings.box.paddingRight
+        this.maxLabelSize = this.layoutRect.size.x - settings.box.paddingLeft - settings.box.paddingRight
 
         // this.clippingRect.setPosV(this.layoutRect.pos);
         //this.clippingRect.setSizeV(this.layoutRect.size);*/
@@ -215,18 +218,20 @@ export default class Panel extends Component {
 
     prepDraw() {
         // UI.currentDrawBatch.shadowBatch.addRect(this.layoutRect);
-        Utils.drawOutlineRect(this.layoutRect, this.localSettings.outlineColor)
+        let settings =this.settings as PanelSettings
 
-        UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, this.localSettings.backgroundColor);
+        Utils.drawOutlineRect(this.layoutRect, settings.outlineColor)
 
-        UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, this.localSettings.backgroundColor);
-        UI_I.currentDrawBatch.fillBatch.addRect(this.topBarRect, this.localSettings.topBarColor);
+        UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.backgroundColor);
+
+        UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.backgroundColor);
+        UI_I.currentDrawBatch.fillBatch.addRect(this.topBarRect, settings.topBarColor);
 
        if (!this.isDocked && !this.collapsed)
-            UI_I.currentDrawBatch.fillBatch.addTriangle(this.resizeRect.getTopRight(), this.resizeRect.getBottomRight(), this.resizeRect.getBottomLeft(), this.localSettings.resizeColor)
+            UI_I.currentDrawBatch.fillBatch.addTriangle(this.resizeRect.getTopRight(), this.resizeRect.getBottomRight(), this.resizeRect.getBottomLeft(), settings.resizeColor)
 
 
-        UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelSize, this.localSettings.labelColor);
+        UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelSize, settings.labelColor);
         //  UI.currentDrawBatch.fillBatch.addRect(new Rect(this.r,new Vec2(20,20)), new Color().setHex("#f1c30e",1));
     }
 }

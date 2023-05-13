@@ -41,6 +41,7 @@ public panelID =0
     }
     public updateLayout() {
 
+
         if (this.panel) {
 
             this.panel.size = this.size.clone();
