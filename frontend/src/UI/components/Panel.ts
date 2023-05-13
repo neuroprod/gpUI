@@ -7,9 +7,14 @@ import Color from "../math/Color";
 import Font from "../draw/Font";
 import Local from "../local/Local";
 import Utils from "../math/Utils";
+import UI_IC from "../UI_IC";
+import UI from "../UI";
+import {VerticalLayoutSettings} from "./VerticalLayout";
 
 export class PanelSettings extends ComponentSettings {
-    public position: Vec2 = new Vec2(10, 10);
+    static positionOffset= new Vec2(10, 10)
+
+    public position: Vec2 = PanelSettings.positionOffset.clone();
     public size: Vec2 = new Vec2(320, 300);
     public backgroundColor: Color = new Color().setHex("#383838", 1)
 
@@ -22,12 +27,13 @@ export class PanelSettings extends ComponentSettings {
 
     constructor() {
         super();
+        PanelSettings.positionOffset.add(new Vec2(30,30))
         this.box.setPadding(3);
-        this.box.paddingTop = 24;
+        this.box.paddingTop = 0;
     }
 }
 
-export default class Panel extends Component{
+export default class Panel extends Component {
 
 
     public localSettings: PanelSettings
@@ -44,45 +50,58 @@ export default class Panel extends Component{
     public resizeRect: Rect;
     public maxLabelSize: number;
     private dockSize: Vec2 = new Vec2();
+
     private _isDocked: boolean = false;
+    private collapsed =false;
+    private prevSize:Vec2 =new Vec2()
+    private contentVLSetting: VerticalLayoutSettings;
+
     constructor(id: number, label: string, settings: PanelSettings) {
         super(id, settings);
         this.localSettings = settings;
-        this.posOffset = settings.position
-        this.size = settings.size
+        this.posOffset =settings.position.clone()
+        this.size.copy( settings.size)
 
         this.hasOwnDrawBatch = true;
         this.label = label;
 
         this.resizeRect = new Rect();
         this.resizeRect.setSize(12, 12);
+
+
+        this.contentVLSetting =new VerticalLayoutSettings()
+        this.contentVLSetting.box.marginTop=24;
+
+
         this.setFromLocal()
 
-
     }
-    setFromLocal()
-    {
-        let data = Local.getItem(this.id);
-        if(data)
-        {
-            this.size.set(data.size.x,data.size.y );
+    setSubComponents() {
 
-            this.posOffset.set(data.posOffset.x,data.posOffset.y );
+
+        if(UI_IC.toggleIcon("ib",this,"collapsed",2,1))
+        {
+            if(this.collapsed)
+            {
+                this.prevSize.copy(this.size)
+                this.size.y =22;
+            }else
+            {
+                this.size.y =this.prevSize.y
+            }
+            this.setDirty();
         }
 
+
+        UI.pushVerticalLayout( "panelVert", this.contentVLSetting);
+
+        UI_I.currentComponent.drawChildren =!this.collapsed
+
     }
-    saveToLocal()
+    onPopComponent()
     {
-
-        let a ={
-            posOffset:this.posOffset,
-            size:this.size
-        };
-
-        Local.setItem(this.id, a)
+       // UI_I.popComponent(false)
     }
-
-
     get isDocked(): boolean {
         return this._isDocked;
     }
@@ -99,6 +118,28 @@ export default class Panel extends Component{
         }
 
         this._isDocked = value;
+    }
+
+    setFromLocal() {
+        let data = Local.getItem(this.id);
+        if (data) {
+            this.size.set(data.size.x, data.size.y);
+
+            this.posOffset.set(data.posOffset.x, data.posOffset.y);
+            this.collapsed=data.collapsed;
+        }
+        if(this.collapsed) this.prevSize.y =200;
+    }
+
+    saveToLocal() {
+
+        let a = {
+            posOffset: this.posOffset,
+            size: this.size,
+            collapsed: this.collapsed,
+        };
+
+        Local.setItem(this.id, a)
     }
 
     updateMouse() {
@@ -141,7 +182,7 @@ export default class Panel extends Component{
         } else {
 
             if (this.isDragging || this.isResizing) {
-                 this.saveToLocal();
+                this.saveToLocal();
             }
             if (this.isDragging) {
                 UI_I.dockManager.stopDragging(this)
@@ -164,7 +205,7 @@ export default class Panel extends Component{
         super.layoutAbsolute();
         this.topBarRect.copyPos(this.layoutRect.pos);
         this.topBarRect.setSize(this.layoutRect.size.x, this.localSettings.topBarHeight);
-        this.labelPos.set(this.posAbsolute.x + this.localSettings.box.paddingLeft+5, this.posAbsolute.y + this.localSettings.topBarHeight / 2 - Font.charSize.y / 2 - 1)
+        this.labelPos.set(this.posAbsolute.x + this.localSettings.box.paddingLeft + 5+20, this.posAbsolute.y + this.localSettings.topBarHeight / 2 - Font.charSize.y / 2 - 1)
         this.resizeRect.setPos(this.layoutRect.pos.x + this.layoutRect.size.x - this.resizeRect.size.x, this.layoutRect.pos.y + this.layoutRect.size.y - this.resizeRect.size.y);
         this.maxLabelSize = this.layoutRect.size.x - this.localSettings.box.paddingLeft - this.localSettings.box.paddingRight
 
@@ -174,14 +215,14 @@ export default class Panel extends Component{
 
     prepDraw() {
         // UI.currentDrawBatch.shadowBatch.addRect(this.layoutRect);
-        Utils.drawOutlineRect(this.layoutRect,this.localSettings.outlineColor)
+        Utils.drawOutlineRect(this.layoutRect, this.localSettings.outlineColor)
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, this.localSettings.backgroundColor);
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, this.localSettings.backgroundColor);
         UI_I.currentDrawBatch.fillBatch.addRect(this.topBarRect, this.localSettings.topBarColor);
 
-        if (!this.isDocked)
+       if (!this.isDocked && !this.collapsed)
             UI_I.currentDrawBatch.fillBatch.addTriangle(this.resizeRect.getTopRight(), this.resizeRect.getBottomRight(), this.resizeRect.getBottomLeft(), this.localSettings.resizeColor)
 
 

@@ -35,7 +35,7 @@ export default class Utils
        return parent.size.x - parent.settings.box.paddingLeft - parent.settings.box.paddingRight
     }
     static getMaxInnerHeight(parent: Component) {
-        return parent.size.y - parent.settings.box.paddingTop - parent.settings.box.paddingTop
+        return parent.size.y - parent.settings.box.paddingTop - parent.settings.box.paddingBottom
     }
 
     static getCenterPlace(placeSize: number, roomSize: number) {

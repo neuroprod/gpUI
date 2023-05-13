@@ -9,7 +9,7 @@ export default class MouseListener {
     public isDown: boolean =false;
     public isDownThisFrame: boolean =false;
     public isUpThisFrame: boolean =false;
-    public isDirty: number =2;
+    public isDirty: number =1;
 
 
     constructor(element:HTMLElement) {
@@ -75,27 +75,27 @@ export default class MouseListener {
 
         this.isDown = false;
         this.isDownThisFrame = false;
-        this.isDirty =2;
+        this.isDirty =1;
     }
 
     mouseDown() {
         this.isDown = true;
         this.isDownThisFrame = true;
         this.mousePosDown = this.mousePos.clone();
-        this.isDirty =2;
+        this.isDirty =1;
     }
 
     mouseUp() {
         this.isDown = false;
         this.isUpThisFrame = true;
-        this.isDirty =2;
+        this.isDirty =1;
     }
 
     setMousePosition(e) {
 
         this.mousePos.x = e.offsetX;
         this.mousePos.y = e.offsetY;
-        this.isDirty =2;
+        this.isDirty =1;
     }
 
     reset() {

@@ -2,6 +2,7 @@ import Component, {ComponentSettings} from "./Component";
 import UI_I from "../UI_I";
 import Rect from "../math/Rect";
 import Color from "../math/Color";
+import Utils from "../math/Utils";
 
 
 export class VerticalLayoutSettings extends ComponentSettings {
@@ -105,8 +106,8 @@ export default class VerticalLayout extends Component {
     }
     layoutRelative() {
         this.settings.box.paddingRight = 0//reset box padding
-        let maxWidth = this.parent.size.x - this.parent.settings.box.paddingLeft - this.parent.settings.box.paddingRight;
-        let maxHeight = this.parent.size.y - this.parent.settings.box.paddingTop - this.parent.settings.box.paddingBottom;
+        let maxWidth =Utils.getMaxInnerWidth(this.parent) -this.settings.box.marginLeft-this.settings.box.marginRight;
+        let maxHeight = Utils.getMaxInnerHeight(this.parent)-this.settings.box.marginTop-this.settings.box.marginBottom;
 
         this.size.x = maxWidth;
         this.size.y = maxHeight;

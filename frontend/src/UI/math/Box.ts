@@ -22,4 +22,12 @@ export default class Box
         this.paddingTop =val;
         this.paddingBottom =val;
     }
+
+    setMargin(val: number) {
+        this.marginRight =val;
+        this.marginLeft =val;
+        this.marginTop =val;
+        this.marginBottom =val;
+
+    }
 }

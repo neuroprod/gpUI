@@ -35,7 +35,7 @@ export default class UI_I {
     static renderType: string;
     static numDrawCalls: number = 0
     public static globalStyle: GlobalStyle;
-    public static processingTime: number = 0;
+
     private static mainComp: Layer;
     private static dockingLayer: Layer;
     private static dockingOverlayLayer: Layer;
@@ -222,7 +222,7 @@ export default class UI_I {
     }
 
     public static draw() {
-        let sTime = Date.now()
+
         this.screenSize.set(this.canvas.offsetWidth, this.canvas.offsetHeight)
         this.dockManager.update()
 
@@ -274,7 +274,7 @@ export default class UI_I {
             }
         });
         Local.saveDockData();
-        this.processingTime = Date.now() - sTime
+
     }
 
     ////input
@@ -472,4 +472,12 @@ export default class UI_I {
     }
 
 
+    static deleteDrawBatch(id: number) {
+        if (this.drawBatches.has(id)) {
+            let batch = this.drawBatches.get(id);
+            batch.removeFromParent()
+            this.drawBatches.delete(id);
+
+        }
+    }
 }

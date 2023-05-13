@@ -20,8 +20,26 @@ export default class DrawBatch
         this.clipRect = clipRect;
     }
 
+    removeFromParent()
+    {
+        this.parent.removeChild(this)
 
-
+    }
+    removeChild(drawBatch:DrawBatch)
+    {
+       for( let i=0;i<this.children.length;i++)
+       {
+           if(this.children[i]==drawBatch)
+           {
+               this.children.splice(i,1);
+               break;
+           }
+       }
+        drawBatch.fillBatch.clear();
+        drawBatch.textBatch.clear();
+        drawBatch.textureBatch.clear()
+        drawBatch.parent =null;
+    }
     addChild(drawBatch)
     {
         drawBatch.parent =this;

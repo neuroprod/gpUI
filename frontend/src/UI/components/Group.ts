@@ -31,6 +31,7 @@ export default class Group extends Component {
         this.drawChildren = true;
         this.label = label;
 
+        this.size.set(20,20)
         this.verticalLSettings = new VerticalLayoutSettings()
         this.verticalLSettings.needScrollBar = false;
         this.verticalLSettings.hasOwnDrawBatch = false;
@@ -64,6 +65,9 @@ export default class Group extends Component {
         let settings = this.settings;
         if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
         if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginRight;
+
+
+
     }
 
 
@@ -78,11 +82,10 @@ export default class Group extends Component {
 
         UI.pushVerticalLayout("l",  this.verticalLSettings)
         this.container = UI_I.currentComponent
-        if(open != this.container.drawChildren)
-        {
-            this.container.drawChildren =open;
-            this.setDirty()
-        }
+
+        this.container.drawChildren =open;
+
+
 
     }
 

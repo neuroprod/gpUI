@@ -73,14 +73,14 @@ export default class Main {
             this.step();
         });
         this.update();
-        this.draw();
-
-        let gl = this.glMain.gl;
-        gl.disable(gl.DEPTH_TEST)
-
         UI.pushViewPort("viewport")
-        UI.draw();
+        this.draw();
         UI.popViewPort();
+
+
+
+        UI.draw();
+
     }
 
     update() {
@@ -126,9 +126,8 @@ export default class Main {
         UI.popWindow();
 
         UI.pushWindow("UI");
-        UI.LText( this.glMain.viewportWidth + "px - " + this.glMain.viewportHeight+"px" ,"viewport")
+        if( UI.LButton("Clear","Local Data")){UI.clearLocalData()}
         UI.LText( UI_I.numDrawCalls+"" ,"UI DrawCalls")
-        UI.LText( UI_I.processingTime+"ms" ,"UI time")
         UI.LTexture("atlas",this.textTexture)
 
 

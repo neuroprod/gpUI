@@ -14,6 +14,7 @@ import Group, {GroupSettings} from "./components/Group";
 import UITexture from "./draw/UITexture";
 import LTexture, {LTextureSettings} from "./components/LTexture";
 import LTextInput, {LTextInputSettings} from "./components/LTextInput";
+import Local from "./local/Local";
 
 
 export default class UI {
@@ -28,12 +29,16 @@ export default class UI {
 
     static pushWindow(label: string, settings?: PanelSettings) {
         UI_I.currentComponent = UI_I.panelComp;
+
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new PanelSettings()
             let comp = new Panel(UI_I.getID(label), label, settings);
+
+
             UI_I.addComponent(comp);
         }
-        UI.pushVerticalLayout(UI_I.getID(label) + "panelVert");
+
+
     }
 
     static popWindow() {
@@ -221,5 +226,9 @@ export default class UI {
         let result = UI_I.currentComponent.getReturnValue()
         UI_I.popComponent();
         return result;
+    }
+
+    static clearLocalData() {
+        Local.clearLocalData();
     }
 }

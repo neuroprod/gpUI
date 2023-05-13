@@ -14,6 +14,7 @@ import GroupTitle, {GroupTitleSettings} from "./components/internal/GroupTitle";
 import UITexture from "./draw/UITexture";
 import Texture, {TextureSettings} from "./components/internal/Texture";
 import InputBase, {InputBaseSettings} from "./components/internal/InputBase";
+import ToggleIcon, {ToggleIconSettings} from "./components/internal/ToggleIcon";
 
 export default class UI_IC
 {
@@ -74,6 +75,17 @@ export default class UI_IC
         if (!UI_I.setComponent(label)) {
             if(!settings)settings = new GroupTitleSettings()
             let comp = new GroupTitle(UI_I.getID(label),label,isOpen, settings);
+            UI_I.addComponent(comp);
+        }
+        let retValue =UI_I.currentComponent.getReturnValue();
+        UI_I.popComponent();
+        return retValue;
+
+    }
+    static toggleIcon(name:string,ref:any,prop:string,iconTrue:number,iconFalse:number,settings?: ToggleIconSettings):boolean {
+        if (!UI_I.setComponent(name)) {
+            if(!settings)settings = new ToggleIconSettings()
+            let comp = new ToggleIcon(UI_I.getID(name),ref,prop,iconTrue,iconFalse, settings);
             UI_I.addComponent(comp);
         }
         let retValue =UI_I.currentComponent.getReturnValue();

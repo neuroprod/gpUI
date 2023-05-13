@@ -17,6 +17,7 @@ export class ComponentSettings {
 }
 
 export default class Component {
+
     public id: number;
     public settings: ComponentSettings
     public parent: Component | null;
@@ -33,7 +34,7 @@ export default class Component {
     public hasOwnDrawBatch: boolean = false;
     public posOffset = new Vec2();
     public size = new Vec2();
-    public drawChildren = true;
+    private _drawChildren = true;
     public alwaysPassMouse = false;
     public isFocus = false;
     public isOver = false;
@@ -55,7 +56,21 @@ export default class Component {
         this.hasOwnDrawBatch = settings.hasOwnDrawBatch;
 
     }
+    get drawChildren(): boolean {
+        return this._drawChildren;
+    }
 
+    set drawChildren(value: boolean) {
+        if( this._drawChildren== value)return;
+            this._drawChildren = value;
+
+            if(!this.drawChildren && this.hasOwnDrawBatch){
+                UI_I.deleteDrawBatch(this.id)
+            }
+
+      this.setDirty()
+
+    }
     setDirty(first = true) {
 
         this.isDirty = true;
@@ -139,6 +154,7 @@ export default class Component {
     }
 
     layoutAbsoluteInt() {
+
         if (this.isDirty || !this.hasOwnDrawBatch) {
             if (this.parent) {
                 this.posAbsolute.copy(this.parent.posAbsolute);
@@ -168,11 +184,10 @@ export default class Component {
 
 
     prepDrawInt() {
+
         if (this.hasOwnDrawBatch) {
             this.clippingRect.copy(this.layoutRect)
-
             UI_I.pushDrawBatch(this.id, this.clippingRect, this.isDirty);
-
         }
         if (this.isDirty || !this.hasOwnDrawBatch) {
             this.prepDraw();

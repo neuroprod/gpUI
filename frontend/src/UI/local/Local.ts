@@ -53,4 +53,9 @@ export default class Local
 
         this.isDirty =false;
     }
+
+    static clearLocalData() {
+        localStorage.removeItem("uiData")
+        localStorage.removeItem("uiDock")
+    }
 }
