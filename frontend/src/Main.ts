@@ -73,9 +73,9 @@ export default class Main {
             this.step();
         });
         this.update();
-        UI.pushViewPort("viewport")
+       // UI.pushViewPort("viewport")
         this.draw();
-        UI.popViewPort();
+     //   UI.popViewPort();
 
 
 

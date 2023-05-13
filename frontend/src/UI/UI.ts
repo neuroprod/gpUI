@@ -1,4 +1,5 @@
 import Panel, {PanelSettings} from "./components/Panel";
+
 import VerticalLayout, {VerticalLayoutSettings} from "./components/VerticalLayout";
 import UI_I from "./UI_I";
 import LSlider, {LSliderSettings} from "./components/LSlider";
@@ -17,7 +18,11 @@ import LTextInput, {LTextInputSettings} from "./components/LTextInput";
 import Local from "./local/Local";
 
 
+
+
 export default class UI {
+
+
 
     static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement) {
         UI_I.setWebgl(gl, canvas)
@@ -48,21 +53,48 @@ export default class UI {
 
 
 
-    static pushViewPort(label: string, settings?: PanelSettings) {
+   /* static pushViewPort(label: string, settings?: PanelSettings) {
+
+
         UI_I.currentComponent = UI_I.panelComp;
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new PanelSettings()
-            let comp = new Panel(UI_I.getID(label), label, settings);
+            let comp = new ViewPort(UI_I.getID(label), label, settings);
             UI_I.addComponent(comp);
         }
 
-      //  UI.pushVerticalLayout(UI_I.getID(label) + "panelVert");
-    }
-
-    static popViewPort() {
-      //  UI_I.popComponent();
         UI_I.popComponent();
-    }
+      //  UI_I.popComponent();
+
+        //UI_I.popComponent();
+       // let viewPort =UI_I.currentComponent as ViewPort
+        //UI_I.popComponent();
+
+       /* this.viewPortId = UI_I.getID(label)
+
+        if(!viewPort.collapsed){
+          this.renderToViewport =true;
+            console.log("startVPDraw")
+
+        }else{
+            this.renderToViewport =false;
+        }
+*/
+
+   // }
+
+   // static popViewPort() {
+/*
+      if(this.renderToViewport){
+          let vp = UI_I.components.get(this.viewPortId );
+
+          console.log("stopVPDraw")
+      }
+
+
+*/
+
+    //}
     static pushGroup(label: string, settings?: GroupSettings) {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new GroupSettings();
