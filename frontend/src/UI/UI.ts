@@ -1,4 +1,4 @@
-import Panel, {PanelSettings} from "./components/Panel";
+import Panel from "./components/Panel";
 
 import VerticalLayout, {VerticalLayoutSettings} from "./components/VerticalLayout";
 import UI_I from "./UI_I";
@@ -17,16 +17,15 @@ import LTexture, {LTextureSettings} from "./components/LTexture";
 import LTextInput, {LTextInputSettings} from "./components/LTextInput";
 import Local from "./local/Local";
 import Viewport, {ViewportSettings} from "./components/Viewport";
-
-
+import WindowComp, {WindowSettings} from "./components/WindowComp";
 
 
 export default class UI {
-
+    private static viewPort: Viewport | null;
 
 
     static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement) {
-        let panel:Panel;
+        let panel: Panel;
         UI_I.setWebgl(gl, canvas)
     }
 
@@ -34,12 +33,12 @@ export default class UI {
         UI_I.draw()
     }
 
-    static pushWindow(label: string, settings?: PanelSettings) {
+    static pushWindow(label: string, settings?: WindowSettings) {
         UI_I.currentComponent = UI_I.panelComp;
 
         if (!UI_I.setComponent(label)) {
-            if (!settings) settings = new PanelSettings()
-            let comp = new Panel(UI_I.getID(label), label, settings);
+            if (!settings) settings = new WindowSettings()
+            let comp = new WindowComp(UI_I.getID(label), label, settings);
 
 
             UI_I.addComponent(comp);
@@ -54,8 +53,7 @@ export default class UI {
     }
 
 
-
-  static pushViewport(label: string, settings?: ViewportSettings) {
+    static pushViewport(label: string, settings?: ViewportSettings) {
 
 
         UI_I.currentComponent = UI_I.panelComp;
@@ -65,38 +63,27 @@ export default class UI {
             UI_I.addComponent(comp);
         }
 
+        let vp = UI_I.currentComponent as Viewport
         UI_I.popComponent();
-       UI_I.popComponent();
 
-        //UI_I.popComponent();
-       // let viewPort =UI_I.currentComponent as ViewPort
-        //UI_I.popComponent();
 
-       /* this.viewPortId = UI_I.getID(label)
-
-        if(!viewPort.collapsed){
-          this.renderToViewport =true;
-            console.log("startVPDraw")
-
-        }else{
-            this.renderToViewport =false;
+        if (vp.collapsed) {
+            UI.viewPort = null
+            return;
         }
-*/
+        UI.viewPort = vp;
 
-   }
-
- static popViewport() {
-/*
-      if(this.renderToViewport){
-          let vp = UI_I.components.get(this.viewPortId );
-
-          console.log("stopVPDraw")
-      }
-
-*/
-
+        vp.startRender()
 
     }
+
+    static popViewport() {
+
+        if (!UI.viewPort)return
+        UI.viewPort.stopRender()
+
+    }
+
     static pushGroup(label: string, settings?: GroupSettings) {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new GroupSettings();

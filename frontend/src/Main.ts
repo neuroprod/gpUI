@@ -9,31 +9,27 @@ import Texture from "./glLib/Texture";
 import Font from "./UI/draw/Font";
 import UI from "./UI/UI";
 import Scene from "./scene/Scene";
-import Panel, {PanelSettings} from "./UI/components/Panel";
 
 
 export default class Main {
-
 
 
     private preloader: PreLoader;
     private glMain: GL;
 
 
-    private color1: Color =new Color(0.88,0.73,0.038,1.0);
-    private color2: Color =new Color(0.43,0.64,0.22,0.80);
-    private clearColor: Color =new Color(0.22,0.25,0.29,1);
-    private myFloat =0.5;
-    private myBool =false;
-    private myText ="hello Tokyo"
+    private color1: Color = new Color(0.88, 0.73, 0.038, 1.0);
+    private color2: Color = new Color(0.43, 0.64, 0.22, 0.80);
+    private clearColor: Color = new Color(0.22, 0.25, 0.29, 1);
+    private myFloat = 0.5;
+    private myBool = false;
+    private myText = "hello Tokyo"
 
     private parrotTextureGL: Texture;
     private parrotTexture: UITexture;
     private textTexture: UITexture;
 
     private scene: Scene;
-
-
 
 
     constructor(canvas: HTMLCanvasElement) {
@@ -53,7 +49,7 @@ export default class Main {
         this.parrotTexture = new UITexture();
 
 
-        this.scene =new Scene(this.glMain,this.preloader)
+        this.scene = new Scene(this.glMain, this.preloader)
 
     }
 
@@ -63,8 +59,8 @@ export default class Main {
 
 
     init() {
-        this.parrotTexture.setTextureGL(this.parrotTextureGL.texture,this.parrotTextureGL.width,this.parrotTextureGL.height);
-        this.textTexture.setTextureGL(UI_I.renderer.textRenderer.texture.texture,Font.textureSize.x,Font.textureSize.y);
+        this.parrotTexture.setTextureGL(this.parrotTextureGL.texture, this.parrotTextureGL.width, this.parrotTextureGL.height);
+        this.textTexture.setTextureGL(UI_I.renderer.textRenderer.texture.texture, Font.textureSize.x, Font.textureSize.y);
         this.step();
     }
 
@@ -73,10 +69,9 @@ export default class Main {
             this.step();
         });
         this.update();
-       // UI.pushViewPort("viewport")
+        UI.pushViewport("viewport")
         this.draw();
-     //   UI.popViewPort();
-
+        UI.popViewport();
 
 
         UI.draw();
@@ -90,15 +85,19 @@ export default class Main {
         UI.pushWindow("Examples");
 
         //button
-        if( UI.LButton("Press Me!","button")){console.log("Thanks!")}
-        if( UI.LButton("Press Me 2!")){console.log("Thanks!")}
+        if (UI.LButton("Press Me!", "button")) {
+            console.log("Thanks!")
+        }
+        if (UI.LButton("Press Me 2!")) {
+            console.log("Thanks!")
+        }
 
         //text
-        UI.LText( "hello world "+this.myFloat ,"text")
-        UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?","multiline",true)
-        UI.LTextInput("input text",this,"myText")
+        UI.LText("hello world " + this.myFloat, "text")
+        UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?", "multiline", true)
+        UI.LTextInput("input text", this, "myText")
         //booleans
-        if(UI.LBool(this,"myBool")){
+        if (UI.LBool(this, "myBool")) {
             UI.setIndent(20)
             if (UI.LBool("animate myFloat", false)) {
                 this.myFloat = Math.cos(Date.now() / 1000);
@@ -109,30 +108,31 @@ export default class Main {
         UI.pushGroup("Sliders")
 
         //sliders
-        let a = UI.LFloatSlider("localVal",2);
-        UI.LFloatSlider(this,"myFloat",-1,1);
-        UI.LIntSlider("intSlider",5.5,0,10);
+        let a = UI.LFloatSlider("localVal", 2);
+        UI.LFloatSlider(this, "myFloat", -1, 1);
+        UI.LIntSlider("intSlider", 5.5, 0, 10);
         UI.popGroup()
 
         UI.pushGroup("Colors")
         //color
-        UI.LColor("color1",this.color1);
-        UI.LColor("color2",this.color2)
-        UI.LColor("clearColor",this.clearColor)
-        UI.LTexture("mijnTexture",this.parrotTexture)
+        UI.LColor("color1", this.color1);
+        UI.LColor("color2", this.color2)
+        UI.LColor("clearColor", this.clearColor)
+        UI.LTexture("mijnTexture", this.parrotTexture)
         UI.popGroup()
 
 
         UI.popWindow();
 
         UI.pushWindow("UI");
-        if( UI.LButton("Clear","Local Data")){UI.clearLocalData()}
-        UI.LText( UI_I.numDrawCalls+"" ,"UI DrawCalls")
-        UI.LTexture("atlas",this.textTexture)
+        if (UI.LButton("Clear", "Local Data")) {
+            UI.clearLocalData()
+        }
+        UI.LText(UI_I.numDrawCalls + "", "UI DrawCalls")
+        UI.LTexture("atlas", this.textTexture)
 
 
         UI.popWindow();
-
 
 
     }

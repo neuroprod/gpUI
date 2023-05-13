@@ -24,7 +24,7 @@ export default class UI_I {
     public static components = new Map<number, Component>();
     static currentDrawBatch: DrawBatch;
     static mouseListener: MouseListener;
-    public static dockManager: DockManager;
+    public static  dockManager: DockManager;
     static screenSize: Vec2 = new Vec2();
     static renderer: RendererGL;
     static panelComp: Layer;
