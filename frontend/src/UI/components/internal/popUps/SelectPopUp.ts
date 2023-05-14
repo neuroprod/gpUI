@@ -35,6 +35,7 @@ export default class SelectPopUp extends PopUp {
         this.btnSSettings =new SelectButtonSettings()
         this.btnSSettings.box.size.y=itemSize;
         this.btnSSettings.backColor.gray(0.3);
+        this.btnSSettings.iconBoxColor.a =0;
         this.callBack =callBack
         this.index =index;
     }
@@ -44,7 +45,6 @@ export default class SelectPopUp extends PopUp {
 
         if( UI_IC.selectButton(this.items[this.index].label,this.btnSSettings))
         {
-
             UI_I.removePopup(this);
         }
 

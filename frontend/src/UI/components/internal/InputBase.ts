@@ -10,11 +10,11 @@ import Rect from "../../math/Rect";
 
 export class InputBaseSettings extends ComponentSettings {
 
-    public colorBack: Color = new Color().setHex("#242424", 1);
-    public colorOutline: Color = new Color().setHex("#ffffff", 0.2);
+    public colorBack: Color = new Color().setHex("#2d2d2d", 1);
+    public colorOutline: Color = new Color().setHex("#8b826d", 0.2);
     public colorText: Color = new Color().setHex("#cbcbcb", 1);
-    public colorBackFocus: Color = new Color().setHex("#000000", 1);
-    public colorOutlineFocus: Color = new Color().setHex("#ff6363", 0.9);
+    public colorBackFocus: Color = new Color().setHex("#1a1a1a", 1);
+    public colorOutlineFocus: Color = new Color().setHex("#ff6363", 0.5);
     public colorTextFocus: Color = new Color().setHex("#FFFFFF", 1);
     public colorCursor: Color = new Color().setHex("#c7c7c7", 1);
 

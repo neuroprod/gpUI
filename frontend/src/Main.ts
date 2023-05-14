@@ -23,6 +23,7 @@ export default class Main {
     private color2: Color = new Color(0.43, 0.64, 0.22, 0.80);
 
     private myFloat = 0.5;
+    private myFloat2 = 0.5;
     private myBool = false;
     private myText = "hello Tokyo"
 
@@ -112,12 +113,18 @@ export default class Main {
 
 
 
-        UI.pushGroup("Sliders")
+        UI.pushGroup("Numeric")
 
-        //sliders
+        UI.LText("Drag")
+        UI.LFloat(this, "myFloat2");
+        UI.LFloat("test", 2);
+        UI.LText("Sliders")
         let a = UI.LFloatSlider("localVal", 2);
         UI.LFloatSlider(this, "myFloat", -1, 1);
         UI.LIntSlider("intSlider", 5.5, 0, 10);
+        UI.LText("Input")
+        UI.LTextInput("iFloat", "2")
+        UI.LTextInput("iInt","2.5")
         UI.popGroup()
 
         UI.pushGroup("Colors")

@@ -20,6 +20,7 @@ import SelectItem from "./math/SelectItem";
 import Vec2 from "./math/Vec2";
 import VerticalLayout, {VerticalLayoutSettings} from "./components/VerticalLayout";
 import SelectButton, {SelectButtonSettings} from "./components/internal/SelectButton";
+import DragBase, {DragBaseSettings} from "./components/internal/DragBase";
 
 export default class UI_IC
 {
@@ -35,6 +36,16 @@ export default class UI_IC
         if (!UI_I.setComponent(name)) {
             if(!settings)settings  =new SliderBaseSettings()
             let comp = new SliderBase(UI_I.getID(name),value, ref, objName, min, max,type, settings);
+            UI_I.addComponent(comp);
+        }
+        let v =UI_I.currentComponent.getReturnValue()
+        UI_I.popComponent();
+        return v
+    }
+    static dragBase(name: string,  ref: any, objName: string,type:SliderType,settings?: DragBaseSettings ):SliderBase {
+        if (!UI_I.setComponent(name)) {
+            if(!settings)settings  =new DragBaseSettings()
+            let comp = new DragBase(UI_I.getID(name), ref, objName,type, settings);
             UI_I.addComponent(comp);
         }
         let v =UI_I.currentComponent.getReturnValue()
@@ -185,6 +196,7 @@ export default class UI_IC
 
         UI_I.currentComponent =old;
     }
+
 
 }
 

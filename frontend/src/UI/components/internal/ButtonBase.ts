@@ -15,7 +15,7 @@ export class ButtonBaseSettings extends ComponentSettings {
     }
     public backColor:Color =new Color().setHex("#5e5e5e",1);
     public overColor:Color =new Color().setHex("#999999",1);
-    public downColor:Color =new Color().setHex("#d28a8a",1);
+    public downColor:Color =new Color().setHex("#8b826d",1);
     public labelColor:Color =new Color().setHex("#ffffff",1);
 
 }
@@ -37,7 +37,7 @@ export default class ButtonBase extends Component
         super.layoutRelative();
         let settings= this.settings as ButtonBaseSettings
         if(settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -settings.box.marginLeft-settings.box.marginRight;
-        if(settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -settings.box.marginTop-settings.box.marginRight;
+        if(settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -settings.box.marginTop-settings.box.marginBottom;
     }
 
     layoutAbsolute() {

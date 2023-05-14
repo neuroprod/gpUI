@@ -1,6 +1,6 @@
 import Panel from "./components/Panel";
 
-import VerticalLayout, {VerticalLayoutSettings} from "./components/VerticalLayout";
+
 import UI_I from "./UI_I";
 import LSlider, {LSliderSettings} from "./components/LSlider";
 import {SliderType} from "./components/internal/SliderBase";
@@ -20,6 +20,7 @@ import Viewport, {ViewportSettings} from "./components/Viewport";
 import WindowComp, {WindowSettings} from "./components/WindowComp";
 import SelectItem from "./math/SelectItem";
 import LSelect, {LSelectSettings} from "./components/LSelect";
+import LNumber, {LNumberSettings} from "./components/LNumber";
 
 
 export default class UI {
@@ -232,6 +233,33 @@ export default class UI {
         UI_I.popComponent();
         return result
     }
+
+    static LFloat(label: string, value: number, settings?: LNumberSettings)
+    static LFloat(ref: any, property: string, settings?: LNumberSettings)
+    static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
+        let label;
+        let ref = null;
+        let value = null;
+        if (typeof property_or_value === 'string') {
+            label = property_or_value;
+            ref = ref_or_label;
+        } else {
+            label = ref_or_label;
+            value = property_or_value;
+        }
+
+
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new LNumberSettings()
+
+            let comp = new LNumber(UI_I.getID(label), label, value, ref, settings, SliderType.FLOAT);
+            UI_I.addComponent(comp);
+        }
+        let result = UI_I.currentComponent.getReturnValue()
+        UI_I.popComponent();
+        return result
+    }
+
 
     static LIntSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings)
     static LIntSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings)

@@ -6,8 +6,8 @@ import UI_I from "../../UI_I";
 
 export class DirtyButtonSettings extends ComponentSettings {
     public disabledColor:Color =new Color().setHex("#757474",1);
-    public enabledColor:Color =new Color().setHex("#ff5f70",1);
-    public overColor:Color =new Color().setHex("#d24755",1);
+    public enabledColor:Color =new Color().setHex("#ff4c5a",1);
+    public overColor:Color =new Color().setHex("#d9303c",1);
 
 }
 

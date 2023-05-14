@@ -13,7 +13,7 @@ export default class MouseListener {
 
 
     constructor(element:HTMLElement) {
-        this.element = element;
+        this.element = document;
 
         this.element.addEventListener('mousemove', this.mouseMoveListener.bind(this), false);
         this.element.addEventListener('touchmove', this.touchMoveListener.bind(this), {passive: true});
