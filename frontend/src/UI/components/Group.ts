@@ -1,6 +1,7 @@
-import VerticalLayout, {VerticalLayoutSettings} from "./VerticalLayout";
+
 import UI_I from "../UI_I";
 import Component, {ComponentSettings} from "./Component";
+import VerticalLayout, {VerticalLayoutSettings} from "./VerticalLayout";
 import UI from "../UI";
 import Utils from "../math/Utils";
 import UI_IC from "../UI_IC";
@@ -80,7 +81,7 @@ export default class Group extends Component {
         UI_I.popComponent()
 
 
-        UI.pushVerticalLayout("l",  this.verticalLSettings)
+        UI_IC.pushVerticalLayout("l",  this.verticalLSettings)
         this.container = UI_I.currentComponent
 
         this.container.drawChildren =open;

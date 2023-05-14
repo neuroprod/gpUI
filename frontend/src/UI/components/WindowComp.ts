@@ -1,8 +1,9 @@
 
 import Panel, {PanelSettings} from "./Panel";
 import {VerticalLayoutSettings} from "./VerticalLayout";
-import UI from "../UI";
+
 import UI_I from "../UI_I";
+import UI_IC from "../UI_IC";
 
 
 export class WindowSettings extends PanelSettings {
@@ -20,7 +21,7 @@ export default class WindowComp extends Panel{
     }
     setSubComponents() {
         super.setSubComponents()
-        UI.pushVerticalLayout( "panelVert", this.contentVLSetting);
+        UI_IC.pushVerticalLayout( "panelVert", this.contentVLSetting);
 
           UI_I.currentComponent.drawChildren =!this.collapsed
     }

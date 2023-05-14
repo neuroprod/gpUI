@@ -15,9 +15,22 @@ import UITexture from "./draw/UITexture";
 import Texture, {TextureSettings} from "./components/internal/Texture";
 import InputBase, {InputBaseSettings} from "./components/internal/InputBase";
 import ToggleIcon, {ToggleIconSettings} from "./components/internal/ToggleIcon";
+import SelectPopUp, {SelectPopUpSettings} from "./components/internal/popUps/SelectPopUp";
+import SelectItem from "./math/SelectItem";
+import Vec2 from "./math/Vec2";
+import VerticalLayout, {VerticalLayoutSettings} from "./components/VerticalLayout";
+import SelectButton, {SelectButtonSettings} from "./components/internal/SelectButton";
 
 export default class UI_IC
 {
+    static pushVerticalLayout(label: string, settings?: VerticalLayoutSettings) {
+
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new VerticalLayoutSettings();
+            let comp = new VerticalLayout(UI_I.getID(label), settings);
+            UI_I.addComponent(comp);
+        }
+    }
     static sliderBase(name: string, value: number, ref: any, objName: string, min: number, max: number,type:SliderType,settings?: SliderBaseSettings ):SliderBase {
         if (!UI_I.setComponent(name)) {
             if(!settings)settings  =new SliderBaseSettings()
@@ -58,7 +71,17 @@ export default class UI_IC
         }
         UI_I.popComponent();
     }
+    static selectButton ( buttonText: string,settings?: SelectButtonSettings) {
+        if (!UI_I.setComponent(buttonText)) {
+            if(!settings)settings = new SelectButtonSettings()
+            let comp = new SelectButton(UI_I.getID(buttonText),buttonText, settings);
+            UI_I.addComponent(comp);
+        }
+        let retValue =UI_I.currentComponent.getReturnValue();
+        UI_I.popComponent();
+        return retValue;
 
+    }
 
     static settingsButton(name , settings?: SettingsButtonSettings ) {
         if (!UI_I.setComponent(name)) {
@@ -151,6 +174,17 @@ export default class UI_IC
         UI_I.currentComponent =old;
     }
 
+    static selectPopUp(callBack:(item:SelectItem)=>void,pos:Vec2,targetWidth=-1,items:Array<SelectItem> ,index=0, settings: SelectPopUpSettings = new SelectPopUpSettings()) {
+
+        let old =UI_I.currentComponent ;
+
+        UI_I.currentComponent =  UI_I.popupComp;
+        let compPopup = new SelectPopUp( UI_I.getID( "select"),callBack,pos,targetWidth,items,index, settings);
+        UI_I.addComponent(compPopup);
+        UI_I.hasPopup = true;
+
+        UI_I.currentComponent =old;
+    }
 
 }
 

@@ -19,6 +19,7 @@ export default class LTexture extends LComponent
 
         super(id,label,settings);
         this.texture =texture;
+        this.alwaysPassMouse =true
     }
     layoutRelative() {
         super.layoutRelative()

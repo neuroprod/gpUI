@@ -70,6 +70,7 @@ export default class LSlider extends LComponent
             }
             this.setDirty()
             this.setValueDirty(false)
+
         }
         let btn =UI_I.currentComponent as DirtyButton
         btn.setValueDirty( this.valueDirty);

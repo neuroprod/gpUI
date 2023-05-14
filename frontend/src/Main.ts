@@ -9,6 +9,7 @@ import Texture from "./glLib/Texture";
 import Font from "./UI/draw/Font";
 import UI from "./UI/UI";
 import Scene from "./scene/Scene";
+import SelectItem from "./UI/math/SelectItem";
 
 
 export default class Main {
@@ -20,7 +21,7 @@ export default class Main {
 
     private color1: Color = new Color(0.88, 0.73, 0.038, 1.0);
     private color2: Color = new Color(0.43, 0.64, 0.22, 0.80);
-    private clearColor: Color = new Color(0.22, 0.25, 0.29, 1);
+
     private myFloat = 0.5;
     private myBool = false;
     private myText = "hello Tokyo"
@@ -50,7 +51,7 @@ export default class Main {
 
 
         this.scene = new Scene(this.glMain, this.preloader)
-        this.glMain.gl.clearColor(0,0,0,1);
+        this.glMain.gl.clearColor(0.22, 0.25, 0.29,1);
     }
 
     public loadProgress(n: number) {
@@ -69,8 +70,10 @@ export default class Main {
             this.step();
         });
         this.update();
+
+
         UI.pushViewport("viewport")
-        this.draw();
+      this.draw();
         UI.popViewport();
 
 
@@ -103,6 +106,10 @@ export default class Main {
                 this.myFloat = Math.cos(Date.now() / 1000);
             }
         }
+        let selectArray =[new SelectItem("item1",1),new SelectItem("item2",2),new SelectItem("item3",3),new SelectItem("item4",4)];
+        UI.LSelect("select",selectArray,0)
+
+
 
 
         UI.pushGroup("Sliders")
@@ -117,7 +124,7 @@ export default class Main {
         //color
         UI.LColor("color1", this.color1);
         UI.LColor("color2", this.color2)
-        UI.LColor("clearColor", this.clearColor)
+
         UI.LTexture("mijnTexture", this.parrotTexture)
         UI.popGroup()
 
@@ -125,12 +132,13 @@ export default class Main {
         UI.popWindow();
 
         UI.pushWindow("UI");
+        UI.setLLabelSize(130)
         if (UI.LButton("Clear", "Local Data")) {
             UI.clearLocalData()
         }
         UI.LText(UI_I.numDrawCalls + "", "UI DrawCalls")
         UI.LTexture("atlas", this.textTexture)
-
+        UI.setLLabelSize()
 
         UI.popWindow();
 
@@ -140,7 +148,6 @@ export default class Main {
     draw() {
         let gl = this.glMain.gl;
         gl.enable(gl.DEPTH_TEST);
-        gl.clearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.scene.draw();
 

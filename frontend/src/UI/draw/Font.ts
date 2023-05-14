@@ -55,7 +55,7 @@ export default class Font
             c.uv3 =c.uv0.clone().add(new Vec2(0,uvYSize))
             this.icons.push(c);
             fontPosX++
-            if(fontPosX>8)
+            if(fontPosX>7)
             {
                 fontPosX =0;
                 fontPosY ++;

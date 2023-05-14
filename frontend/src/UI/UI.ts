@@ -18,6 +18,8 @@ import LTextInput, {LTextInputSettings} from "./components/LTextInput";
 import Local from "./local/Local";
 import Viewport, {ViewportSettings} from "./components/Viewport";
 import WindowComp, {WindowSettings} from "./components/WindowComp";
+import SelectItem from "./math/SelectItem";
+import LSelect, {LSelectSettings} from "./components/LSelect";
 
 
 export default class UI {
@@ -99,16 +101,23 @@ export default class UI {
     static setIndent(value: number) {
         UI_I.globalStyle.compIndent = value;
     }
-
-    static pushVerticalLayout(label: string, settings?: VerticalLayoutSettings) {
-
-        if (!UI_I.setComponent(label)) {
-            if (!settings) settings = new VerticalLayoutSettings();
-            let comp = new VerticalLayout(UI_I.getID(label), settings);
-            UI_I.addComponent(comp);
-        }
+    static setLLabelSize(size?:number){
+        if(!size)size =UI_I.globalStyle.defaultLabelSize;
+       UI_I.globalStyle.setLabelSize(size)
     }
 
+    static LSelect(label:string,items:Array<SelectItem> ,index=0,settings?:LSelectSettings)
+    {
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new LSelectSettings();
+            let comp = new LSelect(UI_I.getID(label), label, items,index, settings);
+            UI_I.addComponent(comp);
+        }
+        let result = UI_I.currentComponent.getReturnValue()
+        UI_I.popComponent();
+        return result;
+
+    }
 
     static LButton(buttonText: string, label: string = "", settings?: LButtonSettings): boolean {
         let id = buttonText + label;

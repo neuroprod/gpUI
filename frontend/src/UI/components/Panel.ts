@@ -10,9 +10,9 @@ import Utils from "../math/Utils";
 import UI_IC from "../UI_IC";
 
 export class PanelSettings extends ComponentSettings {
+    public static gPosition: Vec2 = new Vec2(10, 10);
 
-
-    public position: Vec2 = new Vec2(10, 10);
+    public position!: Vec2
     public size: Vec2 = new Vec2(320, 300);
     public backgroundColor: Color = new Color().setHex("#383838", 1)
 
@@ -52,8 +52,14 @@ export default class Panel extends Component {
 
     constructor(id: number, label: string, settings: PanelSettings) {
         super(id, settings);
+        if(!settings.position){
+            this.posOffset = PanelSettings.gPosition.clone()
+            PanelSettings.gPosition.x+=30
+            PanelSettings.gPosition.y+=25
+        }else{
+            this.posOffset = settings.position.clone()
+        }
 
-        this.posOffset = settings.position.clone()
         this.size.copy(settings.size)
 
         this.hasOwnDrawBatch = true;

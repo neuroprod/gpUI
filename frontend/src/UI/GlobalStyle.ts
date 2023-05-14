@@ -1,19 +1,16 @@
 export default class GlobalStyle
 {
     //
-    private labeledComponentContentOffset =100
-    private defaultLabeledComponentContentOffset=this.labeledComponentContentOffset;
+    private labelSize =100
+    public readonly defaultLabelSize=100;
     public compIndent: number =0;
     getLabelSize() {
-        return this.labeledComponentContentOffset;
+        return this.labelSize;
     }
     setLabelSize(value:number)
     {
-        this.labeledComponentContentOffset =value;
+        this.labelSize =value;
     }
-    resetLabelSize()
-    {
-        this.labeledComponentContentOffset = this.defaultLabeledComponentContentOffset;
-    }
+
 
 }

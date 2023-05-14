@@ -8,6 +8,7 @@ import UI_IC from "../UI_IC";
 import UI from "../UI";
 import UIRenderTexture from "../draw/UIRenderTexture";
 import {TextureSettings} from "./internal/Texture";
+import UI_I from "../UI_I";
 
 
 
@@ -34,18 +35,23 @@ export default class Viewport extends Panel{
     setSubComponents() {
         super.setSubComponents();
         if(this.collapsed)return;
+        if(UI_IC.settingsButton("LSset"))
+        {
+            console.log("showSettings")
+        }
         UI_IC.texture("t",this.texture,this.textureSettings)
 
     }
 
     startRender() {
        // UI_I.renderer.gl.viewport(100,100,100,100)
-        if(this.texture.setSize(this.layoutRect.size.x,this.layoutRect.size.y-40))this.setDirty();
+        if(this.texture.setSize(this.layoutRect.size.x,this.layoutRect.size.y-20))this.setDirty();
        this.texture.bind()
     }
     stopRender() {
       this.texture.unBind()
-
+        let gl = UI_I.renderer.gl;
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     }
 }

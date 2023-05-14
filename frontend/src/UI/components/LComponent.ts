@@ -3,9 +3,8 @@ import UI_I from "../UI_I";
 import Color from "../math/Color";
 import Font from "../draw/Font";
 import Vec2 from "../math/Vec2";
-import Rect from "../math/Rect";
 import Utils from "../math/Utils";
-import {ButtonBaseSettings} from "./internal/ButtonBase";
+
 
 export class LComponentSettings extends ComponentSettings {
 

@@ -17,6 +17,7 @@ import Local from "./local/Local";
 import TexturePool from "./draw/TexturePool";
 import GlobalStyle from "./GlobalStyle";
 import KeyboardListener from "./input/KeyboardListener";
+import PopUp from "./components/internal/popUps/PopUp";
 
 
 export default class UI_I {
@@ -275,7 +276,11 @@ export default class UI_I {
         Local.saveDockData();
 
     }
-
+    static removePopup(p:Component)
+    {
+        p.keepAlive = false;
+        this.hasPopup = false;
+    }
     ////input
     static checkMouse() {
         if (this.mouseListener.isDirty < 0) return
