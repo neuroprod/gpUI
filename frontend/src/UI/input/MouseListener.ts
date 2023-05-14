@@ -1,7 +1,7 @@
 import Vec2 from "../math/Vec2";
 
 export default class MouseListener {
-    private element: HTMLElement;
+    private element: Document;
 
     private preventDefault = false;
     public mousePos: Vec2;
