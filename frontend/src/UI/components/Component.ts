@@ -120,6 +120,26 @@ export default class Component {
         this.children.push(comp);
         comp.setDirty();
     }
+    addChildAt(comp: Component,index:number) {
+        if (comp.parent) {
+
+            let thisDrawBatch = UI_I.drawBatches.get(this.id)
+            let parentDrawBatch = UI_I.drawBatches.get(comp.parent.id)
+            let compDrawBatch = UI_I.drawBatches.get(comp.id)
+
+            if (parentDrawBatch && thisDrawBatch && compDrawBatch) {
+                parentDrawBatch.removeChild(compDrawBatch)
+                thisDrawBatch.addChildAt(compDrawBatch,index)
+
+            }
+            comp.parent.removeChild(comp);
+        }
+
+        comp.parent = this;
+        this.children.splice(index, 0, comp);
+
+        comp.setDirty();
+    }
 
     layoutRelativeInt() {
 

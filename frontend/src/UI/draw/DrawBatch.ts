@@ -48,6 +48,16 @@ export default class DrawBatch
         }
         drawBatch.parent =this;
         this.children.push(drawBatch);
+        this.isDirty =true
+    }
+    addChildAt(drawBatch: DrawBatch,index) {
+        if(drawBatch.parent)
+        {
+            drawBatch.removeFromParent()
+        }
+        drawBatch.parent =this;
+        this.isDirty =true
+        this.children.splice(index, 0, drawBatch);
     }
     clear()
     {
@@ -71,5 +81,6 @@ export default class DrawBatch
         }
 
     }
+
 
 }

@@ -35,30 +35,30 @@ export default class Panel extends Component {
 
 
     public label: string;
-
-    private tryDrag=false;
-    private tryDragMouse= new Vec2();
     public isDragging = false;
     public isResizing = false;
     public startDragPos = new Vec2();
     public startResizeSize = new Vec2();
-
     public topBarRect: Rect = new Rect()
     public labelPos: Vec2 = new Vec2()
     public resizeRect: Rect;
     public maxLabelSize: number;
-    public collapsed = false;
+    public dockChildren: Array<Panel> = [];
+    public dockParent: Panel | null;
+    private tryDrag = false;
+    private tryDragMouse = new Vec2();
     private dockSize: Vec2 = new Vec2();
     private prevSize: Vec2 = new Vec2()
-    private _isDocked: boolean = false;
+
+
 
     constructor(id: number, label: string, settings: PanelSettings) {
         super(id, settings);
-        if(!settings.position){
+        if (!settings.position) {
             this.posOffset = PanelSettings.gPosition.clone()
-            PanelSettings.gPosition.x+=30
-            PanelSettings.gPosition.y+=25
-        }else{
+            PanelSettings.gPosition.x += 30
+            PanelSettings.gPosition.y += 25
+        } else {
             this.posOffset = settings.position.clone()
         }
 
@@ -75,9 +75,48 @@ export default class Panel extends Component {
 
     }
 
+    private _collapsed = false;
 
+    get collapsed(): boolean {
+        return this._collapsed;
+    }
 
+    set collapsed(value: boolean) {
+        this._collapsed = value;
+        this.saveToLocal();
+    }
 
+    private _isDocked: boolean = false;
+
+    get isDocked(): boolean {
+        return this._isDocked;
+    }
+
+    set isDocked(value: boolean) {
+
+        if (this._isDocked && !value) {
+
+            this.posOffset.copy(UI_I.mouseListener.mousePos);
+            this.posOffset.x -= this.dockSize.x / 2
+            this.posOffset.y -= 10;
+            let settings = this.settings as PanelSettings
+            this.size.copy(settings.size)
+
+        }
+        if (value) {
+
+            this.tryDrag = false
+            this.isDragging = false;
+            this.isResizing = false;
+            UI_I.panelDockingLayer.addChild(this)
+
+            this.setDirty(true)
+        }
+
+        this._isDocked = value;
+    }
+
+ 
 
     setSubComponents() {
 
@@ -117,12 +156,11 @@ export default class Panel extends Component {
         Local.setItem(this.id, a)
     }
 
-
     onMouseDown() {
 
         if (this.topBarRect.contains(UI_I.mouseListener.mousePos)) {
-            this.tryDrag =true;
-            this.tryDragMouse.copy(UI_I.mouseListener.mousePos) ;
+            this.tryDrag = true;
+            this.tryDragMouse.copy(UI_I.mouseListener.mousePos);
             this.startDragPos.copy(this.posOffset);
             this.isDragging = false;
             this.isResizing = false;
@@ -133,63 +171,61 @@ export default class Panel extends Component {
             this.startResizeSize = this.size.clone();
         }
     }
+
     onMouseUp() {
 
-       //when hit docking layer, this doesnt reach, got setisDoced
+        //when hit docking layer, this doesnt reach, set isDocked and setDockInPanel
 
         if (this.isDragging || this.isResizing) {
             this.saveToLocal();
         }
         if (this.isDragging) {
-            console.log("addToPannelLayer")
+
             UI_I.panelLayer.addChild(this)
             UI_I.dockManager.stopDragging(this)
         }
-        this.tryDrag =false
+        this.tryDrag = false
         this.isDragging = false;
         this.isResizing = false;
     }
 
-    get isDocked(): boolean {
-        return this._isDocked;
+    setDockInPanel(panel: Panel) {
+
+        this.tryDrag = false
+        this.isDragging = false;
+        this.isResizing = false;
+        UI_I.dockManager.stopDragging(this)
+
+
     }
 
-    set isDocked(value: boolean) {
 
-        if (this._isDocked && !value) {
 
-            this.posOffset.copy(UI_I.mouseListener.mousePos);
-            this.posOffset.x -= this.dockSize.x / 2
-            this.posOffset.y -= 10;
-            let settings = this.settings as PanelSettings
-            this.size.copy(settings.size)
+    setDirty(first = true) {
 
+        if (this.dockChildren.length) {
+            for (let p of this.dockChildren) {
+                p.setDirty()
+            }
         }
-        if(value )
-        {
-
-            this.tryDrag =false
-            this.isDragging = false;
-            this.isResizing = false;
-            UI_I.panelDockingLayer.addChild(this)
-
-            this.setDirty(true)
+        this.isDirty = true;
+        if (this.parent) this.parent.setDirty(false);
+        if (first) {
+            this.setChildrenDirty()
         }
-
-        this._isDocked = value;
     }
+
     updateOnMouseDown() {
 
-        if(this.tryDrag)
-        {
-            let dist =UI_I.mouseListener.mousePos.distance(this.tryDragMouse)
-            if(dist<2) return;
+        if (this.tryDrag) {
+            let dist = UI_I.mouseListener.mousePos.distance(this.tryDragMouse)
+            if (dist < 2) return;
 
 
-            this.tryDrag =false;
+            this.tryDrag = false;
             this.isDragging = true;
             this.isDocked = false;
-            console.log("addToDraggLayer")
+
             UI_I.panelDragLayer.addChild(this)
             UI_I.dockManager.startDragging(this);
 
@@ -219,6 +255,15 @@ export default class Panel extends Component {
 
         if (this.isDragging || this.isResizing) {
             this.setDirty();
+        }
+    }
+
+    layoutRelative() {
+        super.layoutRelative();
+
+        if (this.dockParent) {
+            this.posOffset = this.dockParent.posOffset.clone()
+            this.posOffset.x += 30;
         }
     }
 
@@ -253,4 +298,6 @@ export default class Panel extends Component {
         UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelSize, settings.labelColor);
 
     }
+
+
 }

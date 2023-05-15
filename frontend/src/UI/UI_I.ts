@@ -405,9 +405,10 @@ export default class UI_I {
         let panelLayer = comp.parent;
 
         if (panelLayer.children[numPanels - 1] === comp) {
-            //already top panel
+
             return;
         }
+
         //set panel to the back (=draw on top);
         let index = panelLayer.children.indexOf(comp);
         panelLayer.children.splice(index, 1);
@@ -415,6 +416,7 @@ export default class UI_I {
 
         //also update drawBatches
         if (!this.drawBatches.has(comp.id)) {
+
             return;
         }
         let batch = this.drawBatches.get(comp.id);
@@ -422,6 +424,7 @@ export default class UI_I {
         index = batchParent.children.indexOf(batch);
         batchParent.children.splice(index, 1);
         batchParent.children.push(batch);
+
     }
 
     static setFocusComponent() {

@@ -12,27 +12,27 @@ export default class DockNode {
     public size: Vec2 = new Vec2();
     public pos: Vec2 = new Vec2();
     public rect = new Rect();
-public panelID =0
+    public panelID = 0
     public panel: Panel | null = null;
     public children: Array<DockNode> = [];
     public parent: DockNode | null = null;
     public id: number;
     private splitType: DockSplit;
     private divider: DockDivider;
-    private dividerPos: Vec2 =new Vec2();
-    private dividerMin: Vec2 =new Vec2();
-    private dividerMax:Vec2 =new Vec2();
+    private dividerPos: Vec2 = new Vec2();
+    private dividerMin: Vec2 = new Vec2();
+    private dividerMax: Vec2 = new Vec2();
 
     constructor() {
         this.id = DockNode.idCount;
         DockNode.idCount++
     }
+
     setDividers() {
 
-        if(this.children.length)
-        {
-           this.divider = UI_IC.dockDivider("DockDivider"+this.id,new DockDividerSettings(this.splitType))
-            this.divider.place(this,this.dividerPos,this.dividerMin,this.dividerMax)
+        if (this.children.length) {
+            this.divider = UI_IC.dockDivider("DockDivider" + this.id, new DockDividerSettings(this.splitType))
+            this.divider.place(this, this.dividerPos, this.dividerMin, this.dividerMax)
         }
 
         for (let child of this.children) {
@@ -40,6 +40,7 @@ public panelID =0
             child.setDividers();
         }
     }
+
     public updateLayout() {
 
 
@@ -54,38 +55,33 @@ public panelID =0
 
             child.updateLayout();
         }
-        if(this.children.length)
-        {
+        if (this.children.length) {
 
 
             this.dividerPos = this.pos.clone().add(this.size.clone().scale(0.5))
             this.dividerMin = this.dividerPos.clone()
             this.dividerMax = this.dividerPos.clone()
-            if(this.splitType ==DockSplit.Vertical)
-            {
+            if (this.splitType == DockSplit.Vertical) {
 
                 let leftChild = this.children[0];
-                if(this.children[0].pos.x>this.children[1].pos.x)
-                {
-                    leftChild  =this.children[1]
+                if (this.children[0].pos.x > this.children[1].pos.x) {
+                    leftChild = this.children[1]
                 }
 
-                this.dividerPos.x =leftChild.pos.x +leftChild.size.x +DockNode.border/2;
-                this.dividerMin.x = this.pos.x +50;
-                this.dividerMax.x = this.pos.x+this.size.x -50;
+                this.dividerPos.x = leftChild.pos.x + leftChild.size.x + DockNode.border / 2;
+                this.dividerMin.x = this.pos.x + 50;
+                this.dividerMax.x = this.pos.x + this.size.x - 50;
 
 
-            }else
-            {
+            } else {
                 let topChild = this.children[0];
-                if(this.children[0].pos.y>this.children[1].pos.y)
-                {
-                    topChild  =this.children[1]
+                if (this.children[0].pos.y > this.children[1].pos.y) {
+                    topChild = this.children[1]
                 }
 
-                this.dividerPos.y =topChild.pos.y +topChild.size.y+DockNode.border/2;
-                this.dividerMin.y = this.pos.y +50;
-                this.dividerMax.y = this.pos.y+this.size.y -50;
+                this.dividerPos.y = topChild.pos.y + topChild.size.y + DockNode.border / 2;
+                this.dividerMin.y = this.pos.y + 50;
+                this.dividerMax.y = this.pos.y + this.size.y - 50;
 
             }
 
@@ -93,46 +89,43 @@ public panelID =0
         }
 
 
-
     }
+
     setDividerPos(newPos: Vec2) {
-        let size =newPos.clone().sub(this.pos)
-        size.x-=DockNode.border/2
-        size.y-=DockNode.border/2
-        if(this.splitType ==DockSplit.Vertical)
-        {
+        let size = newPos.clone().sub(this.pos)
+        size.x -= DockNode.border / 2
+        size.y -= DockNode.border / 2
+        if (this.splitType == DockSplit.Vertical) {
             let leftChild = this.children[0];
             let rightChild = this.children[1];
-            if(this.children[0].pos.x>this.children[1].pos.x)
-            {
-                leftChild  =this.children[1]
+            if (this.children[0].pos.x > this.children[1].pos.x) {
+                leftChild = this.children[1]
                 rightChild = this.children[0];
             }
 
             leftChild.size.x = size.x
-            rightChild.size.x = this.size.x - leftChild.size.x -DockNode.border
-            this.resize(this.size,true);
+            rightChild.size.x = this.size.x - leftChild.size.x - DockNode.border
+            this.resize(this.size, true);
 
 
         }
-        if(this.splitType ==DockSplit.Horizontal)
-        {
+        if (this.splitType == DockSplit.Horizontal) {
             let topChild = this.children[0];
             let bottomChild = this.children[1];
-            if(this.children[0].pos.y>this.children[1].pos.y)
-            {
-                topChild  =this.children[1]
+            if (this.children[0].pos.y > this.children[1].pos.y) {
+                topChild = this.children[1]
                 bottomChild = this.children[0];
             }
 
-            topChild.size.y = size.y-DockNode.border/2
-            bottomChild.size.y = this.size.y - topChild.size.y -DockNode.border
-            this.resize(this.size,true);
+            topChild.size.y = size.y - DockNode.border / 2
+            bottomChild.size.y = this.size.y - topChild.size.y - DockNode.border
+            this.resize(this.size, true);
 
 
         }
-       UI_I.dockManager.mainDockNode.updateLayout()
+        UI_I.dockManager.mainDockNode.updateLayout()
     }
+
     public resize(size: Vec2, force: boolean = false) {
 
         if (!force && this.size.equal(size)) return false;
@@ -276,7 +269,7 @@ public panelID =0
 
             this.size.y -= panel.size.y + -DockNode.border;
             this.pos.y += panel.size.y + DockNode.border;
-            ;
+
 
         } else if (type == DockType.BottomCenter) {
             this.size.y -= panel.size.y + DockNode.border;
@@ -376,21 +369,14 @@ public panelID =0
         return null;
     }
 
-    private updateRect() {
-        this.rect.copySize(this.size)
-        this.rect.copyPos(this.pos)
-    }
-
-
     getDocStructure(data) {
-        data.panelID =null;
-        if(this.panel)data.panelID =this.panel.id;
-        data.splitType =this.splitType;
-        data.children=[];
-        data.size =this.size;
-        data.pos =this.pos;
-        for (let child of this.children)
-        {
+        data.panelID = null;
+        if (this.panel) data.panelID = this.panel.id;
+        data.splitType = this.splitType;
+        data.children = [];
+        data.size = this.size;
+        data.pos = this.pos;
+        for (let child of this.children) {
             let dataS = {}
             child.getDocStructure(dataS);
             data.children.push(dataS);
@@ -401,16 +387,14 @@ public panelID =0
     setLocalData(dockData: any) {
         this.size.copy(dockData.size)
         this.pos.copy(dockData.pos)
-        this.splitType= dockData.splitType as DockSplit
+        this.splitType = dockData.splitType as DockSplit
 
-        if(dockData.panelID)
-        {
-            this.panelID =dockData.panelID;
+        if (dockData.panelID) {
+            this.panelID = dockData.panelID;
         }
-        for(let child of dockData.children)
-        {
-            let node =new DockNode()
-            node.parent =this;
+        for (let child of dockData.children) {
+            let node = new DockNode()
+            node.parent = this;
             node.setLocalData(child)
             this.children.push(node);
         }
@@ -419,19 +403,22 @@ public panelID =0
 
     setPanels() {
 
-        if(this.panelID!=0)
-        {
+        if (this.panelID != 0) {
 
-            this.panel =UI_I.components.get(this.panelID) as Panel
-            this.panel.isDocked =true;
-          //  UI_I.setPanelToBack( this.panel)
+            this.panel = UI_I.components.get(this.panelID) as Panel
+            this.panel.isDocked = true;
+            //  UI_I.setPanelToBack( this.panel)
             this.size.copy(this.panel.size)
             this.pos.copy(this.panel.posOffset)
             this.updateRect()
         }
-        for(let child of this.children)
-        {
+        for (let child of this.children) {
             child.setPanels()
         }
+    }
+
+    private updateRect() {
+        this.rect.copySize(this.size)
+        this.rect.copyPos(this.pos)
     }
 }

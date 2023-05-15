@@ -23,6 +23,10 @@ import SelectButton, {SelectButtonSettings} from "./components/internal/SelectBu
 import DragBase, {DragBaseSettings} from "./components/internal/DragBase";
 import DockIndicator, {DockIndicatorSettings} from "./components/internal/DockIndicator";
 import DockDivider, {DockDividerSettings} from "./components/internal/DockDivider";
+import DockTabData from "./docking/DockTabData";
+import {ComponentSettings} from "./components/Component";
+import DockPanelIndicator, {DockPanelIndicatorSettings} from "./components/internal/DockPanelIndicator";
+
 
 export default class UI_IC
 {
@@ -224,5 +228,16 @@ export default class UI_IC
     }
 
 
+    static dockTabIndicator(item: DockTabData) {
+        UI_I.currentComponent = UI_I.overlayLayer;
+        let id =item.panel.id+"__"
+        if (!UI_I.setComponent(id)) {
+            let settings =new DockPanelIndicatorSettings()
+            let comp = new DockPanelIndicator(UI_I.getID(id),item,settings);
+            UI_I.addComponent(comp);
+        }
+
+        UI_I.popComponent();
+    }
 }
 

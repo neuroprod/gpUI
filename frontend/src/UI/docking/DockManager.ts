@@ -6,6 +6,7 @@ import DockNode from "./DockNode";
 import {DockType} from "./DockType";
 import Local from "../local/Local";
 import UI_IC from "../UI_IC";
+import DockTabData from "./DockTabData";
 
 
 export default class DockManager {
@@ -15,6 +16,7 @@ export default class DockManager {
 
    public mainDockNode: DockNode;
     private setPanelsFirst: boolean =false
+    private tabItems: Array<DockTabData> =[];
 
     constructor(dockLayer: Layer, overlayLayer: Layer) {
         this.dockLayer = dockLayer;
@@ -32,7 +34,7 @@ export default class DockManager {
     public startDragging(panel: Panel) {
         let node = this.mainDockNode.getNodeWithPanel(panel);
         if (node) {
-            if (node.parent) {
+            if (node.parent ) {
 
 
                 let parent = node.parent;
@@ -61,6 +63,12 @@ export default class DockManager {
             this.mainDockNode.updateLayout()
             this.saveLocal()
         }
+       // UI_I.panelDockingLayer
+       // UI_I.panelLayer.
+
+        this.tabItems =[]
+        this.collectTabItems(UI_I.panelDockingLayer);
+        this.collectTabItems(UI_I.panelLayer);
         this.dragComponent = panel;
     }
 
@@ -88,10 +96,10 @@ export default class DockManager {
 
         if (this.dragComponent) {
 
-           // UI.dockIndicator("rightDockIndicator", new DockIndicatorSettings(DockType.Right, this.mainDockNode));
-            //UI.dockIndicator("leftDockIndicator", new DockIndicatorSettings(DockType.Left, this.mainDockNode));
-            //UI.dockIndicator("topDockIndicator", new DockIndicatorSettings(DockType.Top, this.mainDockNode));
-            //UI.dockIndicator("bottomDockIndicator", new DockIndicatorSettings(DockType.Bottom, this.mainDockNode));
+           for(let item  of this.tabItems)
+           {
+               UI_IC.dockTabIndicator(item);
+           }
 
             let overNode = this.mainDockNode.getOverNode(UI_I.mouseListener.mousePos);
             if (overNode) {
@@ -117,11 +125,10 @@ export default class DockManager {
 
 
     split(type: DockType, doc: DockNode) {
-        console.log("split")
 
 
         if (type == DockType.Left || type == DockType.Right || type == DockType.Top || type == DockType.Bottom) {
-            console.log("sideSplit")
+
         } else if (type == DockType.Center) {
             doc.set(this.dragComponent);
             this.dragComponent.isDocked = true
@@ -129,7 +136,7 @@ export default class DockManager {
             doc.split(type, this.dragComponent)
             this.dragComponent.isDocked = true
         }
-        //UI_I.setPanelToBack(this.dragComponent)
+
         this.mainDockNode.updateLayout();
 
         this.saveLocal();
@@ -141,5 +148,25 @@ export default class DockManager {
         let data = {}
         this.mainDockNode.getDocStructure(data )
         Local.setDockData(data);
+    }
+
+    private collectTabItems(layer: Layer) {
+        for(let child  of layer.children)
+        {
+            let panel = child as Panel;
+            if(panel.dockParent) continue;
+            let tabData =new DockTabData()
+            tabData.panel =child as Panel;
+            tabData.rect.copy( tabData.panel.layoutRect)
+            tabData.rect.size.y =20;
+            this.tabItems.push(tabData)
+
+        }
+    }
+
+    dockInPanel(panel: Panel) {
+        console.log("dockInPanel",panel)
+        this.dragComponent.setDockInPanel(panel);
+
     }
 }

@@ -72,11 +72,9 @@ export default class Main {
         });
         this.update();
 
-
         UI.pushViewport("viewport")
-      this.draw();
+        this.draw();
         UI.popViewport();
-
 
         UI.draw();
 
@@ -88,7 +86,6 @@ export default class Main {
 
         UI.pushWindow("Examples");
 
-        //button
         if (UI.LButton("Press Me!", "button")) {
             console.log("Thanks!")
         }
@@ -108,8 +105,8 @@ export default class Main {
             }
         }
         let selectArray =[new SelectItem("item1",1),new SelectItem("item2",2),new SelectItem("item3",3),new SelectItem("item4",4)];
-        UI.LSelect("select",selectArray,0)
-
+        let selectedItem =UI.LSelect("select",selectArray,0)
+        UI.LText("selected item: "+selectedItem );
 
 
 
