@@ -3,7 +3,8 @@ import Vec2 from "../math/Vec2";
 import {DockSplit, DockType} from "./DockType";
 import Rect from "../math/Rect";
 import UI_I from "../UI_I";
-import DockDivider, {DockDividerSettings} from "../components/DockDivider";
+import DockDivider, {DockDividerSettings} from "../components/internal/DockDivider";
+import UI_IC from "../UI_IC";
 
 export default class DockNode {
     static idCount = 0;
@@ -30,7 +31,7 @@ public panelID =0
 
         if(this.children.length)
         {
-           this.divider = UI_I.dockDivider("DockDivider"+this.id,new DockDividerSettings(this.splitType))
+           this.divider = UI_IC.dockDivider("DockDivider"+this.id,new DockDividerSettings(this.splitType))
             this.divider.place(this,this.dividerPos,this.dividerMin,this.dividerMax)
         }
 
@@ -130,7 +131,7 @@ public panelID =0
 
 
         }
-        this.updateLayout()
+       UI_I.dockManager.mainDockNode.updateLayout()
     }
     public resize(size: Vec2, force: boolean = false) {
 
@@ -423,7 +424,7 @@ public panelID =0
 
             this.panel =UI_I.components.get(this.panelID) as Panel
             this.panel.isDocked =true;
-            UI_I.setPanelToBack( this.panel)
+          //  UI_I.setPanelToBack( this.panel)
             this.size.copy(this.panel.size)
             this.pos.copy(this.panel.posOffset)
             this.updateRect()

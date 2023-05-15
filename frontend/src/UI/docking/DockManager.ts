@@ -1,10 +1,11 @@
 import Panel from "../components/Panel";
 import Layer from "../components/Layer";
 import UI_I from "../UI_I";
-import {DockIndicatorSettings} from "../components/DockIndicator";
+import {DockIndicatorSettings} from "../components/internal/DockIndicator";
 import DockNode from "./DockNode";
 import {DockType} from "./DockType";
 import Local from "../local/Local";
+import UI_IC from "../UI_IC";
 
 
 export default class DockManager {
@@ -12,7 +13,7 @@ export default class DockManager {
     private overlayLayer: Layer;
     private dragComponent: Panel | null = null;
 
-    private mainDockNode: DockNode;
+   public mainDockNode: DockNode;
     private setPanelsFirst: boolean =false
 
     constructor(dockLayer: Layer, overlayLayer: Layer) {
@@ -65,6 +66,8 @@ export default class DockManager {
 
     public stopDragging(panel: Panel) {
         this.dragComponent = null
+
+
         this.mainDockNode.updateLayout()
         this.overlayLayer.setDirty(true)
         this.dockLayer.setDirty(true)
@@ -72,7 +75,7 @@ export default class DockManager {
 
 
     update() {
-        if(this.setPanelsFirst)
+       if(this.setPanelsFirst)
         {
 
             this.mainDockNode.setPanels();
@@ -84,6 +87,7 @@ export default class DockManager {
         if (this.mainDockNode.resize(UI_I.screenSize)) this.mainDockNode.updateLayout()
 
         if (this.dragComponent) {
+
            // UI.dockIndicator("rightDockIndicator", new DockIndicatorSettings(DockType.Right, this.mainDockNode));
             //UI.dockIndicator("leftDockIndicator", new DockIndicatorSettings(DockType.Left, this.mainDockNode));
             //UI.dockIndicator("topDockIndicator", new DockIndicatorSettings(DockType.Top, this.mainDockNode));
@@ -92,12 +96,12 @@ export default class DockManager {
             let overNode = this.mainDockNode.getOverNode(UI_I.mouseListener.mousePos);
             if (overNode) {
                 if (!overNode.panel)
-                    UI_I.dockIndicator("CenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.Center, overNode));
+                    UI_IC.dockIndicator("CenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.Center, overNode));
 
-                UI_I.dockIndicator("rightCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.RightCenter, overNode));
-                UI_I.dockIndicator("leftCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.LeftCenter, overNode))
-                UI_I.dockIndicator("topCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.TopCenter, overNode))
-                UI_I.dockIndicator("bottomCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.BottomCenter, overNode))
+                UI_IC.dockIndicator("rightCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.RightCenter, overNode));
+                UI_IC.dockIndicator("leftCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.LeftCenter, overNode))
+                UI_IC.dockIndicator("topCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.TopCenter, overNode))
+                UI_IC.dockIndicator("bottomCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.BottomCenter, overNode))
             }
         }
 
@@ -113,6 +117,8 @@ export default class DockManager {
 
 
     split(type: DockType, doc: DockNode) {
+        console.log("split")
+
 
         if (type == DockType.Left || type == DockType.Right || type == DockType.Top || type == DockType.Bottom) {
             console.log("sideSplit")
@@ -123,12 +129,12 @@ export default class DockManager {
             doc.split(type, this.dragComponent)
             this.dragComponent.isDocked = true
         }
-        UI_I.setPanelToBack(this.dragComponent)
+        //UI_I.setPanelToBack(this.dragComponent)
         this.mainDockNode.updateLayout();
 
         this.saveLocal();
 
-
+        this.dragComponent =null;
     }
 
     private saveLocal() {

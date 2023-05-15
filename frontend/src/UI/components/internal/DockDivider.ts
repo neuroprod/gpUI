@@ -1,16 +1,18 @@
-import Component, {ComponentSettings} from "./Component";
-import UI_I from "../UI_I";
-import Color from "../math/Color";
-import Vec2 from "../math/Vec2";
-import DockNode from "../docking/DockNode";
-import {DockSplit} from "../docking/DockType";
+import Component, {ComponentSettings} from "../Component";
+import UI_I from "../../UI_I";
+import Color from "../../math/Color";
+import Vec2 from "../../math/Vec2";
+import DockNode from "../../docking/DockNode";
+import {DockSplit} from "../../docking/DockType";
+import Rect from "../../math/Rect";
 
 
 export class DockDividerSettings extends ComponentSettings{
     public splitType: DockSplit;
-    public color: Color = new Color().setHex("#ffffff", 1);
+    public color: Color = new Color().setHex("#868686", 1);
+    public colorOver: Color = new Color().setHex("#d7d7d7", 1);
     public wideSize =36
-    public smallSize =3
+    public smallSize =7
 
     constructor(type: DockSplit) {
         super();
@@ -23,7 +25,7 @@ export class DockDividerSettings extends ComponentSettings{
 
 export default class DockDivider extends Component
 {
-    private localSettings: DockDividerSettings;
+
     private isDragging: boolean;
     private startDragPos: Vec2;
 
@@ -32,14 +34,16 @@ export default class DockDivider extends Component
     private posMax: Vec2 =new Vec2();
     private docNode!: DockNode;
     private center: Vec2 =new Vec2();
+
+    private drawRect =new Rect();
     constructor(id: number, settings: DockDividerSettings) {
         super(id, settings);
-        this.localSettings = settings
-        if(this.localSettings.splitType ==DockSplit.Horizontal)
+
+        if(settings.splitType ==DockSplit.Horizontal)
         {
-            this.size.set(this.localSettings.wideSize,this.localSettings.smallSize);
+            this.size.set(settings.wideSize,settings.smallSize);
         }else{
-            this.size.set(this.localSettings.smallSize,this.localSettings.wideSize);
+            this.size.set(settings.smallSize,settings.wideSize);
         }
 
         this.posOffset.set(0,0)
@@ -110,10 +114,25 @@ export default class DockDivider extends Component
         this.posOffset.sub(this.size.clone().scale(0.5))
 
     }
+    layoutAbsolute() {
+        super.layoutAbsolute();
+        this.drawRect.copy(this.layoutRect)
+        this.drawRect.size.x-=4
+        this.drawRect.size.y-=4
+        this.drawRect.pos.x+=2
+        this.drawRect.pos.y+=2
+    }
+
     prepDrawInt() {
 
+        let settings =this.settings as DockDividerSettings
+        if( this.isOver || this.isFocus){
+            UI_I.currentDrawBatch.fillBatch.addRect(this.drawRect, settings.colorOver);
+        }else
+        {
+            UI_I.currentDrawBatch.fillBatch.addRect(this.drawRect, settings.color);
+        }
 
-        UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, this.localSettings.color);
 
 
 

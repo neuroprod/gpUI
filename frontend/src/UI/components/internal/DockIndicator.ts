@@ -1,11 +1,11 @@
-import Component, {ComponentSettings} from "./Component";
-import Color from "../math/Color";
+import Component, {ComponentSettings} from "../Component";
+import Color from "../../math/Color";
 
-import Vec2 from "../math/Vec2";
-import UI_I from "../UI_I";
-import Rect from "../math/Rect";
-import {DockType} from "../docking/DockType";
-import DockNode from "../docking/DockNode";
+import Vec2 from "../../math/Vec2";
+import UI_I from "../../UI_I";
+import Rect from "../../math/Rect";
+import {DockType} from "../../docking/DockType";
+import DockNode from "../../docking/DockNode";
 
 export class DockIndicatorSettings extends ComponentSettings {
 

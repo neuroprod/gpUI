@@ -34,20 +34,19 @@ export default class Component {
     public hasOwnDrawBatch: boolean = false;
     public posOffset = new Vec2();
     public size = new Vec2();
-    private _drawChildren = true;
     public alwaysPassMouse = false;
     public isFocus = false;
     public isOver = false;
     public isDown = false;
     public isDownThisFrame = false;
-   // public isClicked = false;
+    // public isClicked = false;
     public renderOrderCount: number = 0;
     public renderOrder: number = 0;
     public needsChildrenSortingByRenderOrder = false;
     public sortIsDirty = false;
     public scrollOffset: Vec2 = new Vec2();
-    protected clippingRect = new Rect();
     isClicked: boolean;
+    protected clippingRect = new Rect();
 
     constructor(id: number, settings: ComponentSettings) {
         this.id = id;
@@ -56,21 +55,25 @@ export default class Component {
         this.hasOwnDrawBatch = settings.hasOwnDrawBatch;
 
     }
+
+    private _drawChildren = true;
+
     get drawChildren(): boolean {
         return this._drawChildren;
     }
 
     set drawChildren(value: boolean) {
-        if( this._drawChildren== value)return;
-            this._drawChildren = value;
+        if (this._drawChildren == value) return;
+        this._drawChildren = value;
 
-            if(!this.drawChildren && this.hasOwnDrawBatch){
-                UI_I.deleteDrawBatch(this.id)
-            }
+        if (!this.drawChildren && this.hasOwnDrawBatch) {
+            UI_I.deleteDrawBatch(this.id)
+        }
 
-      this.setDirty()
+        this.setDirty()
 
     }
+
     setDirty(first = true) {
 
         this.isDirty = true;
@@ -90,11 +93,32 @@ export default class Component {
         }
     }
 
-    addChild(comp) {
+    removeChild(comp: Component) {
+        let index = this.children.indexOf(comp)
+        comp.parent = null;
+
+        this.children.splice(index, 1)
+        this.setDirty()
+    }
+
+    addChild(comp: Component) {
+        if (comp.parent) {
+
+            let thisDrawBatch = UI_I.drawBatches.get(this.id)
+            let parentDrawBatch = UI_I.drawBatches.get(comp.parent.id)
+            let compDrawBatch = UI_I.drawBatches.get(comp.id)
+
+            if (parentDrawBatch && thisDrawBatch && compDrawBatch) {
+                parentDrawBatch.removeChild(compDrawBatch)
+                thisDrawBatch.addChild(compDrawBatch)
+
+            }
+            comp.parent.removeChild(comp);
+        }
 
         comp.parent = this;
         this.children.push(comp);
-
+        comp.setDirty();
     }
 
     layoutRelativeInt() {
@@ -193,8 +217,8 @@ export default class Component {
             this.prepDraw();
             if (this.drawChildren) {
                 for (let child of this.children) {
-                    if(UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
-                    child.prepDrawInt();
+                    if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
+                        child.prepDrawInt();
                 }
             }
         }
@@ -220,7 +244,7 @@ export default class Component {
         }
     }
 
-   updateMouse() {
+    updateMouse() {
 
     }
 
@@ -290,8 +314,7 @@ export default class Component {
     }
 
 
-
-    setKeys(buffer: string,actionKey:ActionKey) {
+    setKeys(buffer: string, actionKey: ActionKey) {
 
     }
 
@@ -300,6 +323,14 @@ export default class Component {
     }
 
     onAdded() {
+
+    }
+
+    onMouseUp() {
+
+    }
+
+    onMouseDown() {
 
     }
 }

@@ -9,7 +9,7 @@ export default class DrawBatch
     public fillBatch =new FillBatch()
     public textBatch =new TextBatch();
     public textureBatch =new TextureBatch();
-    public parent =null;
+    public parent:DrawBatch|null =null;
     public children =[];
     public id: number;
     public clipRect!: Rect|null;
@@ -42,6 +42,10 @@ export default class DrawBatch
     }
     addChild(drawBatch)
     {
+        if(drawBatch.parent)
+        {
+            drawBatch.removeFromParent()
+        }
         drawBatch.parent =this;
         this.children.push(drawBatch);
     }

@@ -21,9 +21,35 @@ import Vec2 from "./math/Vec2";
 import VerticalLayout, {VerticalLayoutSettings} from "./components/VerticalLayout";
 import SelectButton, {SelectButtonSettings} from "./components/internal/SelectButton";
 import DragBase, {DragBaseSettings} from "./components/internal/DragBase";
+import DockIndicator, {DockIndicatorSettings} from "./components/internal/DockIndicator";
+import DockDivider, {DockDividerSettings} from "./components/internal/DockDivider";
 
 export default class UI_IC
 {
+    static dockIndicator(name: string, settings: DockIndicatorSettings) {
+        UI_I.currentComponent = UI_I.overlayLayer;
+
+        if (!UI_I.setComponent(name)) {
+
+            let comp = new DockIndicator(UI_I.getID(name), settings);
+            UI_I.addComponent(comp);
+        }
+
+        UI_I.popComponent();
+
+    }
+
+    static dockDivider(name: string, settings: DockDividerSettings): DockDivider {
+        UI_I.currentComponent =UI_I.panelDockingDividingLayer;
+        if (!UI_I.setComponent(name)) {
+
+            let comp = new DockDivider(UI_I.getID(name), settings);
+            UI_I.addComponent(comp);
+        }
+        let divider = UI_I.currentComponent as DockDivider;
+        UI_I.popComponent();
+        return divider;
+    }
     static pushVerticalLayout(label: string, settings?: VerticalLayoutSettings) {
 
         if (!UI_I.setComponent(label)) {
@@ -177,7 +203,7 @@ export default class UI_IC
 
         let old =UI_I.currentComponent ;
 
-        UI_I.currentComponent =  UI_I.popupComp;
+        UI_I.currentComponent =  UI_I.popupLayer;
         let compPopup = new ColorPickerPopUp( UI_I.getID(comp.id + ""), comp, settings);
         UI_I.addComponent(compPopup);
         UI_I.hasPopup = true;
@@ -189,7 +215,7 @@ export default class UI_IC
 
         let old =UI_I.currentComponent ;
 
-        UI_I.currentComponent =  UI_I.popupComp;
+        UI_I.currentComponent =  UI_I.popupLayer;
         let compPopup = new SelectPopUp( UI_I.getID( "select"),callBack,pos,targetWidth,items,index, settings);
         UI_I.addComponent(compPopup);
         UI_I.hasPopup = true;

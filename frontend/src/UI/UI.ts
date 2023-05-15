@@ -37,7 +37,7 @@ export default class UI {
     }
 
     static pushWindow(label: string, settings?: WindowSettings) {
-        UI_I.currentComponent = UI_I.panelComp;
+        UI_I.currentComponent = UI_I.panelLayer;
 
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new WindowSettings()
@@ -59,7 +59,7 @@ export default class UI {
     static pushViewport(label: string, settings?: ViewportSettings) {
 
 
-        UI_I.currentComponent = UI_I.panelComp;
+        UI_I.currentComponent = UI_I.panelLayer;
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new ViewportSettings()
             let comp = new Viewport(UI_I.getID(label), label, settings);

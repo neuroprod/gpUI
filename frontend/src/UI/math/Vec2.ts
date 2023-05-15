@@ -71,4 +71,10 @@ export default class Vec2 {
     getArray() {
         return [this.x,this.y];
     }
+
+    distance(vec: Vec2) {
+        let a =this.x -vec.x;
+        let b =this.y -vec.y;
+        return Math.sqrt(a*a +b*b);
+    }
 }

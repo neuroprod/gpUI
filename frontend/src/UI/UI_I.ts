@@ -6,9 +6,8 @@ import DrawBatch from "./draw/DrawBatch";
 import Font from "./draw/Font";
 import MouseListener from "./input/MouseListener";
 import DockManager from "./docking/DockManager";
-import DockIndicator, {DockIndicatorSettings} from "./components/DockIndicator";
 import Vec2 from "./math/Vec2";
-import DockDivider, {DockDividerSettings} from "./components/DockDivider";
+
 
 import Local from "./local/Local";
 
@@ -17,7 +16,7 @@ import Local from "./local/Local";
 import TexturePool from "./draw/TexturePool";
 import GlobalStyle from "./GlobalStyle";
 import KeyboardListener from "./input/KeyboardListener";
-import PopUp from "./components/internal/popUps/PopUp";
+
 
 
 export default class UI_I {
@@ -28,24 +27,30 @@ export default class UI_I {
     public static  dockManager: DockManager;
     static screenSize: Vec2 = new Vec2();
     static renderer: RendererGL;
-    static panelComp: Layer;
-    static popupComp: Layer;
+
     static pixelRatio: number;
     static hasPopup: boolean = false
     static renderType: string;
     static numDrawCalls: number = 0
     public static globalStyle: GlobalStyle;
 
-    private static mainComp: Layer;
-    private static dockingLayer: Layer;
-    private static dockingOverlayLayer: Layer;
-    private static drawBatches = new Map<number, DrawBatch>();
+
+
+   public static drawBatches = new Map<number, DrawBatch>();
     private static mainDrawBatch: DrawBatch;
     private static mouseOverComponent: Component | null = null;
     private static mouseDownComponent: Component | null = null;
     private static focusComponent: Component | null = null;
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
+
+    static mainComp: Layer;
+    static panelDockingLayer: Layer;
+    static panelLayer: Layer;
+    static panelDragLayer: Layer;
+    static popupLayer: Layer;
+    static overlayLayer: Component;
+    static panelDockingDividingLayer: Layer;
 
     constructor() {
     }
@@ -65,26 +70,34 @@ export default class UI_I {
         UI_I.mainComp = new Layer(UI_I.getHash("mainLayer"));
 
         UI_I.currentComponent = UI_I.mainComp;
-        UI_I.dockingLayer = new Layer(UI_I.getID("dockingLayer"));
-        UI_I.addComponent(UI_I.dockingLayer);
+
+        UI_I.panelDockingLayer = new Layer(UI_I.getID("dockingLayer"));
+        UI_I.addComponent(UI_I.panelDockingLayer);
+        this.popComponent();
+
+        UI_I.panelDockingDividingLayer = new Layer(UI_I.getID("panelDockingDividingLayer"));
+        UI_I.addComponent(UI_I.panelDockingDividingLayer);
+        this.popComponent();
+
+        UI_I.panelLayer = new Layer(UI_I.getID("panelLayer"));
+        UI_I.addComponent(UI_I.panelLayer);
+        this.popComponent();
+
+        UI_I.panelDragLayer = new Layer(UI_I.getID("panelDragLayer"));
+        UI_I.addComponent(UI_I.panelDragLayer);
         this.popComponent();
 
 
-        UI_I.panelComp = new Layer(UI_I.getID("panelLayer"));
-        UI_I.addComponent(UI_I.panelComp);
+        UI_I.popupLayer = new Layer(UI_I.getID("popupLayer"));
+        UI_I.addComponent(UI_I.popupLayer);
         this.popComponent();
 
 
-        UI_I.popupComp = new Layer(UI_I.getID("popupLayer"));
-        UI_I.addComponent(UI_I.popupComp);
+        UI_I.overlayLayer = new Layer(UI_I.getID("dockingOverLayer"));
+        UI_I.addComponent(UI_I.overlayLayer);
         this.popComponent();
 
-
-        UI_I.dockingOverlayLayer = new Layer(UI_I.getID("dockingOverLayer"));
-        UI_I.addComponent(UI_I.dockingOverlayLayer);
-        this.popComponent();
-
-        UI_I.dockManager = new DockManager(UI_I.dockingLayer, UI_I.dockingOverlayLayer)
+        UI_I.dockManager = new DockManager( UI_I.panelDockingLayer, UI_I.overlayLayer)
 
 
         UI_I.mainDrawBatch = new DrawBatch(UI_I.mainComp.id)
@@ -93,30 +106,7 @@ export default class UI_I {
 
 
 
-    static dockIndicator(name: string, settings: DockIndicatorSettings) {
-        this.currentComponent = this.dockingOverlayLayer;
 
-        if (!this.setComponent(name)) {
-
-            let comp = new DockIndicator(this.getID(name), settings);
-            this.addComponent(comp);
-        }
-
-        this.popComponent();
-
-    }
-
-    static dockDivider(name: string, settings: DockDividerSettings): DockDivider {
-        this.currentComponent = this.dockingOverlayLayer;
-        if (!this.setComponent(name)) {
-
-            let comp = new DockDivider(this.getID(name), settings);
-            this.addComponent(comp);
-        }
-        let divider = this.currentComponent as DockDivider;
-        this.popComponent();
-        return divider;
-    }
 
 
 
@@ -227,7 +217,7 @@ export default class UI_I {
         this.dockManager.update()
 
         if (this.hasPopup) {
-            this.currentComponent = this.popupComp.children[0]
+            this.currentComponent = this.popupLayer.children[0]
             this.currentComponent.setSubComponents()
 
         }
@@ -287,8 +277,8 @@ export default class UI_I {
         let mousePos = this.mouseListener.mousePos;
 
         if (this.hasPopup && this.mouseListener.isDownThisFrame) {
-            if (!this.popupComp.children[0].checkMouseOverLayout(mousePos)) {
-                this.popupComp.children[0].keepAlive = false;
+            if (!this.popupLayer.children[0].checkMouseOverLayout(mousePos)) {
+                this.popupLayer.children[0].keepAlive = false;
 
                 this.hasPopup = false;
             }
@@ -316,7 +306,7 @@ export default class UI_I {
                     this.mouseDownComponent.isClicked = true;
                     this.mouseDownComponent.onMouseClicked()
                 }
-
+                this.mouseDownComponent.onMouseUp()
                 this.mouseDownComponent.isDown = false;
                 this.mouseDownComponent = null;
 
@@ -336,10 +326,6 @@ export default class UI_I {
 
     }
 
-//
-
-
-    //
     static setMouseDownComponent() {
 
         this.mouseDownComponent = this.mouseOverComponent;
@@ -347,6 +333,7 @@ export default class UI_I {
         if (this.mouseDownComponent) {
             this.mouseDownComponent.isDown = true;
             this.mouseDownComponent.isDownThisFrame = true;
+            this.mouseDownComponent.onMouseDown()
             this.mouseDownComponent.setDirty();
             this.setPanelFocus(this.mouseDownComponent);
 
@@ -377,14 +364,14 @@ export default class UI_I {
     }
 
     static setPanelToBack(panel: Panel) {
-        if (this.panelComp.children[0] === panel) {
+        if (this.panelLayer.children[0] === panel) {
             //already bottom panel
             return;
         }
         //set panel to the front(=draw on top);
-        let index = this.panelComp.children.indexOf(panel);
-        this.panelComp.children.splice(index, 1);
-        this.panelComp.children.unshift(panel);
+        let index = this.panelLayer.children.indexOf(panel);
+        this.panelLayer.children.splice(index, 1);
+        this.panelLayer.children.unshift(panel);
 
         //also update drawBatches
         if (!this.drawBatches.has(panel.id)) {
@@ -399,37 +386,38 @@ export default class UI_I {
 
     }
 
-    static setPanelFocus(com: Component) {
+    static setPanelFocus(comp: Component) {
 
-        let numPanels = this.panelComp.children.length;
+        let numPanels = this.panelLayer.children.length;
         if (numPanels < 2) {
             //1 or 0 panel, no need to change
             return;
         }
-        while (com.parent && !(com instanceof Panel)) {
-            com = com.parent;
+        while (comp.parent && !(comp instanceof Panel)) {
+            comp = comp.parent;
         }
 
-        if (!com.parent) {
+        if (!comp.parent) {
             //not a child of panel or panel
             return;
         }
+        //comp is the panel now;
+        let panelLayer = comp.parent;
 
-
-        if (this.panelComp.children[numPanels - 1] === com) {
+        if (panelLayer.children[numPanels - 1] === comp) {
             //already top panel
             return;
         }
         //set panel to the back (=draw on top);
-        let index = this.panelComp.children.indexOf(com);
-        this.panelComp.children.splice(index, 1);
-        this.panelComp.children.push(com);
+        let index = panelLayer.children.indexOf(comp);
+        panelLayer.children.splice(index, 1);
+        panelLayer.children.push(comp);
 
         //also update drawBatches
-        if (!this.drawBatches.has(com.id)) {
+        if (!this.drawBatches.has(comp.id)) {
             return;
         }
-        let batch = this.drawBatches.get(com.id);
+        let batch = this.drawBatches.get(comp.id);
         let batchParent = batch.parent;
         index = batchParent.children.indexOf(batch);
         batchParent.children.splice(index, 1);
