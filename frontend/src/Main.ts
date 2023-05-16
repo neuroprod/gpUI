@@ -146,7 +146,13 @@ export default class Main {
 
         UI.popWindow();
 
+        UI.pushWindow("1TestWindow1");
+        UI.LText( "1TestWindow1")
+        UI.popWindow();
 
+        UI.pushWindow("2TestWindow2");
+        UI.LText( "2TestWindow2")
+        UI.popWindow();
     }
 
     draw() {

@@ -5,6 +5,7 @@ import TextureBatch from "./TextureBatch";
 
 export default class DrawBatch
 {
+
     public isDirty: boolean=false
     public fillBatch =new FillBatch()
     public textBatch =new TextBatch();
@@ -15,11 +16,19 @@ export default class DrawBatch
     public clipRect!: Rect|null;
     needsClipping: boolean=false ;
 
+    private _isVisible: boolean =true;
+
     constructor(id:number,clipRect:Rect|null=null) {
         this.id = id;
         this.clipRect = clipRect;
     }
+    get isVisible(): boolean {
+        return this._isVisible;
+    }
 
+    set isVisible(value: boolean) {
+        this._isVisible = value;
+    }
     removeFromParent()
     {
         this.parent.removeChild(this)
@@ -69,7 +78,9 @@ export default class DrawBatch
     }
     collectBatches(array:Array<DrawBatch>)
     {
-
+        if(!this.isVisible){
+            return;
+        };
         if(this.clipRect){
 
             array.push(this);
@@ -81,6 +92,7 @@ export default class DrawBatch
         }
 
     }
+
 
 
 }

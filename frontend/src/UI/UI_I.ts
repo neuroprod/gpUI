@@ -117,11 +117,12 @@ export default class UI_I {
         if (this.hasComponent(id)) {
             this.currentComponent = this.components.get(id);
             //   console.log(this.currentComponent.renderOrder)
+            if(this.currentComponent.parent){
             this.currentComponent.renderOrder = this.currentComponent.parent.renderOrderCount
             this.currentComponent.useThisFrame = true;
             this.currentComponent.parent.renderOrderCount++
             this.currentComponent.setSubComponents();
-            this.currentComponent.onAdded()
+            this.currentComponent.onAdded()}
             return true;
         }
         return false;
@@ -216,13 +217,13 @@ export default class UI_I {
         this.screenSize.set(this.canvas.offsetWidth, this.canvas.offsetHeight)
         this.dockManager.update()
 
-        if (this.hasPopup) {
-            this.currentComponent = this.popupLayer.children[0]
-            this.currentComponent.setSubComponents()
 
-        }
 
         this.components.forEach((comp) => {
+            if(comp.keepAlive){
+                this.currentComponent = comp;
+                comp.setSubComponents()
+            }
             if (comp.useThisFrame == false) {
                 this.delete(comp);
             }
@@ -294,7 +295,7 @@ export default class UI_I {
         }
         if (this.mouseListener.isDownThisFrame) {
 
-            this.setMouseDownComponent();
+            this.setMouseDownComponent(this.mouseOverComponent);
             this.setFocusComponent()
         }
         if (this.mouseListener.isUpThisFrame) {
@@ -326,9 +327,9 @@ export default class UI_I {
 
     }
 
-    static setMouseDownComponent() {
+    static setMouseDownComponent(comp:Component) {
 
-        this.mouseDownComponent = this.mouseOverComponent;
+        this.mouseDownComponent = comp;
 
         if (this.mouseDownComponent) {
             this.mouseDownComponent.isDown = true;
@@ -363,7 +364,7 @@ export default class UI_I {
 
     }
 
-    static setPanelToBack(panel: Panel) {
+   /* static setPanelToBack(panel: Panel) {
         if (this.panelLayer.children[0] === panel) {
             //already bottom panel
             return;
@@ -384,7 +385,7 @@ export default class UI_I {
         batchParent.children.unshift(batch);
 
 
-    }
+    }*/
 
     static setPanelFocus(comp: Component) {
 
@@ -460,19 +461,25 @@ export default class UI_I {
 
         this.currentDrawBatch = batch;
     }
-
+    static generateDrawBatch(id,parentDrawBatchID,clipRect)
+    {
+        let batch = new DrawBatch(id, clipRect);
+        this.drawBatches.set(id, batch);
+        this.drawBatches.get(parentDrawBatchID).addChild(batch);
+    }
     static popDrawBatch() {
         this.currentDrawBatch = this.currentDrawBatch.parent;
 
     }
 
 
-    static deleteDrawBatch(id: number) {
+
+
+    static setDrawBatchVisible(id:number,isVisible: boolean) {
         if (this.drawBatches.has(id)) {
             let batch = this.drawBatches.get(id);
-            batch.removeFromParent()
-            this.drawBatches.delete(id);
-
+            batch.isVisible =isVisible
+            batch.isDirty =true;
         }
     }
 }

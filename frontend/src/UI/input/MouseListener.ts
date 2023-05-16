@@ -28,7 +28,7 @@ export default class MouseListener {
         this.element.addEventListener('mousecancel', this.endListener.bind(this), false);
         this.element.addEventListener('mouseout', this.endListener.bind(this), false);
         this.element.addEventListener('touchcancel', this.endListener.bind(this), false);
-        this.element.addEventListener('touchcancel', this.endListener.bind(this), false);
+
 
 
         this.mousePos = new Vec2(-1, -1);

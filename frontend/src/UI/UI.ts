@@ -21,6 +21,7 @@ import WindowComp, {WindowSettings} from "./components/WindowComp";
 import SelectItem from "./math/SelectItem";
 import LSelect, {LSelectSettings} from "./components/LSelect";
 import LNumber, {LNumberSettings} from "./components/LNumber";
+import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
 
 
 export default class UI {
@@ -285,7 +286,19 @@ export default class UI {
         UI_I.popComponent();
         return result;
     }
+    static dockingPanel(panelMain: Panel, panelChild: Panel):DockingPanel {
+        UI_I.currentComponent = panelMain.parent;
+        let id = panelMain.id + panelChild.id + "-";
 
+        if (!UI_I.setComponent(id)) {
+            let settings = new DockingPanelSettings()
+             let comp = new DockingPanel(UI_I.getID(id), panelMain, panelChild, settings);
+             UI_I.addComponent(comp);
+        }
+        let comp =     UI_I.currentComponent as DockingPanel
+        UI_I.popComponent();
+        return comp;
+    }
     static clearLocalData() {
         Local.clearLocalData();
     }

@@ -17,7 +17,7 @@ constructor() {
     super();
     this.box.paddingLeft=0
     this.box.paddingRight=0
-    this.box.paddingBottom=20
+    this.box.paddingBottom=0
 }
 }
 
@@ -33,7 +33,8 @@ export default class Viewport extends Panel{
 
     }
     setSubComponents() {
-        super.setSubComponents();
+        if(!this.isDockedInPanel) super.setSubComponents();
+
         if(this.collapsed)return;
         if(UI_IC.settingsButton("LSset"))
         {
@@ -42,7 +43,15 @@ export default class Viewport extends Panel{
         UI_IC.texture("t",this.texture,this.textureSettings)
 
     }
+    setIsDockedInPanel(value: boolean) {
 
+        super.setIsDockedInPanel(value)
+        if (value) {
+            this.textureSettings.box.marginTop = 0
+        } else {
+            this.textureSettings.box.marginTop= 20
+        }
+    }
     startRender() {
        // UI_I.renderer.gl.viewport(100,100,100,100)
         if(this.texture.setSize(this.layoutRect.size.x,this.layoutRect.size.y-20))this.setDirty();

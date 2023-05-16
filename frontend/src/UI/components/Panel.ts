@@ -8,6 +8,8 @@ import Font from "../draw/Font";
 import Local from "../local/Local";
 import Utils from "../math/Utils";
 import UI_IC from "../UI_IC";
+import Box from "../math/Box";
+import {ButtonBaseSettings} from "./internal/ButtonBase";
 
 export class PanelSettings extends ComponentSettings {
     public static gPosition: Vec2 = new Vec2(10, 10);
@@ -34,6 +36,7 @@ export class PanelSettings extends ComponentSettings {
 export default class Panel extends Component {
 
 
+
     public label: string;
     public isDragging = false;
     public isResizing = false;
@@ -43,12 +46,13 @@ export default class Panel extends Component {
     public labelPos: Vec2 = new Vec2()
     public resizeRect: Rect;
     public maxLabelSize: number;
-    public dockChildren: Array<Panel> = [];
-    public dockParent: Panel | null;
+
     private tryDrag = false;
     private tryDragMouse = new Vec2();
     private dockSize: Vec2 = new Vec2();
     private prevSize: Vec2 = new Vec2()
+    private _isDockedInPanel: boolean =false;
+    private saveBox: Box;
 
 
 
@@ -85,7 +89,29 @@ export default class Panel extends Component {
         this._collapsed = value;
         this.saveToLocal();
     }
+    get isDockedInPanel(): boolean {
+        return this._isDockedInPanel;
+    }
 
+    public setIsDockedInPanel(value: boolean) {
+        this._isDockedInPanel = value;
+        if(this._isDockedInPanel)
+        {
+            this.saveBox = this.settings.box;
+            this.settings.box =new Box()
+            this.settings.box.size.set(-1,-1)
+            this.settings.box.marginTop =25
+         //   this.settings.box.setMargin(0)
+           // this.settings.box.marginTop =23
+            this.posOffset.set(0,0);
+            this.setDirty()
+        }else
+        {
+            this.settings.box = this.saveBox;
+            this.setDirty()
+        }
+
+    }
     private _isDocked: boolean = false;
 
     get isDocked(): boolean {
@@ -116,7 +142,8 @@ export default class Panel extends Component {
         this._isDocked = value;
     }
 
- 
+
+
 
     setSubComponents() {
 
@@ -194,7 +221,7 @@ export default class Panel extends Component {
         this.tryDrag = false
         this.isDragging = false;
         this.isResizing = false;
-        UI_I.dockManager.stopDragging(this)
+
 
 
     }
@@ -203,11 +230,7 @@ export default class Panel extends Component {
 
     setDirty(first = true) {
 
-        if (this.dockChildren.length) {
-            for (let p of this.dockChildren) {
-                p.setDirty()
-            }
-        }
+
         this.isDirty = true;
         if (this.parent) this.parent.setDirty(false);
         if (first) {
@@ -260,10 +283,10 @@ export default class Panel extends Component {
 
     layoutRelative() {
         super.layoutRelative();
-
-        if (this.dockParent) {
-            this.posOffset = this.dockParent.posOffset.clone()
-            this.posOffset.x += 30;
+        if(this._isDockedInPanel) {
+            let settings = this.settings as ButtonBaseSettings
+            if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
+            if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginBottom;
         }
     }
 
@@ -281,6 +304,7 @@ export default class Panel extends Component {
     }
 
     prepDraw() {
+        if(this._isDockedInPanel)return;
 
         let settings = this.settings as PanelSettings
 

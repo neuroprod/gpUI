@@ -39,13 +39,15 @@ export default class Component {
     public isOver = false;
     public isDown = false;
     public isDownThisFrame = false;
-    // public isClicked = false;
+    public isClicked: boolean=false;
+
+
     public renderOrderCount: number = 0;
     public renderOrder: number = 0;
     public needsChildrenSortingByRenderOrder = false;
     public sortIsDirty = false;
     public scrollOffset: Vec2 = new Vec2();
-    isClicked: boolean;
+
     protected clippingRect = new Rect();
 
     constructor(id: number, settings: ComponentSettings) {
@@ -66,8 +68,8 @@ export default class Component {
         if (this._drawChildren == value) return;
         this._drawChildren = value;
 
-        if (!this.drawChildren && this.hasOwnDrawBatch) {
-            UI_I.deleteDrawBatch(this.id)
+        if ( this.hasOwnDrawBatch) {
+            UI_I.setDrawBatchVisible(this.id,value)
         }
 
         this.setDirty()
@@ -94,6 +96,16 @@ export default class Component {
     }
 
     removeChild(comp: Component) {
+
+        let thisDrawBatch  = UI_I.drawBatches.get(this.id)
+        let compDrawBatch = UI_I.drawBatches.get(comp.id)
+        if ( thisDrawBatch && compDrawBatch) {
+
+            thisDrawBatch.removeChild(compDrawBatch)
+
+        }
+
+
         let index = this.children.indexOf(comp)
         comp.parent = null;
 
@@ -104,18 +116,30 @@ export default class Component {
     addChild(comp: Component) {
         if (comp.parent) {
 
-            let thisDrawBatch = UI_I.drawBatches.get(this.id)
+           /* let thisDrawBatch = UI_I.drawBatches.get(this.id)
             let parentDrawBatch = UI_I.drawBatches.get(comp.parent.id)
             let compDrawBatch = UI_I.drawBatches.get(comp.id)
 
-            if (parentDrawBatch && thisDrawBatch && compDrawBatch) {
+            if (parentDrawBatch  && compDrawBatch) {
                 parentDrawBatch.removeChild(compDrawBatch)
-                thisDrawBatch.addChild(compDrawBatch)
+
 
             }
+            if ( thisDrawBatch && compDrawBatch) {
+
+                thisDrawBatch.addChild(compDrawBatch)
+
+            }*/
+
             comp.parent.removeChild(comp);
         }
+        let thisDrawBatch  = UI_I.drawBatches.get(this.id)
+        let compDrawBatch = UI_I.drawBatches.get(comp.id)
+        if ( thisDrawBatch && compDrawBatch) {
 
+            thisDrawBatch.addChild(compDrawBatch)
+
+        }
         comp.parent = this;
         this.children.push(comp);
         comp.setDirty();
@@ -237,7 +261,8 @@ export default class Component {
             this.prepDraw();
             if (this.drawChildren) {
                 for (let child of this.children) {
-                    if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
+                    //TODO remove cliped children
+                   // if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
                         child.prepDrawInt();
                 }
             }
@@ -258,7 +283,9 @@ export default class Component {
     }
 
     updateMouseInt() {
+        if(!this.drawChildren)return
         this.updateMouse();
+
         for (let child of this.children) {
             child.updateMouseInt();
         }
@@ -269,7 +296,7 @@ export default class Component {
     }
 
     checkMouse(pos: Vec2) {
-
+        if(!this.drawChildren)return
         if (this.isClicked) {
             this.isClicked = false;
         }

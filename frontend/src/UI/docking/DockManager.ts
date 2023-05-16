@@ -7,6 +7,8 @@ import {DockType} from "./DockType";
 import Local from "../local/Local";
 import UI_IC from "../UI_IC";
 import DockTabData from "./DockTabData";
+import UI from "../UI";
+import DockingPanel from "../components/internal/DockingPanel";
 
 
 export default class DockManager {
@@ -63,8 +65,7 @@ export default class DockManager {
             this.mainDockNode.updateLayout()
             this.saveLocal()
         }
-       // UI_I.panelDockingLayer
-       // UI_I.panelLayer.
+
 
         this.tabItems =[]
         this.collectTabItems(UI_I.panelDockingLayer);
@@ -154,19 +155,47 @@ export default class DockManager {
         for(let child  of layer.children)
         {
             let panel = child as Panel;
-            if(panel.dockParent) continue;
+
             let tabData =new DockTabData()
             tabData.panel =child as Panel;
             tabData.rect.copy( tabData.panel.layoutRect)
             tabData.rect.size.y =20;
+
             this.tabItems.push(tabData)
 
         }
     }
+    swapDock(oldPanel:Panel,newPanel:Panel)
+    {
+        let node =this.mainDockNode.getNodeWithPanel(oldPanel)
+        newPanel.isDocked =true;
+        node.panel = newPanel;
 
+    }
     dockInPanel(panel: Panel) {
-        console.log("dockInPanel",panel)
-        this.dragComponent.setDockInPanel(panel);
+
+
+        if(panel instanceof DockingPanel  )
+        {
+            this.dragComponent.setDockInPanel(panel);
+            (panel as DockingPanel).addPanelChild(this.dragComponent)
+
+        }else{
+            let dockNode =null;
+            if(panel.isDocked)
+            {
+                dockNode =this.mainDockNode.getNodeWithPanel(panel)
+            }
+            this.dragComponent.setDockInPanel(panel);
+            let dockingPanel =UI.dockingPanel(panel,this.dragComponent)
+            if(dockNode) {
+                dockingPanel.isDocked =true;
+                dockNode.panel = dockingPanel;
+            }
+
+        }
+        this.dragComponent = null
+        this.overlayLayer.setDirty(true)
 
     }
 }
