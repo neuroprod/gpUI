@@ -3,7 +3,7 @@ import UI_I from "../UI_I";
 import FBO from "./FBO";
 
 class Quad {
-    private gl: WebGL2RenderingContext | WebGLRenderingContext;
+    public gl: WebGL2RenderingContext | WebGLRenderingContext;
     private planeVertexBuffer: WebGLBuffer;
     private PlaneUVBuffer: WebGLBuffer;
 
@@ -270,12 +270,14 @@ export default class ShaderTextureGL extends UITexture {
     public fbo: FBO;
     public quad: Quad;
     public program: Program;
+    public gl: WebGL2RenderingContext | WebGLRenderingContext;
 
     constructor(width: number, height: number) {
         super();
         this.width = width;
         this.height = height;
         this.size.set(this.width,this.height)
+        this.gl = UI_I.renderer.gl;
         this.fbo = new FBO(UI_I.renderer.gl, width, height)
         this.quad = new Quad(UI_I.renderer.gl);
         this.program = new Program(UI_I.renderer.gl)

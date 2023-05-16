@@ -13,8 +13,8 @@ export class ButtonBaseSettings extends ComponentSettings {
         super();
 
     }
-    public backColor:Color =new Color().setHex("#5e5e5e",1);
-    public overColor:Color =new Color().setHex("#999999",1);
+    public backColor:Color =new Color().setHex("#65625e",1);
+    public overColor:Color =new Color().setHex("#868480",1);
     public downColor:Color =new Color().setHex("#8b826d",1);
     public labelColor:Color =new Color().setHex("#ffffff",1);
 

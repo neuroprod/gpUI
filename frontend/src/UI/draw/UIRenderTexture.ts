@@ -15,13 +15,13 @@ export default class UIRenderTexture extends UITexture
         this.setTextureGL( this.fbo.texture,100,100)
     }
     setSize(w:number,h:number){
-        if(w==this.width && h==this.height)false;
+        if(w==this.width && h==this.height)return false;
         if(w<1 || h<1)return ;
         this.fbo.delayedResize(w,h);
         this.width =w;
         this.height =h;
         this.size.set(w,h)
-return true;
+        return true;
     }
     bind()
     {

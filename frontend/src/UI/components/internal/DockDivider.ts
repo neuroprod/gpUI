@@ -102,7 +102,7 @@ export default class DockDivider extends Component
 
     place(node:DockNode,dividerPos: Vec2, min: Vec2, max: Vec2) {
 
-        if(dividerPos.equal(this.posOffset) && min.equal(this.posMin) && max.equal(this.posMax))return;
+        if(dividerPos.equal( this.center) && min.equal(this.posMin) && max.equal(this.posMax))return;
         this.docNode =node;
         this.center.copy(dividerPos);
         this.posMin.copy(min);

@@ -17,7 +17,7 @@ export enum SliderType {
 export class SliderBaseSettings extends ComponentSettings {
 
 
-    barColor = new Color().setHex("#555555", 1);
+    barColor = new Color().setHex("#65625e", 1);
     labelColor = Color.white.clone();
 
     constructor() {

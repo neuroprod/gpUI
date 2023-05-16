@@ -21,6 +21,7 @@ export default class ColorPickerTextureGL extends ShaderTextureGL {
     draw() {
 
         this.fbo.bind();
+        this.gl.clear(this.gl.DEPTH_BUFFER_BIT)
         this.program.bind();
         this.program.uniform4fv("tl",this.tl);
         this.program.uniform4fv("tr",this.tr);
@@ -29,8 +30,9 @@ export default class ColorPickerTextureGL extends ShaderTextureGL {
         this.program.uniform1f("gridSize",this.gridsize);
         this.program.uniform2fv("size",this.size.getArray());
         this.quad.draw(this.program)
-        this.fbo.unbind();
         this.program.unBind();
+        this.fbo.unbind();
+
         UI_I.numDrawCalls++;
     }
 

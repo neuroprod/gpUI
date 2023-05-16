@@ -14,8 +14,8 @@ export class GroupTitleSettings extends ComponentSettings {
         this.box.marginLeft =4
         this.box.size.set(-1,20)
     }
-    public boxColor = new Color().setHex("#454545", 1)
-    public boxColorOver = new Color().setHex("#5c5c5c", 1)
+    public boxColor = new Color().setHex("#65625e", 1)
+    public boxColorOver = new Color().setHex("#868480", 1)
     public labelColor:Color =new Color().setHex("#ffffff",1);
 
 }

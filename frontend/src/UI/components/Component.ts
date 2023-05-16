@@ -49,7 +49,7 @@ export default class Component {
     public scrollOffset: Vec2 = new Vec2();
 
     protected clippingRect = new Rect();
-
+    log: boolean =false;
     constructor(id: number, settings: ComponentSettings) {
         this.id = id;
         this.settings = settings;
@@ -77,9 +77,9 @@ export default class Component {
     }
 
     setDirty(first = true) {
-
+//if(this.log)console.log("F")
         this.isDirty = true;
-        if (this.parent) this.parent.setDirty(false);
+        if (this.parent && !this.parent.isDirty) this.parent.setDirty(false);
         if (first) {
             this.setChildrenDirty()
         }

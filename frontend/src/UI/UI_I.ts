@@ -68,7 +68,7 @@ export default class UI_I {
         this.keyboardListener = new KeyboardListener();
 
         UI_I.mainComp = new Layer(UI_I.getHash("mainLayer"));
-
+        UI_I.mainComp.log =true;
         UI_I.currentComponent = UI_I.mainComp;
 
         UI_I.panelDockingLayer = new Layer(UI_I.getID("dockingLayer"));
