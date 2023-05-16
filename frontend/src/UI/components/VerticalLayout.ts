@@ -68,7 +68,7 @@ export default class VerticalLayout extends Component {
     }
     updateMouse()
     {
-       if(!this.hasScrollBar)return;
+      /* if(!this.hasScrollBar)return;
 
 
         if (this.isDown) {
@@ -83,7 +83,22 @@ export default class VerticalLayout extends Component {
             this.scrollBarStartY+=this.scrollBarOffset;
             this.scrollBarOffset =0
 
+        }*/
+    }
+    onMouseDown() {
+
+        if(!this.hasScrollBar)return;
+        if (this.scrollBarRect.contains(UI_I.mouseListener.mousePos)) {
+            this.isDraggingScroll = true;
+            this.downPosY =UI_I.mouseListener.mousePos.y
         }
+    }
+    onMouseUp() {
+
+        this.isDraggingScroll = false;
+        this.scrollBarStartY+=this.scrollBarOffset;
+        this.scrollBarOffset =0
+        console.log("onUp")
     }
     updateOnMouseDown()
     {

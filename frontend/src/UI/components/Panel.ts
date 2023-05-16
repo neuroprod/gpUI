@@ -16,7 +16,7 @@ export class PanelSettings extends ComponentSettings {
 
     public position!: Vec2
     public size: Vec2 = new Vec2(320, 300);
-    public backgroundColor: Color = new Color().setHex("#3d3b3a", 1)
+    public backgroundColor: Color = new Color().setHex("#403f3e", 1)
 
     public labelColor: Color = new Color().setHex("#d8d8d8", 1)
     public topBarColor: Color = new Color().setHex("#2b2927", 1)

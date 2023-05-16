@@ -5,7 +5,7 @@
 
 import Panel, {PanelSettings} from "./Panel";
 import UI_IC from "../UI_IC";
-import UI from "../UI";
+
 import UIRenderTexture from "../draw/UIRenderTexture";
 import {TextureSettings} from "./internal/Texture";
 import UI_I from "../UI_I";

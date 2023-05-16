@@ -96,7 +96,7 @@ export default class CheckBox extends Component
        let settings =this.settings as CheckBoxSettings
         if(this.ref[this.property])
         {
-            UI_I.currentDrawBatch.textBatch.addIcon( this.checkPos,0,settings.labelColor)
+            UI_I.currentDrawBatch.textBatch.addIcon( this.checkPos,0,Color.white)
         }
 
         UI_I.currentDrawBatch.fillBatch.addRect( this.checkRect,  settings.colorRect);

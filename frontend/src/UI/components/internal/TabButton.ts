@@ -19,9 +19,9 @@ export class TabButtonSettings extends ComponentSettings {
         this.box.paddingLeft =0
         this.box.paddingBottom =0
     }
-    public selectedColor:Color =new Color().setHex("#383838", 1);
-    public backColor:Color =new Color().setHex("#0a0a0a",1);
-    public overColor:Color =new Color().setHex("#242424", 1);
+    public selectedColor:Color =new Color().setHex("#403e38", 1);
+    public backColor:Color =new Color().setHex("#2b2722",0);
+    public overColor:Color =new Color().setHex("#1c1a18", 1);
     public downColor:Color =new Color().setHex("#363636",1);
     public labelColor:Color =new Color().setHex("#999999",1);
     public labelSelectedColor:Color =new Color().setHex("#ffffff",1);

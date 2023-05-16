@@ -7,133 +7,112 @@ import {DockSplit} from "../../docking/DockType";
 import Rect from "../../math/Rect";
 
 
-export class DockDividerSettings extends ComponentSettings{
+export class DockDividerSettings extends ComponentSettings {
     public splitType: DockSplit;
     public color: Color = new Color().setHex("#868686", 1);
     public colorOver: Color = new Color().setHex("#d7d7d7", 1);
-    public wideSize =36
-    public smallSize =7
+    public wideSize = 36
+    public smallSize = 7
 
     constructor(type: DockSplit) {
         super();
-        this.splitType =type
+        this.splitType = type
 
     }
 
 
 }
 
-export default class DockDivider extends Component
-{
+export default class DockDivider extends Component {
 
     private isDragging: boolean;
     private startDragPos: Vec2;
 
 
-    private posMin: Vec2 =new Vec2();
-    private posMax: Vec2 =new Vec2();
+    private posMin: Vec2 = new Vec2();
+    private posMax: Vec2 = new Vec2();
     private docNode!: DockNode;
-    private center: Vec2 =new Vec2();
+    private center: Vec2 = new Vec2();
 
-    private drawRect =new Rect();
+    private drawRect = new Rect();
+
     constructor(id: number, settings: DockDividerSettings) {
         super(id, settings);
 
-        if(settings.splitType ==DockSplit.Horizontal)
-        {
-            this.size.set(settings.wideSize,settings.smallSize);
-        }else{
-            this.size.set(settings.smallSize,settings.wideSize);
+        if (settings.splitType == DockSplit.Horizontal) {
+            this.size.set(settings.wideSize, settings.smallSize);
+        } else {
+            this.size.set(settings.smallSize, settings.wideSize);
         }
 
-        this.posOffset.set(0,0)
-
+        this.posOffset.set(0, 0)
     }
 
-    updateMouse() {
-
-        if (this.isDown) {
-            //dragg
-            if (this.isDownThisFrame) {
-                if (this.layoutRect.contains(UI_I.mouseListener.mousePos)) {
-                    this.isDragging = true;
-
-                    this.startDragPos = this.center.clone() ;
-
-                }
-
-            }
-            if (this.isDragging) {
-
-                let dir = UI_I.mouseListener.mousePosDown.clone();
-                dir.sub(UI_I.mouseListener.mousePos);
-                let newPos = this.startDragPos.clone();
-                newPos.sub(dir);
-                newPos.clamp(this.posMin,this.posMax)
-                this.docNode.setDividerPos(newPos)
-
-               this.center.copy(newPos);
 
 
-                this.setDirty(true);
+    onMouseDown() {
+        super.onMouseDown();
+        this.isDragging = true;
 
-            }
-
-
-        } else {
-
-            if (this.isDragging ) {
-
-            }
-
-            this.isDragging = false;
-
-        }
-
-
+        this.startDragPos = this.center.clone();
     }
 
     updateOnMouseDown() {
-       /* if (this.isDragging ) {
-            this.setDirty();
-        }*/
+        if (this.isDragging) {
+
+            let dir = UI_I.mouseListener.mousePosDown.clone();
+            dir.sub(UI_I.mouseListener.mousePos);
+            let newPos = this.startDragPos.clone();
+            newPos.sub(dir);
+            newPos.clamp(this.posMin, this.posMax)
+            this.docNode.setDividerPos(newPos)
+
+            this.center.copy(newPos);
+
+
+            this.setDirty(true);
+
+        }
     }
 
+    onMouseUp() {
+        super.onMouseUp();
+        this.isDragging = false;
+    }
 
-    place(node:DockNode,dividerPos: Vec2, min: Vec2, max: Vec2) {
+    place(node: DockNode, dividerPos: Vec2, min: Vec2, max: Vec2) {
 
-        if(dividerPos.equal( this.center) && min.equal(this.posMin) && max.equal(this.posMax))return;
-        this.docNode =node;
+        if (dividerPos.equal(this.center) && min.equal(this.posMin) && max.equal(this.posMax)) return;
+        this.docNode = node;
         this.center.copy(dividerPos);
         this.posMin.copy(min);
         this.posMax.copy(max);
         this.setDirty();
     }
-    layoutRelative(){
+
+    layoutRelative() {
         this.posOffset.copy(this.center)
         this.posOffset.sub(this.size.clone().scale(0.5))
 
     }
+
     layoutAbsolute() {
         super.layoutAbsolute();
         this.drawRect.copy(this.layoutRect)
-        this.drawRect.size.x-=4
-        this.drawRect.size.y-=4
-        this.drawRect.pos.x+=2
-        this.drawRect.pos.y+=2
+        this.drawRect.size.x -= 4
+        this.drawRect.size.y -= 4
+        this.drawRect.pos.x += 2
+        this.drawRect.pos.y += 2
     }
 
     prepDrawInt() {
 
-        let settings =this.settings as DockDividerSettings
-        if( this.isOver || this.isFocus){
+        let settings = this.settings as DockDividerSettings
+        if (this.isOver || this.isFocus) {
             UI_I.currentDrawBatch.fillBatch.addRect(this.drawRect, settings.colorOver);
-        }else
-        {
+        } else {
             UI_I.currentDrawBatch.fillBatch.addRect(this.drawRect, settings.color);
         }
-
-
 
 
     }
