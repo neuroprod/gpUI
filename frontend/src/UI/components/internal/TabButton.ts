@@ -15,11 +15,14 @@ export class TabButtonSettings extends ComponentSettings {
         this.box.marginLeft =20;
         this.box.marginRight=50;
         this.box.size.set(-1,22-2)
+        this.box.paddingRight =0
+        this.box.paddingLeft =0
+        this.box.paddingBottom =0
     }
     public selectedColor:Color =new Color().setHex("#383838", 1);
     public backColor:Color =new Color().setHex("#0a0a0a",1);
     public overColor:Color =new Color().setHex("#242424", 1);
-    public downColor:Color =new Color().setHex("#8b826d",1);
+    public downColor:Color =new Color().setHex("#363636",1);
     public labelColor:Color =new Color().setHex("#999999",1);
     public labelSelectedColor:Color =new Color().setHex("#ffffff",1);
 }
@@ -34,6 +37,7 @@ export default class TabButton extends Component
     private selected: boolean;
     private tryDrag: boolean =false;
     release: boolean =false;
+    private marginLeft: number;
 
     constructor(id: number,label:string, settings: TabButtonSettings) {
         super(id, settings);
@@ -60,12 +64,14 @@ export default class TabButton extends Component
          this.tryDrag = false;
     }
 
-    setTabData(index:number,numItems:number,selected:boolean)
+    setTabData(index:number,numItems:number,selected:boolean,marginLeft:number =20)
     {
-        if(this.index == index && this.numItems==numItems && selected==this.selected)return;
+        if(this.index == index && this.numItems==numItems && selected==this.selected && marginLeft==this.marginLeft)return;
         this.selected=selected;
         this.index =index;
         this.numItems =numItems;
+        this.marginLeft =marginLeft;
+        this.settings.box.marginLeft =this.marginLeft
         this.setDirty();
 
     }

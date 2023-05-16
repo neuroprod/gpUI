@@ -36,7 +36,7 @@ export default class DockingPanel extends Panel {
         this.addChild(panelMain)
         this.addChild(panelChild)
         panelMain.drawChildren = false;
-
+        this.saveToLocal();
     }
 
     setSubComponents() {
@@ -46,7 +46,7 @@ export default class DockingPanel extends Panel {
                 let p = this.panels[i]
 
                 let tb = UI_IC.tabButton(p.label)
-                tb.setTabData(i, this.panels.length, this.selectedIndex == i);
+                tb.setTabData(i, this.panels.length, this.selectedIndex == i,this.isDocked?0:20);
 
                 if (tb.release) {
                     p.setIsDockedInPanel(false);
@@ -74,14 +74,17 @@ export default class DockingPanel extends Panel {
                     {
                        this.swapDockingPanelWithLastPanel()
                     }
+                    UI_I.dockManager.saveLocal();
 
-                } else if (tb.isClicked) {
+                }
+                else if (tb.isClicked) {
                     if (tb.index != this.selectedIndex) {
 
                         this.panels[this.selectedIndex].drawChildren = false;
                         this.selectedIndex = tb.index;
 
                         this.panels[tb.index].drawChildren = true;
+                        UI_I.dockManager.saveLocal();
                     }
                 }
 
@@ -115,8 +118,30 @@ export default class DockingPanel extends Panel {
         if(this.isDocked)
         {
             UI_I.dockManager.swapDock(this,p)
-            console.log("swapDock");
+
         }
 
+    }
+
+    getSaveData() {
+
+        let a ={
+            id:this.id,
+            index:this.selectedIndex,
+            children:[]
+        }
+        for(let p of this.panels)
+        {
+            a.children.push(p.id);
+        }
+        return a
+
+    }
+
+    selectIndex(index) {
+
+        this.panels[this.selectedIndex].drawChildren = false;
+        this.selectedIndex =index;
+        this.panels[this.selectedIndex].drawChildren = true;
     }
 }

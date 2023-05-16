@@ -406,11 +406,15 @@ export default class DockNode {
         if (this.panelID != 0) {
 
             this.panel = UI_I.components.get(this.panelID) as Panel
-            this.panel.isDocked = true;
-            //  UI_I.setPanelToBack( this.panel)
-            this.size.copy(this.panel.size)
-            this.pos.copy(this.panel.posOffset)
-            this.updateRect()
+            if(!this.panel) this.panel =UI_I.dockManager.panelsByOldId.get(this.panelID);
+            if(this.panel)
+            {
+                this.panel.isDocked = true;
+
+                this.size.copy(this.panel.size)
+                this.pos.copy(this.panel.posOffset)
+                this.updateRect()
+            }
         }
         for (let child of this.children) {
             child.setPanels()

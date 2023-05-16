@@ -83,7 +83,7 @@ export default class UI {
 
     static popViewport() {
 
-        if (!UI.viewPort)return
+        if (!UI.viewPort) return
         UI.viewPort.stopRender()
 
     }
@@ -103,16 +103,16 @@ export default class UI {
     static setIndent(value: number) {
         UI_I.globalStyle.compIndent = value;
     }
-    static setLLabelSize(size?:number){
-        if(!size)size =UI_I.globalStyle.defaultLabelSize;
-       UI_I.globalStyle.setLabelSize(size)
+
+    static setLLabelSize(size?: number) {
+        if (!size) size = UI_I.globalStyle.defaultLabelSize;
+        UI_I.globalStyle.setLabelSize(size)
     }
 
-    static LSelect(label:string,items:Array<SelectItem> ,index=0,settings?:LSelectSettings)
-    {
+    static LSelect(label: string, items: Array<SelectItem>, index = 0, settings?: LSelectSettings) {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LSelectSettings();
-            let comp = new LSelect(UI_I.getID(label), label, items,index, settings);
+            let comp = new LSelect(UI_I.getID(label), label, items, index, settings);
             UI_I.addComponent(comp);
         }
         let result = UI_I.currentComponent.getReturnValue()
@@ -286,19 +286,22 @@ export default class UI {
         UI_I.popComponent();
         return result;
     }
-    static dockingPanel(panelMain: Panel, panelChild: Panel):DockingPanel {
+
+    static dockingPanel(panelMain: Panel, panelChild: Panel): DockingPanel {
         UI_I.currentComponent = panelMain.parent;
-        let id = panelMain.id + panelChild.id + "-";
+        let id = panelMain.id + Date.now() + " "
 
         if (!UI_I.setComponent(id)) {
             let settings = new DockingPanelSettings()
-             let comp = new DockingPanel(UI_I.getID(id), panelMain, panelChild, settings);
-             UI_I.addComponent(comp);
+            let comp = new DockingPanel(UI_I.getID(id), panelMain, panelChild, settings);
+
+            UI_I.addComponent(comp);
         }
-        let comp =     UI_I.currentComponent as DockingPanel
+        let comp = UI_I.currentComponent as DockingPanel
         UI_I.popComponent();
         return comp;
     }
+
     static clearLocalData() {
         Local.clearLocalData();
     }

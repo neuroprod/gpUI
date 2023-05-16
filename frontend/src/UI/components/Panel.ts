@@ -147,17 +147,17 @@ export default class Panel extends Component {
 
     setSubComponents() {
 
-
+    if(!this.isDocked) {
         if (UI_IC.toggleIcon("ib", this, "collapsed", 2, 1)) {
-            if (this.collapsed) {
-                this.prevSize.copy(this.size)
-                this.size.y = 22;
-            } else {
-                this.size.y = this.prevSize.y
-            }
-            this.setDirty();
+        if (this.collapsed) {
+            this.prevSize.copy(this.size)
+            this.size.y = 22;
+        } else {
+            this.size.y = this.prevSize.y
         }
-
+        this.setDirty();
+        }
+    }
 
     }
 
@@ -296,7 +296,14 @@ export default class Panel extends Component {
         let settings = this.settings as PanelSettings
         this.topBarRect.copyPos(this.layoutRect.pos);
         this.topBarRect.setSize(this.layoutRect.size.x, settings.topBarHeight);
+
         this.labelPos.set(this.posAbsolute.x + settings.box.paddingLeft + 5 + 20, this.posAbsolute.y + settings.topBarHeight / 2 - Font.charSize.y / 2 - 1)
+        if(this.isDocked)
+        {
+            this.labelPos.x -=20;
+        }
+
+
         this.resizeRect.setPos(this.layoutRect.pos.x + this.layoutRect.size.x - this.resizeRect.size.x, this.layoutRect.pos.y + this.layoutRect.size.y - this.resizeRect.size.y);
         this.maxLabelSize = this.layoutRect.size.x - settings.box.paddingLeft - settings.box.paddingRight
 

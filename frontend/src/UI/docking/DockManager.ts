@@ -9,34 +9,35 @@ import UI_IC from "../UI_IC";
 import DockTabData from "./DockTabData";
 import UI from "../UI";
 import DockingPanel from "../components/internal/DockingPanel";
+import macro from "styled-jsx/macro";
 
 
 export default class DockManager {
+    public mainDockNode: DockNode;
     private dockLayer: Layer;
     private overlayLayer: Layer;
     private dragComponent: Panel | null = null;
-
-   public mainDockNode: DockNode;
-    private setPanelsFirst: boolean =false
-    private tabItems: Array<DockTabData> =[];
-
+    private setPanelsFirst: number = 0
+    private tabItems: Array<DockTabData> = [];
+    private dockingPanels: Array<DockingPanel> = [];
+    public panelsByOldId:Map<number,DockingPanel> =new Map();
     constructor(dockLayer: Layer, overlayLayer: Layer) {
         this.dockLayer = dockLayer;
         this.overlayLayer = overlayLayer;
         this.overlayLayer.hasOwnDrawBatch = true;
 
         this.mainDockNode = new DockNode()
-        if( Local.dockData)
-        {
-           this.setPanelsFirst =true
-            this.mainDockNode.setLocalData(Local.dockData)
+        this.setPanelsFirst = 0
+        if (Local.dockData) {
+            if (Local.dockData.dockData)
+                this.mainDockNode.setLocalData(Local.dockData.dockData)
         }
     }
 
     public startDragging(panel: Panel) {
         let node = this.mainDockNode.getNodeWithPanel(panel);
         if (node) {
-            if (node.parent ) {
+            if (node.parent) {
 
 
                 let parent = node.parent;
@@ -56,10 +57,9 @@ export default class DockManager {
                     parent.children[1].parent = parent;
                 }
 
-            }else
-            {
-                node.children =[];
-                node.panel =null;
+            } else {
+                node.children = [];
+                node.panel = null;
             }
             this.mainDockNode.resize(UI_I.screenSize, true);
             this.mainDockNode.updateLayout()
@@ -67,7 +67,7 @@ export default class DockManager {
         }
 
 
-        this.tabItems =[]
+        this.tabItems = []
         this.collectTabItems(UI_I.panelDockingLayer);
         this.collectTabItems(UI_I.panelLayer);
         this.dragComponent = panel;
@@ -84,23 +84,22 @@ export default class DockManager {
 
 
     update() {
-       if(this.setPanelsFirst)
-        {
-
-            this.mainDockNode.setPanels();
-            this.setPanelsFirst =false;
-            this.mainDockNode.resize(UI_I.screenSize,true)
-            this.mainDockNode.updateLayout()
+        //wait for panels rendered 1 time
+        if (this.setPanelsFirst==1) {
+            this.setPanelsFirst ++;
+            this.restoreLocalData()
         }
-
+        if(this.setPanelsFirst<1){
+            this.setPanelsFirst ++;
+            return;
+        }
         if (this.mainDockNode.resize(UI_I.screenSize)) this.mainDockNode.updateLayout()
 
         if (this.dragComponent) {
 
-           for(let item  of this.tabItems)
-           {
-               UI_IC.dockTabIndicator(item);
-           }
+            for (let item of this.tabItems) {
+                UI_IC.dockTabIndicator(item);
+            }
 
             let overNode = this.mainDockNode.getOverNode(UI_I.mouseListener.mousePos);
             if (overNode) {
@@ -115,15 +114,10 @@ export default class DockManager {
         }
 
 
-
-
-
-
         this.mainDockNode.setDividers()
 
 
     }
-
 
     split(type: DockType, doc: DockNode) {
 
@@ -142,60 +136,110 @@ export default class DockManager {
 
         this.saveLocal();
 
-        this.dragComponent =null;
+        this.dragComponent = null;
     }
 
-    private saveLocal() {
-        let data = {}
-        this.mainDockNode.getDocStructure(data )
-        Local.setDockData(data);
+
+    swapDock(oldPanel: Panel, newPanel: Panel) {
+        let node = this.mainDockNode.getNodeWithPanel(oldPanel)
+        newPanel.isDocked = true;
+        node.panel = newPanel;
+
+    }
+
+    dockInPanel(panel: Panel) {
+
+
+        if (panel instanceof DockingPanel) {
+            this.dragComponent.setDockInPanel(panel);
+            (panel as DockingPanel).addPanelChild(this.dragComponent)
+            this.saveLocal()
+
+        } else if (this.dragComponent instanceof DockingPanel) {
+            console.log("drag docked nodes in panel, implement some swapping around");
+        } else {
+            let dockNode = null;
+            if (panel.isDocked) {
+                dockNode = this.mainDockNode.getNodeWithPanel(panel)
+            }
+            this.dragComponent.setDockInPanel(panel);
+
+            let dockingPanel = UI.dockingPanel(panel, this.dragComponent)
+            this.dockingPanels.push(dockingPanel)
+            if (dockNode) {
+                dockingPanel.isDocked = true;
+                dockNode.panel = dockingPanel;
+            }
+            this.saveLocal()
+        }
+        this.dragComponent = null
+        this.overlayLayer.setDirty(true)
+
     }
 
     private collectTabItems(layer: Layer) {
-        for(let child  of layer.children)
-        {
+        for (let child of layer.children) {
             let panel = child as Panel;
 
-            let tabData =new DockTabData()
-            tabData.panel =child as Panel;
-            tabData.rect.copy( tabData.panel.layoutRect)
-            tabData.rect.size.y =20;
+            let tabData = new DockTabData()
+            tabData.panel = child as Panel;
+            tabData.rect.copy(tabData.panel.layoutRect)
+            tabData.rect.size.y = 20;
 
             this.tabItems.push(tabData)
 
         }
     }
-    swapDock(oldPanel:Panel,newPanel:Panel)
-    {
-        let node =this.mainDockNode.getNodeWithPanel(oldPanel)
-        newPanel.isDocked =true;
-        node.panel = newPanel;
+    public saveLocal() {
+        let data = {panelData: [], dockData: {}}
 
-    }
-    dockInPanel(panel: Panel) {
-
-
-        if(panel instanceof DockingPanel  )
-        {
-            this.dragComponent.setDockInPanel(panel);
-            (panel as DockingPanel).addPanelChild(this.dragComponent)
-
-        }else{
-            let dockNode =null;
-            if(panel.isDocked)
-            {
-                dockNode =this.mainDockNode.getNodeWithPanel(panel)
-            }
-            this.dragComponent.setDockInPanel(panel);
-            let dockingPanel =UI.dockingPanel(panel,this.dragComponent)
-            if(dockNode) {
-                dockingPanel.isDocked =true;
-                dockNode.panel = dockingPanel;
+        for (let i = 0; i < this.dockingPanels.length; i++) {
+            let p = this.dockingPanels[i];
+            //removeOldPanels
+            if (p.children.length == 0) {
+                this.dockingPanels.splice(i, 1)
+                i--;
+            } else {
+                data.panelData.push(p.getSaveData())
             }
 
         }
-        this.dragComponent = null
-        this.overlayLayer.setDirty(true)
+        this.mainDockNode.getDocStructure(data.dockData)
+        Local.setDockData(data);
+    }
+    private restoreLocalData() {
+        if (!Local.dockData) return;
 
+        if(Local.dockData.panelData)
+        {
+            for(let pd of Local.dockData.panelData)
+            {
+
+                let lsData = Local.getItem(pd.id);
+
+                let comp1 =UI_I.components.get(pd.children[0]) as Panel
+                let comp2 =UI_I.components.get(pd.children[1])as Panel
+
+                comp1.size.set(lsData["size"].x,lsData["size"].y)
+                comp1.posOffset.set(lsData["posOffset"].x,lsData["posOffset"].y)
+                let dockingPanel = UI.dockingPanel(comp1, comp2);
+                this.dockingPanels.push(dockingPanel)
+
+                for(let i=2;i<pd.children.length;i++){
+                    let comp =UI_I.components.get(pd.children[i]) as Panel
+                    dockingPanel.addPanelChild(comp)
+                }
+                dockingPanel.selectIndex(pd.index);
+                this.panelsByOldId.set(pd.id,dockingPanel)
+               
+            }
+        }
+
+
+
+        //set the panels in the docknodes
+        this.mainDockNode.setPanels();
+        this.mainDockNode.resize(UI_I.screenSize, true)
+        this.mainDockNode.updateLayout()
     }
 }
