@@ -9,6 +9,7 @@ import UI_IC from "../UI_IC";
 import UIRenderTexture from "../draw/UIRenderTexture";
 import {TextureSettings} from "./internal/Texture";
 import UI_I from "../UI_I";
+import Vec2 from "../math/Vec2";
 
 
 
@@ -23,8 +24,10 @@ constructor() {
 
 export default class Viewport extends Panel{
 
-    private texture
+    private texture:UIRenderTexture;
     private textureSettings: TextureSettings;
+    public renderSize:Vec2 =new Vec2()
+
     constructor(id: number, label: string, settings: ViewportSettings) {
         super(id, label ,settings);
         this.texture =new UIRenderTexture()
@@ -54,7 +57,8 @@ export default class Viewport extends Panel{
     }
     startRender() {
        // UI_I.renderer.gl.viewport(100,100,100,100)
-        if(this.texture.setSize(this.layoutRect.size.x,this.layoutRect.size.y-20))this.setDirty();
+        this.renderSize.set(this.layoutRect.size.x,this.layoutRect.size.y-20)
+        if(this.texture.setSize(this.renderSize.x,this.renderSize.y))this.setDirty();
        this.texture.bind()
     }
     stopRender() {

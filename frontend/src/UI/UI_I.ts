@@ -164,12 +164,13 @@ export default class UI_I {
 
     static getID(seed: string) {
 
-        return this.getHash(seed + UI_I.currentComponent.id + "");
+        return this.getHash( UI_I.currentComponent.id +seed+ " ");
     }
 
     static getHash(str: string) {
         let hash = 0;
-        for (let i = 0; i < str.length; i++) {
+        let l =Math.min(str.length,30)
+        for (let i = 0; i < l; i++) {
             let char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
             hash = hash & hash; // Convert to 32bit integer

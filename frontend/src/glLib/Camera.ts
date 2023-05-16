@@ -19,10 +19,9 @@ export default class Camera{
         this.up = vec3.fromValues(0, 1, 0);
 
     }
-    update()
+    update(ratio:number)
     {
-        let vp =this.gl.getParameter(this.gl.VIEWPORT);
-        let ratio =vp[2]/vp[3];
+
         mat4.lookAt(this.viewMatrix, this.eye, this.target, this.up);
         mat4.perspective(this.perspectiveMatrix, 1, ratio, 0.1, 100);
     }

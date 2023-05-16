@@ -7,7 +7,7 @@ import {mat4} from "gl-matrix";
 
 export default class Scene
 {
-    private camera: Camera;
+    public camera: Camera;
     private program: Program;
     private box: Box;
     private model: mat4;
@@ -29,7 +29,7 @@ export default class Scene
     }
     draw()
     {
-        this.camera.update()
+
 
         this.program.bind()
         this.program.uniformMatrix4fv("projection",this.camera.perspectiveMatrix)

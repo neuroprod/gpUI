@@ -49,7 +49,7 @@ export default class DockNode {
             this.panel.size = this.size.clone();
             this.panel.posOffset = this.pos.clone();
             this.panel.saveToLocal();
-            this.panel.setDirty(true)
+            this.panel.setDirty()
         }
         for (let child of this.children) {
 

@@ -22,6 +22,7 @@ import SelectItem from "./math/SelectItem";
 import LSelect, {LSelectSettings} from "./components/LSelect";
 import LNumber, {LNumberSettings} from "./components/LNumber";
 import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
+import Vec2 from "./math/Vec2";
 
 
 export default class UI {
@@ -57,7 +58,7 @@ export default class UI {
     }
 
 
-    static pushViewport(label: string, settings?: ViewportSettings) {
+    static pushViewport(label: string, settings?: ViewportSettings) :Vec2{
 
 
         UI_I.currentComponent = UI_I.panelLayer;
@@ -73,12 +74,12 @@ export default class UI {
 
         if (vp.collapsed) {
             UI.viewPort = null
-            return;
+            return UI_I.screenSize.clone()
         }
         UI.viewPort = vp;
 
         vp.startRender()
-
+        return vp.renderSize;
     }
 
     static popViewport() {

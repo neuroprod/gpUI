@@ -10,6 +10,7 @@ import Font from "./UI/draw/Font";
 import UI from "./UI/UI";
 import Scene from "./scene/Scene";
 import SelectItem from "./UI/math/SelectItem";
+import Vec2 from "./UI/math/Vec2";
 
 
 export default class Main {
@@ -32,6 +33,7 @@ export default class Main {
     private textTexture: UITexture;
 
     private scene: Scene;
+    private viewPortSize: Vec2;
 
 
     constructor(canvas: HTMLCanvasElement) {
@@ -72,7 +74,7 @@ export default class Main {
         });
         this.update();
 
-        UI.pushViewport("viewport")
+        this.viewPortSize =UI.pushViewport("viewport");
         this.draw();
         UI.popViewport();
 
@@ -157,8 +159,11 @@ export default class Main {
 
     draw() {
         let gl = this.glMain.gl;
+        gl.viewport(0,0,this.viewPortSize.x,this.viewPortSize.y)
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.scene.camera.update(this.viewPortSize.x/this.viewPortSize.y)
+
         this.scene.draw();
 
 

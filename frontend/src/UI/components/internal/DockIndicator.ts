@@ -62,6 +62,7 @@ export default class DockIndicator extends Component {
     }
 
     layoutAbsolute() {
+
         let s = this.localSettings.dock.size;
         let p = this.localSettings.dock.pos;
         let sizeW = 40;

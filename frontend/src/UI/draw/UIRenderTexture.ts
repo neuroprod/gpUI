@@ -25,7 +25,7 @@ export default class UIRenderTexture extends UITexture
     }
     bind()
     {
-        this.gl.viewport(0,0,this.width,this.height)
+       // this.gl.viewport(0,0,this.width,this.height)
         this.textureGL =this.fbo.texture;
         this.fbo.bind()
     }

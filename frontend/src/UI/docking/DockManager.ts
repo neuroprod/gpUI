@@ -93,7 +93,10 @@ export default class DockManager {
             this.setPanelsFirst ++;
             return;
         }
-        if (this.mainDockNode.resize(UI_I.screenSize)) this.mainDockNode.updateLayout()
+        if (this.mainDockNode.resize(UI_I.screenSize)){
+            this.mainDockNode.updateLayout()
+            console.log('resize')
+        }
 
         if (this.dragComponent) {
 
@@ -102,14 +105,15 @@ export default class DockManager {
             }
 
             let overNode = this.mainDockNode.getOverNode(UI_I.mouseListener.mousePos);
-            if (overNode) {
-                if (!overNode.panel)
-                    UI_IC.dockIndicator("CenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.Center, overNode));
 
-                UI_IC.dockIndicator("rightCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.RightCenter, overNode));
-                UI_IC.dockIndicator("leftCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.LeftCenter, overNode))
-                UI_IC.dockIndicator("topCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.TopCenter, overNode))
-                UI_IC.dockIndicator("bottomCenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.BottomCenter, overNode))
+            if (overNode) {
+
+                if (!overNode.panel) UI_IC.dockIndicator(overNode.id+"CenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.Center, overNode));
+
+                UI_IC.dockIndicator( overNode.id+"rightCenterDockIndicator" , new DockIndicatorSettings(DockType.RightCenter, overNode));
+                UI_IC.dockIndicator(overNode.id+"leftCenterDockIndicator" , new DockIndicatorSettings(DockType.LeftCenter, overNode))
+                UI_IC.dockIndicator(overNode.id+"topCenterDockIndicator" , new DockIndicatorSettings(DockType.TopCenter, overNode))
+                UI_IC.dockIndicator(overNode.id+"bottomCenterDockIndicator" , new DockIndicatorSettings(DockType.BottomCenter, overNode))
             }
         }
 
@@ -231,7 +235,7 @@ export default class DockManager {
                 }
                 dockingPanel.selectIndex(pd.index);
                 this.panelsByOldId.set(pd.id,dockingPanel)
-               
+
             }
         }
 
