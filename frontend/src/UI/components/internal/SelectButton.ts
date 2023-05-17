@@ -3,7 +3,7 @@ import UI_I from "../../UI_I";
 import Color from "../../math/Color";
 import Vec2 from "../../math/Vec2";
 import Rect from "../../math/Rect";
-import {settings} from "cluster";
+
 
 
 export class SelectButtonSettings extends ButtonBaseSettings {

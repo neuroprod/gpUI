@@ -16,7 +16,7 @@ export class CheckBoxSettings extends ComponentSettings
 
     }
     public labelColor: Color = new Color().setHex("#bfbfbf", 1);
-    public colorRect:Color =new Color().setHex("#65625e",1);
+    public colorRect:Color =new Color().setHex("#2d2d2d",1);
 
 }
 export default class CheckBox extends Component

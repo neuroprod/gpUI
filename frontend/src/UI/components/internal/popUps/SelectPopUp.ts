@@ -26,7 +26,8 @@ export default class SelectPopUp extends PopUp {
         super(id, settings);
         let itemSize =20;
         this.posOffset =pos;
-        this.size.set(targetWidth,itemSize*items.length);
+        let maxSize  =(UI_I.screenSize.y-pos.y)-10;
+        this.size.set(targetWidth,Math.min(itemSize*items.length,maxSize));
         this.items =items;
         this.btnSettings =new ButtonBaseSettings()
         this.btnSettings.box.size.y=itemSize;

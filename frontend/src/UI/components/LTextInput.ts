@@ -8,6 +8,7 @@ import DirtyButton from "./internal/DirtyButton";
 
 export class LTextInputSettings extends LComponentSettings {
 
+
 }
 
 export default class LTextInput extends LComponent  {

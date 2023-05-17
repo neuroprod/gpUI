@@ -23,6 +23,7 @@ import LSelect, {LSelectSettings} from "./components/LSelect";
 import LNumber, {LNumberSettings} from "./components/LNumber";
 import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
 import Vec2 from "./math/Vec2";
+import Separator, { SeparatorSettings} from "./components/Separator";
 
 
 export default class UI {
@@ -156,7 +157,15 @@ export default class UI {
         }
         UI_I.popComponent();
     }
+    static separator( id: string = "",idAsLabel:boolean=true, settings?: SeparatorSettings) {
 
+        if (!UI_I.setComponent(id)) {
+            if (!settings) settings = new SeparatorSettings()
+            let comp = new Separator(UI_I.getID(id), id, idAsLabel, settings);
+            UI_I.addComponent(comp);
+        }
+        UI_I.popComponent();
+    }
     static LTexture(label: string, texture: UITexture, settings?: LTextureSettings) {
 
         if (!UI_I.setComponent(label)) {

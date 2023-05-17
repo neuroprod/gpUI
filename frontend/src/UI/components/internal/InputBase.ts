@@ -17,7 +17,7 @@ export class InputBaseSettings extends ComponentSettings {
     public colorOutlineFocus: Color = new Color().setHex("#ff6363", 0.5);
     public colorTextFocus: Color = new Color().setHex("#FFFFFF", 1);
     public colorCursor: Color = new Color().setHex("#c7c7c7", 1);
-
+    public filter:(val:string)=>string =(val:string)=>{return val};
     constructor() {
         super();
 
@@ -38,15 +38,20 @@ export default class InputBase extends Component {
     private _textIsDirty: boolean =false
     private ref: any;
     private prop: string;
-
+    private filter:(val:string)=>string;
     constructor(id: number, ref: any, prop: string, settings: InputBaseSettings) {
         super(id, settings);
+        this.filter =settings.filter;
         this.ref =ref;
         this.prop =prop;
         this.size.copy(settings.box.size);
-        this.text = ref[prop];
+        this.text = this.filter(ref[prop]);
         this.charWidth = Font.charSize.x
     }
+    /*filter(s:string){
+         s  = s.replace(/[^\d.-]/g, '');
+        return s;
+    }*/
     onAdded() {
         if( this.text != this.ref[this.prop])
         {
@@ -116,6 +121,7 @@ export default class InputBase extends Component {
             }
 
             this.text = [this.text.slice(0, this.cursorPos), buffer, this.text.slice(this.cursorPos)].join('');
+            this.text =this.filter( this.text)
             this.cursorPos = this.limitMouseCursor(this.cursorPos + buffer.length)
             this.setDirty()
             this.setTextDirty()

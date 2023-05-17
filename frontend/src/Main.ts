@@ -11,7 +11,14 @@ import UI from "./UI/UI";
 import Scene from "./scene/Scene";
 import SelectItem from "./UI/math/SelectItem";
 import Vec2 from "./UI/math/Vec2";
+import UIUtils from "./UI/math/UIUtils";
 
+ export enum TestEnum {
+    Up,
+    Down,
+    Left,
+    Right,
+}
 
 export default class Main {
 
@@ -87,7 +94,12 @@ export default class Main {
         this.scene.update();
 
         UI.pushWindow("Examples");
+        //text
+        UI.LText("hello world " + this.myFloat, "label")
+        UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?", "multiline", true)
+        UI.LTextInput("input text", this, "myText")
 
+        UI.separator("separator1 ",false)
         if (UI.LButton("Press Me!", "button")) {
             console.log("Thanks!")
         }
@@ -95,33 +107,44 @@ export default class Main {
             console.log("Thanks!")
         }
 
-        //text
-        UI.LText("hello world " + this.myFloat, "text")
-        UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?", "multiline", true)
-        UI.LTextInput("input text", this, "myText")
-        //booleans
+
+
+        UI.separator("Boolean" )
         if (UI.LBool(this, "myBool")) {
             UI.setIndent(20)
             if (UI.LBool("animate myFloat", false)) {
                 this.myFloat = Math.cos(Date.now() / 1000);
             }
+            UI.setIndent(0)
         }
-        let selectArray =[new SelectItem("item1",1),new SelectItem("item2",2),new SelectItem("item3",3),new SelectItem("item4",4)];
+
+        UI.separator("Selection" )
+        //select
+        let t:TestEnum =UI.LSelect("Enum",  UIUtils.EnumToSelectItem(TestEnum),0)
+
+        let selectArray =[];
+        for(let i=0;i<100;i++)
+        {
+            selectArray.push( new SelectItem("item"+i,i))
+        }
+
         let selectedItem =UI.LSelect("select",selectArray,0)
         UI.LText("selected item: "+selectedItem );
 
 
 
-        UI.pushGroup("Numeric")
 
-        UI.LText("Drag")
-        UI.LFloat(this, "myFloat2");
-        UI.LFloat("test", 2);
-        UI.LText("Sliders")
+        UI.pushGroup("Numbers")
+
         let a = UI.LFloatSlider("localVal", 2);
         UI.LFloatSlider(this, "myFloat", -1, 1);
         UI.LIntSlider("intSlider", 5.5, 0, 10);
-        UI.LText("Input")
+
+        UI.separator("Drag")
+        UI.LFloat(this, "myFloat2");
+        UI.LFloat("test", 2);
+
+        UI.separator("Input")
         UI.LTextInput("iFloat", "2")
         UI.LTextInput("iInt","2.5")
         UI.popGroup()
