@@ -4,6 +4,7 @@ import UI_I from "../../../UI_I";
 import Font from "../../../draw/Font";
 import Rect from "../../../math/Rect";
 import Vec2 from "../../../math/Vec2";
+import {PanelSettings} from "../../Panel";
 
 export class PopUpWindowSettings extends PopUpSettings {
 
@@ -24,7 +25,8 @@ export default class PopUpWindow extends PopUp {
     private topBarRect: Rect=new Rect();
     private labelPos: Vec2 =new Vec2();
     private label: string;
-
+    private isDragging: boolean=false;
+    private startDragPos: Vec2 =new Vec2();
 
     constructor(id: number,label:string, settings: PopUpWindowSettings) {
         super(id, settings);
@@ -40,10 +42,36 @@ export default class PopUpWindow extends PopUp {
 
         this.labelPos.set(this.posAbsolute.x + settings.box.paddingLeft + 5 , this.posAbsolute.y + settings.topBarHeight / 2 - Font.charSize.y / 2 )
 
+    }
 
+    onMouseDown() {
+        if (this.topBarRect.contains(UI_I.mouseListener.mousePos)) {
+            this.isDragging =true;
+            this.startDragPos.copy(this.posOffset);
+        }
+    }
 
+    onMouseUp() {
+        this.isDragging = false;
+    }
 
+    updateOnMouseDown() {
 
+        if (this.isDragging) {
+
+            let dir = UI_I.mouseListener.mousePosDown.clone();
+            dir.sub(UI_I.mouseListener.mousePos);
+            let newPos = this.startDragPos.clone();
+            newPos.sub(dir);
+            this.posOffset.copy(newPos);
+
+            this.setDirty(true);
+
+        }
+
+        if (this.isDragging) {
+            this.setDirty();
+        }
     }
     prepDraw() {
         super.prepDraw()
