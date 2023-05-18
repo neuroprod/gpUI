@@ -9,7 +9,7 @@ import Local from "../local/Local";
 import Utils from "../math/Utils";
 import UI_IC from "../UI_IC";
 import Box from "../math/Box";
-import {ButtonBaseSettings} from "./internal/ButtonBase";
+
 
 export class PanelSettings extends ComponentSettings {
     public static gPosition: Vec2 = new Vec2(10, 10);

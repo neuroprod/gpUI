@@ -41,12 +41,12 @@ export default class LColor extends LComponent {
             let x = this.layoutRect.pos.x + this.settings.box.paddingLeft
             let y = this.layoutRect.pos.y;
             if (UI_I.screenSize.y / 2 < this.layoutRect.pos.y) {
-                this.popUpSettings.box.marginTop = this.layoutRect.pos.y - this.popUpSettings.box.size.y;
+                this.popUpSettings.box.marginTop = this.layoutRect.pos.y - this.popUpSettings.box.size.y-5;
             } else {
-                this.popUpSettings.box.marginTop = this.layoutRect.pos.y + 20;
+                this.popUpSettings.box.marginTop = this.layoutRect.pos.y + 25;
             }
             this.popUpSettings.box.marginLeft = this.layoutRect.pos.x + this.settings.box.paddingLeft;
-            let offset = this.popUpSettings.box.marginLeft + this.popUpSettings.box.size.x - UI_I.screenSize.x;
+            let offset = this.popUpSettings.box.marginLeft + this.popUpSettings.box.size.x - UI_I.screenSize.x+10;
             if (offset > 0) {
                 this.popUpSettings.box.marginLeft -= offset
             }

@@ -1,21 +1,22 @@
-import PopUp, {PopUpSettings} from "./PopUp";
+
 import Color from "../../../math/Color";
 import {ComponentSettings} from "../../Component";
 import LColor from "../../LColor";
 import UI_IC from "../../../UI_IC";
 import {ColorButtonSettings} from "../ColorButton";
+import PopUpWindow, {PopUpWindowSettings} from "./PopUpWindow";
 
 
-export class ColorPickerPopupSettings extends PopUpSettings {
+export class ColorPickerPopupSettings extends PopUpWindowSettings {
     constructor() {
         super();
-        this.box.size.set(310 + 7 + 100 + 7 + 100 + 20, 256 + 20);
-        this.box.setPadding(10);
+        this.box.size.set(310 + 7 + 100 + 7 + 100 + 20, 256 + 20+22);
+
 
     }
 }
 
-export default class ColorPickerPopUp extends PopUp {
+export default class ColorPickerPopUp extends PopUpWindow {
 
     private color: Color
     private colorPrev: Color = new Color()
@@ -27,7 +28,7 @@ export default class ColorPickerPopUp extends PopUp {
 
     constructor(id: number, comp: LColor, settings: ColorPickerPopupSettings) {
 
-        super(id, settings);
+        super(id,"Color" ,settings);
         this.comp = comp;
         this.color = comp.color;
         this.colorPrev.copy(comp.color);

@@ -1,26 +1,24 @@
-import PopUp, {PopUpSettings} from "./PopUp";
 
 import UI_I from "../../../UI_I";
 import UI_IC from "../../../UI_IC";
-
-
 import LSlider from "../../LSlider";
 import Vec2 from "../../../math/Vec2";
 import {LNumberSettings} from "../../LNumber";
 import {ComponentSettings} from "../../Component";
 import {ButtonBaseSettings} from "../ButtonBase";
 import {HAlign} from "../../../UI_Types";
+import PopUpWindow, {PopUpWindowSettings} from "./PopUpWindow";
 
-export class SliderPopUpSettings extends PopUpSettings {
+export class SliderPopUpSettings extends PopUpWindowSettings {
     constructor() {
         super();
         this.box.size.set(300, 200);
-        this.box.setPadding(10)
+
     }
 
 }
 
-export default class SliderPopUpPopUp extends PopUp {
+export default class SliderPopUpPopUp extends PopUpWindow {
     private slider: LSlider;
     private lFloatSettings: LNumberSettings;
     private hCompSettings: ComponentSettings;
@@ -34,7 +32,7 @@ export default class SliderPopUpPopUp extends PopUp {
 
 
     constructor(id: number, slider: LSlider, pos: Vec2, settings: SliderPopUpSettings) {
-        super(id, settings);
+        super(id,"Settings", settings);
         this.posOffset.copy(pos);
         this.slider = slider;
 

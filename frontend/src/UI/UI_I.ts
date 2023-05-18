@@ -41,10 +41,10 @@ export default class UI_I {
     static popupLayer: Layer;
     static overlayLayer: Component;
     static panelDockingDividingLayer: Layer;
+    static focusComponent: Component | null = null;
     private static mainDrawBatch: DrawBatch;
     private static mouseOverComponent: Component | null = null;
     private static mouseDownComponent: Component | null = null;
-    static focusComponent: Component | null = null;
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
 
@@ -63,36 +63,36 @@ export default class UI_I {
 
         this.mouseListener = new MouseListener(canvas);
         this.keyboardListener = new KeyboardListener();
-        let layerSettings  =new ComponentSettings()
-        layerSettings.box.size=this.screenSize
+        let layerSettings = new ComponentSettings()
+        layerSettings.box.size = this.screenSize
 
-        UI_I.mainComp = new Layer(UI_I.getHash("mainLayer"),layerSettings);
+        UI_I.mainComp = new Layer(UI_I.getHash("mainLayer"), layerSettings);
 
         UI_I.currentComponent = UI_I.mainComp;
 
-        UI_I.panelDockingLayer = new Layer(UI_I.getID("dockingLayer"),layerSettings);
+        UI_I.panelDockingLayer = new Layer(UI_I.getID("dockingLayer"), layerSettings);
         UI_I.addComponent(UI_I.panelDockingLayer);
         this.popComponent();
 
-        UI_I.panelDockingDividingLayer = new Layer(UI_I.getID("dockingDividingLayer"),layerSettings);
+        UI_I.panelDockingDividingLayer = new Layer(UI_I.getID("dockingDividingLayer"), layerSettings);
         UI_I.addComponent(UI_I.panelDockingDividingLayer);
         this.popComponent();
 
-        UI_I.panelLayer = new Layer(UI_I.getID("panelLayer"),layerSettings);
+        UI_I.panelLayer = new Layer(UI_I.getID("panelLayer"), layerSettings);
         UI_I.addComponent(UI_I.panelLayer);
         this.popComponent();
 
-        UI_I.panelDragLayer = new Layer(UI_I.getID("panelDragLayer"),layerSettings);
+        UI_I.panelDragLayer = new Layer(UI_I.getID("panelDragLayer"), layerSettings);
         UI_I.addComponent(UI_I.panelDragLayer);
         this.popComponent();
 
 
-        UI_I.popupLayer = new Layer(UI_I.getID("popupLayer"),layerSettings);
+        UI_I.popupLayer = new Layer(UI_I.getID("popupLayer"), layerSettings);
         UI_I.addComponent(UI_I.popupLayer);
         this.popComponent();
 
 
-        UI_I.overlayLayer = new Layer(UI_I.getID("dockingOverLayer"),layerSettings);
+        UI_I.overlayLayer = new Layer(UI_I.getID("dockingOverLayer"), layerSettings);
         UI_I.addComponent(UI_I.overlayLayer);
         this.popComponent();
 
@@ -270,9 +270,7 @@ export default class UI_I {
         if (this.mouseListener.isDirty < 0) return
 
         this.components.forEach((comp) => {
-            comp.isOverLayout =false;
-
-
+            comp.isOverLayout = false;
         })
 
         let mousePos = this.mouseListener.mousePos;
@@ -280,7 +278,6 @@ export default class UI_I {
         if (this.hasPopup && this.mouseListener.isDownThisFrame) {
             if (!this.popupLayer.children[0].checkMouseOverLayout(mousePos)) {
                 this.popupLayer.children[0].keepAlive = false;
-
                 this.hasPopup = false;
             }
         }
@@ -300,28 +297,19 @@ export default class UI_I {
         }
         if (this.mouseListener.isUpThisFrame) {
 
-            if (this.mouseDownComponent === this.mouseOverComponent && this.mouseOverComponent) {
-
-                if (this.mouseOverComponent === this.mouseDownComponent) {
-
-                    this.mouseDownComponent.isClicked = true;
-                    this.mouseDownComponent.onMouseClicked()
-                }
-                this.mouseDownComponent.onMouseUp()
-                this.mouseDownComponent.isDown = false;
-                this.mouseDownComponent = null;
-
-            } else if (this.mouseDownComponent) {
-
-                this.mouseDownComponent.isDown = false;
-
-                this.mouseDownComponent = null;
+            if (this.mouseDownComponent && this.mouseOverComponent === this.mouseDownComponent) {
+                this.mouseDownComponent.isClicked = true;
+                this.mouseDownComponent.onMouseClicked()
             }
-            //this.setFocusComponent();
+
+            this.mouseDownComponent.onMouseUp()
+            this.mouseDownComponent.isDown = false;
+            this.mouseDownComponent = null;
 
 
         }
         this.mouseListener.reset();
+
         if (this.focusComponent) this.focusComponent.updateOnFocus();
         if (this.mouseDownComponent) this.mouseDownComponent.updateOnMouseDown();
 
@@ -365,7 +353,6 @@ export default class UI_I {
     }
 
 
-
     static setPanelFocus(comp: Component) {
 
         let numPanels = this.panelLayer.children.length;
@@ -407,10 +394,10 @@ export default class UI_I {
 
     }
 
-    static setFocusComponent(comp:Component) {
+    static setFocusComponent(comp: Component) {
 
         if (this.focusComponent) {
-            if (this.focusComponent ==comp) return;
+            if (this.focusComponent == comp) return;
             this.focusComponent.isFocus = false;
             this.focusComponent.setDirty();
         }

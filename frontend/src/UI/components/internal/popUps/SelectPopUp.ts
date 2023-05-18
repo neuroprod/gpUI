@@ -1,9 +1,6 @@
-import Component, {ComponentSettings} from "../../Component";
-import Color from "../../../math/Color";
 import PopUp, {PopUpSettings} from "./PopUp";
 import SelectItem from "../../../math/SelectItem";
 import Vec2 from "../../../math/Vec2";
-import UI from "../../../UI";
 import UI_I from "../../../UI_I";
 import UI_IC from "../../../UI_IC";
 import {ButtonBaseSettings} from "../ButtonBase";
