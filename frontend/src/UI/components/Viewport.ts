@@ -32,6 +32,7 @@ export default class Viewport extends Panel {
         //start collapsed...
         this._collapsed = true;
         this.prevSize.copy(this.size)
+        if(this.prevSize.y<100)this.prevSize.y=300;
         this.size.y = 22;
     }
 
