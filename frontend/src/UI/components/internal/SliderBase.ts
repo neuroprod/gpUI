@@ -5,13 +5,8 @@ import UI_I from "../../UI_I";
 import Vec2 from "../../math/Vec2";
 import Rect from "../../math/Rect";
 import Font from "../../draw/Font";
-
-
-
-export enum SliderType {
-    FLOAT,
-    INT
-}
+import {NumberType} from "../../UI_Types";
+import UI_Vars from "../../UI_Vars";
 
 
 export class SliderBaseSettings extends ComponentSettings {
@@ -41,10 +36,11 @@ export default class SliderBase extends Component  {
     private isRef: boolean = false;
     private ref: any;
     private objName: string;
-    private type: SliderType;
+    private type: NumberType;
     private changed: boolean =false;
+    private floatPrecision: number;
 
-    constructor(id: number, value: number, ref: any, objName: string, min: number, max: number, type: SliderType, settings: SliderBaseSettings) {
+    constructor(id: number, value: number, ref: any, objName: string, min: number, max: number, type: NumberType, settings: SliderBaseSettings) {
         super(id, settings);
         this.size.set(20, 20);
         this.ref = ref;
@@ -58,7 +54,11 @@ export default class SliderBase extends Component  {
             this.isRef = true;
         }
         this.type = type;
-
+        if (this.type == NumberType.FLOAT) {
+            this.floatPrecision = UI_Vars.floatPrecision;
+        } else {
+            this.floatPrecision = 0;
+        }
 
         this.min = min != undefined ? min : value - 1;
         this.max = max != undefined ? max : value + 1;
@@ -70,7 +70,7 @@ export default class SliderBase extends Component  {
 
     updateValue() {
 
-        if (this.type == SliderType.INT) {
+        if (this.type == NumberType.INT) {
             this.value = Math.round(this.value)
             this.startValue = Math.round(this.value)
         }
@@ -78,7 +78,7 @@ export default class SliderBase extends Component  {
         if (this.value < this.min) this.min = this.value;
         if (this.value > this.max) this.max = this.value;
 
-        if (this.type == SliderType.INT) {
+        if (this.type == NumberType.INT) {
             this.min = Math.round(this.min)
             this.max = Math.round(this.max)
         }
@@ -114,11 +114,11 @@ export default class SliderBase extends Component  {
             this.valueNorm = (UI_I.mouseListener.mousePos.x - this.layoutRect.pos.x) / this.layoutRect.size.x
             this.valueNorm = Math.max(Math.min(this.valueNorm, 1), 0);
             this.value = (this.valueNorm * (this.max - this.min)) + this.min;
-            if (this.type == SliderType.INT) {
+            if (this.type == NumberType.INT) {
                 this.value = Math.round(this.value);
                 this.valueNorm = (this.value - this.min) / (this.max - this.min);
             }
-
+            this.value = Number.parseFloat(this.value.toFixed(this.floatPrecision))
             if (this.isRef) {
                 this.ref [this.objName] = this.value;
             }
@@ -151,12 +151,8 @@ export default class SliderBase extends Component  {
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.barRect, settings.barColor);
 
-        let label = ""
-        if (this.type == SliderType.INT) {
-            label += this.value;
-        } else {
-            label += Number.parseFloat(String(this.value)).toFixed(4)
-        }
+        let label = this.value.toFixed(this.floatPrecision)
+
 
 
         UI_I.currentDrawBatch.textBatch.addLine(this.textPos, label, this.textMaxWidth, settings.labelColor);

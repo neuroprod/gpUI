@@ -1,6 +1,8 @@
-export default class GlobalStyle
+export default class UI_Style
 {
     //
+
+
     private labelSize =100
     public readonly defaultLabelSize=100;
     public compIndent: number =0;

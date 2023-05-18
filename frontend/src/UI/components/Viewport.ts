@@ -26,13 +26,14 @@ export default class Viewport extends Panel{
 
     private texture:UIRenderTexture;
     private textureSettings: TextureSettings;
-    public renderSize:Vec2 =new Vec2()
+    public renderSize:Vec2 =new Vec2(1,1)
 
     constructor(id: number, label: string, settings: ViewportSettings) {
         super(id, label ,settings);
         this.texture =new UIRenderTexture()
         this.textureSettings =new TextureSettings()
-        this.textureSettings.box.marginTop=20;
+        this.textureSettings.box.marginTop =0;
+        this.renderSize =this.size.clone()
 
     }
     setSubComponents() {
@@ -57,7 +58,7 @@ export default class Viewport extends Panel{
     }
     startRender() {
        // UI_I.renderer.gl.viewport(100,100,100,100)
-        this.renderSize.set(this.layoutRect.size.x,this.layoutRect.size.y-20)
+        this.renderSize.set(this.layoutRect.size.x,this.layoutRect.size.y)
         if(this.texture.setSize(this.renderSize.x,this.renderSize.y))this.setDirty();
        this.texture.bind()
     }

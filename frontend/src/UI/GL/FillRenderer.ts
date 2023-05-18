@@ -33,8 +33,8 @@ export default class FillRenderer {
         gl.enableVertexAttribArray(this.colorAttributeLoc);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, fillBatch.vertexBuffer);
-        gl.vertexAttribPointer(0,2, gl.FLOAT, false, 12, 0);
-        gl.vertexAttribPointer(1, 4,  gl.UNSIGNED_BYTE, true, 12, 8);
+        gl.vertexAttribPointer(this.vertexAttributeLoc,2, gl.FLOAT, false, 12, 0);
+        gl.vertexAttribPointer(this.colorAttributeLoc, 4,  gl.UNSIGNED_BYTE, true, 12, 8);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,fillBatch.indexBuffer);
         gl.drawElements(gl.TRIANGLES, fillBatch.numIndices, gl.UNSIGNED_SHORT, 0);

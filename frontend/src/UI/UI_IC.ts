@@ -1,5 +1,5 @@
 //internal components
-import SliderBase, {SliderBaseSettings, SliderType} from "./components/internal/SliderBase";
+import SliderBase, {SliderBaseSettings} from "./components/internal/SliderBase";
 import DirtyButton, {DirtyButtonSettings} from "./components/internal/DirtyButton";
 import SettingsButton, {SettingsButtonSettings} from "./components/internal/SettingsButton";
 import UI_I from "./UI_I";
@@ -30,6 +30,7 @@ import DockPanelIndicator, {DockPanelIndicatorSettings} from "./components/inter
 import Panel from "./components/Panel";
 import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
 import TabButton, {TabButtonSettings} from "./components/internal/TabButton";
+import {NumberType} from "./UI_Types";
 
 export default class UI_IC {
     static dockIndicator(name: string, settings: DockIndicatorSettings) {
@@ -66,7 +67,7 @@ export default class UI_IC {
         }
     }
 
-    static sliderBase(name: string, value: number, ref: any, objName: string, min: number, max: number, type: SliderType, settings?: SliderBaseSettings): SliderBase {
+    static sliderBase(name: string, value: number, ref: any, objName: string, min: number, max: number, type: NumberType, settings?: SliderBaseSettings): SliderBase {
         if (!UI_I.setComponent(name)) {
             if (!settings) settings = new SliderBaseSettings()
             let comp = new SliderBase(UI_I.getID(name), value, ref, objName, min, max, type, settings);
@@ -77,7 +78,7 @@ export default class UI_IC {
         return v
     }
 
-    static dragBase(name: string, ref: any, objName: string, type: SliderType, settings?: DragBaseSettings): SliderBase {
+    static dragBase(name: string, ref: any, objName: string, type: NumberType, settings?: DragBaseSettings): SliderBase {
         if (!UI_I.setComponent(name)) {
             if (!settings) settings = new DragBaseSettings()
             let comp = new DragBase(UI_I.getID(name), ref, objName, type, settings);

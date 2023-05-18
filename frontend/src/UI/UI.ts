@@ -3,7 +3,6 @@ import Panel from "./components/Panel";
 
 import UI_I from "./UI_I";
 import LSlider, {LSliderSettings} from "./components/LSlider";
-import {SliderType} from "./components/internal/SliderBase";
 import LButton, {LButtonSettings} from "./components/LButton";
 import LText, {LTextSettings} from "./components/LText";
 import LColor, {LColorSettings} from "./components/LColor";
@@ -24,6 +23,8 @@ import LNumber, {LNumberSettings} from "./components/LNumber";
 import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
 import Vec2 from "./math/Vec2";
 import Separator, { SeparatorSettings} from "./components/Separator";
+import {NumberType} from "./UI_Types";
+import UI_Vars from "./UI_Vars";
 
 
 export default class UI {
@@ -58,7 +59,10 @@ export default class UI {
         UI_I.popComponent();
     }
 
-
+    static set floatPrecision(val:number)
+    {
+        UI_Vars.floatPrecision =val;
+    }
     static pushViewport(label: string, settings?: ViewportSettings) :Vec2{
 
 
@@ -80,6 +84,7 @@ export default class UI {
         UI.viewPort = vp;
 
         vp.startRender()
+
         return vp.renderSize;
     }
 
@@ -237,7 +242,7 @@ export default class UI {
 
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LSliderSettings()
-            let comp = new LSlider(UI_I.getID(label), label, value, ref, settings, min, max, SliderType.FLOAT);
+            let comp = new LSlider(UI_I.getID(label), label, value, ref, settings, min, max, NumberType.FLOAT);
             UI_I.addComponent(comp);
         }
         let result = UI_I.currentComponent.getReturnValue()
@@ -263,7 +268,7 @@ export default class UI {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LNumberSettings()
 
-            let comp = new LNumber(UI_I.getID(label), label, value, ref, settings, SliderType.FLOAT);
+            let comp = new LNumber(UI_I.getID(label), label, value, ref, settings, NumberType.FLOAT);
             UI_I.addComponent(comp);
         }
         let result = UI_I.currentComponent.getReturnValue()
@@ -289,7 +294,7 @@ export default class UI {
 
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LSliderSettings()
-            let comp = new LSlider(UI_I.getID(label), label, value, ref, settings, min, max, SliderType.INT);
+            let comp = new LSlider(UI_I.getID(label), label, value, ref, settings, min, max, NumberType.INT);
             UI_I.addComponent(comp);
         }
         let result = UI_I.currentComponent.getReturnValue()

@@ -220,7 +220,7 @@ export default class DockManager {
             {
 
                 let lsData = Local.getItem(pd.id);
-
+                if(pd.children.length ==0)continue;
                 let comp1 =UI_I.components.get(pd.children[0]) as Panel
                 let comp2 =UI_I.components.get(pd.children[1])as Panel
 

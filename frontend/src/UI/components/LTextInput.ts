@@ -7,7 +7,10 @@ import DirtyButton from "./internal/DirtyButton";
 
 
 export class LTextInputSettings extends LComponentSettings {
-
+    constructor() {
+        super();
+        this.canCopyToClipBoard = true;
+    }
 
 }
 
@@ -68,6 +71,9 @@ export default class LTextInput extends LComponent  {
 
     getReturnValue(): string {
         return this.value
+    }
+    getClipboardValue(): string {
+        return this.value;
     }
 
 

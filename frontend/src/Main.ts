@@ -90,12 +90,12 @@ export default class Main {
     }
 
     update() {
-
+        0.0064
         this.scene.update();
 
         UI.pushWindow("Examples");
         //text
-        UI.LText("hello world " + this.myFloat, "label")
+        UI.LText("hello world " + this.myFloat, "label dit is een fucking long label")
         UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?", "multiline", true)
         UI.LTextInput("input text", this, "myText")
 
@@ -142,8 +142,9 @@ export default class Main {
 
         UI.separator("Drag")
         UI.LFloat(this, "myFloat2");
-        UI.LFloat("test", 2);
-
+        UI.floatPrecision =4;
+        UI.LFloat("testP", 0.001);
+        UI.floatPrecision =2;
         UI.separator("Input")
         UI.LTextInput("iFloat", "2")
         UI.LTextInput("iInt","2.5")

@@ -8,7 +8,10 @@ import {SelectButtonSettings} from "./internal/SelectButton";
 
 
 export class LSelectSettings extends LComponentSettings {
-
+    constructor() {
+        super();
+        this.canCopyToClipBoard = true;
+    }
 }
 
 export default class LSelect extends LComponent {
@@ -69,5 +72,7 @@ export default class LSelect extends LComponent {
         return this.items[this.currentIndex].value;
     }
 
-
+    getClipboardValue(): string {
+        return this.items[this.currentIndex].value+"";
+    }
 }

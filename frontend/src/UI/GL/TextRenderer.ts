@@ -36,9 +36,9 @@ export default class TextRenderer
         gl.enableVertexAttribArray(this.uvAttributeLoc);
         gl.enableVertexAttribArray(this.colorAttributeLoc);
         gl.bindBuffer(gl.ARRAY_BUFFER, fillBatch.vertexBuffer);
-        gl.vertexAttribPointer(0,2, gl.FLOAT, false, 20, 0);
-        gl.vertexAttribPointer(1, 2,  gl.FLOAT, false, 20, 8);
-        gl.vertexAttribPointer(2, 4,  gl.UNSIGNED_BYTE, true, 20, 16);
+        gl.vertexAttribPointer(this.vertexAttributeLoc,2, gl.FLOAT, false, 20, 0);
+        gl.vertexAttribPointer(this.uvAttributeLoc, 2,  gl.FLOAT, false, 20, 8);
+        gl.vertexAttribPointer(this.colorAttributeLoc, 4,  gl.UNSIGNED_BYTE, true, 20, 16);
 
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,fillBatch.indexBuffer);
@@ -99,8 +99,8 @@ export default class TextRenderer
         }
         gl.useProgram(this.program);
         this.vertexAttributeLoc = gl.getAttribLocation(this.program, "aVertex");
-        this.colorAttributeLoc = gl.getAttribLocation(this.program, "aColor");
         this.uvAttributeLoc = gl.getAttribLocation(this.program, "aUV");
+        this.colorAttributeLoc = gl.getAttribLocation(this.program, "aColor");
         this.viewportSizeUniformLoc = gl.getUniformLocation(this.program, "uViewport");
         this.textureLoc = gl.getUniformLocation(this.program, "texture");
 

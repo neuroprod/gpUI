@@ -1,14 +1,18 @@
 import LComponent, {LComponentSettings} from "./LComponent";
 
 import UI_IC from "../UI_IC";
-import  {SliderType} from "./internal/SliderBase";
 import UI_I from "../UI_I";
 import DirtyButton from "./internal/DirtyButton";
 import {DragBaseSettings} from "./internal/DragBase";
+import {NumberType} from "../UI_Types";
+import UI_Vars from "../UI_Vars";
 
 export class LNumberSettings extends LComponentSettings
 {
-
+constructor() {
+    super();
+    this.canCopyToClipBoard =true;
+}
 }
 export default class LNumber extends LComponent
 {
@@ -17,10 +21,11 @@ export default class LNumber extends LComponent
     private ref: any;
 
 
-    private type: SliderType;
+    private type: NumberType;
     private valueOld: number;
     private dragSettings: DragBaseSettings;
-    constructor(id:number, label:string,value:number|null, ref:any,settings:LNumberSettings, type:SliderType =SliderType.FLOAT) {
+    private floatPrecision: number;
+    constructor(id:number, label:string,value:number|null, ref:any,settings:LNumberSettings, type:NumberType =NumberType.FLOAT) {
 
 
         super(id,label,settings);
@@ -29,6 +34,13 @@ export default class LNumber extends LComponent
         this.ref =ref;
 
         this.type =type
+
+        if(this.type ==NumberType.FLOAT)
+        {
+            this.floatPrecision=UI_Vars.floatPrecision;
+        }else{
+            this.floatPrecision =0;
+        }
 
         if(this.ref)
         {
@@ -86,6 +98,8 @@ export default class LNumber extends LComponent
     getReturnValue(): number {
         return this.value;
     }
-
+    getClipboardValue(): string {
+        return this.value.toFixed(this.floatPrecision) + "";
+    }
 
 }

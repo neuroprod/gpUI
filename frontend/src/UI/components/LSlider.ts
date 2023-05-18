@@ -1,88 +1,95 @@
 import LComponent, {LComponentSettings} from "./LComponent";
 
 import UI_IC from "../UI_IC";
-import SliderBase, {SliderType} from "./internal/SliderBase";
 import UI_I from "../UI_I";
 import DirtyButton from "./internal/DirtyButton";
+import {NumberType} from "../UI_Types";
+import UI_Vars from "../UI_Vars";
 
-export class LSliderSettings extends LComponentSettings
-{
-
+export class LSliderSettings extends LComponentSettings {
+    constructor() {
+        super();
+        this.canCopyToClipBoard = true;
+    }
 }
-export default class LSlider extends LComponent
-{
+
+export default class LSlider extends LComponent {
     private value: number;
     private stringRef: string;
     private ref: any;
     private min: number;
     private max: number;
 
-    private type: SliderType;
+    private type: NumberType;
     private valueOld: number;
-    constructor(id:number, label:string,value:number|null, ref:any,settings:LSliderSettings,min?: number, max?: number, type:SliderType =SliderType.FLOAT) {
+    private floatPrecision: number;
 
-        super(id,label,settings);
-        this.value =value;
-        this.stringRef=label;
-        this.ref =ref;
-        this.min =min;
-        this.max =max;
-        this.type =type
+    constructor(id: number, label: string, value: number | null, ref: any, settings: LSliderSettings, min?: number, max?: number, type: NumberType= NumberType.FLOAT) {
 
-        if(this.ref)
+        super(id, label, settings);
+        this.value = value;
+        this.stringRef = label;
+        this.ref = ref;
+        this.min = min;
+        this.max = max;
+        this.type = type
+        if(this.type ==NumberType.FLOAT)
         {
-            this.value= this.ref[this.stringRef]
+            this.floatPrecision=UI_Vars.floatPrecision;
+        }else{
+            this.floatPrecision =0;
         }
-        this.valueOld =this.value;
+
+
+        if (this.ref) {
+            this.value = this.ref[this.stringRef]
+        }
+        this.valueOld = this.value;
 
 
     }
+
     onAdded() {
-        if(this.ref)
-        {
-            this.value= this.ref[this.stringRef]
+        if (this.ref) {
+            this.value = this.ref[this.stringRef]
         }
     }
 
     setSubComponents() {
         super.setSubComponents();
-        if(UI_IC.sliderBase("LSsl",null,this, "value",this.min,this.max,this.type))
-        {
-            if(this.valueOld != this.value)
-            {
+        if (UI_IC.sliderBase("LSsl", null, this, "value", this.min, this.max, this.type)) {
+            if (this.valueOld != this.value) {
                 this.setValueDirty(true)
-            }
-            else
-            {
+            } else {
                 this.setValueDirty(false)
             }
-            if(this.ref)
-            {
-                 this.ref[this.stringRef] =this.value
+            if (this.ref) {
+                this.ref[this.stringRef] = this.value
             }
         }
-        if(UI_IC.dirtyButton("LSdb"))
-        {
-            this.value =this.valueOld;
-            if(this.ref)
-            {
-                this.ref[this.stringRef] =this.value
+        if (UI_IC.dirtyButton("LSdb")) {
+            this.value = this.valueOld;
+            if (this.ref) {
+                this.ref[this.stringRef] = this.value
             }
             this.setDirty()
             this.setValueDirty(false)
 
         }
-        let btn =UI_I.currentComponent as DirtyButton
-        btn.setValueDirty( this.valueDirty);
+        let btn = UI_I.currentComponent as DirtyButton
+        btn.setValueDirty(this.valueDirty);
         UI_I.popComponent();
-        if(UI_IC.settingsButton("LSset"))
-        {
+        if (UI_IC.settingsButton("LSset")) {
             console.log("showSettings")
         }
     }
+
     getReturnValue(): number {
         return this.value;
     }
 
+    getClipboardValue(): string {
+        return this.value.toPrecision(this.floatPrecision) + "";
+    }
 
 }

@@ -14,7 +14,7 @@ import Local from "./local/Local";
 
 
 import TexturePool from "./draw/TexturePool";
-import GlobalStyle from "./GlobalStyle";
+import UI_Style from "./UI_Style";
 import KeyboardListener from "./input/KeyboardListener";
 
 
@@ -32,7 +32,7 @@ export default class UI_I {
     static hasPopup: boolean = false
     static renderType: string;
     static numDrawCalls: number = 0
-    public static globalStyle: GlobalStyle;
+    public static globalStyle: UI_Style;
 
 
 
@@ -52,6 +52,7 @@ export default class UI_I {
     static overlayLayer: Component;
     static panelDockingDividingLayer: Layer;
 
+
     constructor() {
     }
 
@@ -59,7 +60,7 @@ export default class UI_I {
 
         this.canvas = canvas;
         this.pixelRatio = window.devicePixelRatio
-        this.globalStyle = new GlobalStyle()
+        this.globalStyle = new UI_Style()
 
         Local.init()
         Font.init()

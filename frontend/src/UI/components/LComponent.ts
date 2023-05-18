@@ -8,29 +8,29 @@ import Utils from "../math/Utils";
 
 export class LComponentSettings extends ComponentSettings {
 
+    public labelOverColor: Color = new Color().setHex("#bfbfbf", 1);
     public labelColor: Color = new Color().setHex("#bfbfbf", 1);
     public labelPaddingRight = 8;
-    public labelPaddingLeft = 10;
+    public labelPaddingLeft = 5;
+    public canCopyToClipBoard = false;
+
     constructor() {
         super();
         this.box.marginTop = 1.5;
         this.box.marginBottom = 1.5;
 
         this.box.paddingLeft = UI_I.globalStyle.getLabelSize()
-        this.box.marginLeft =UI_I.globalStyle.compIndent
-        this.box.size.set(-1,20)
+        this.box.marginLeft = UI_I.globalStyle.compIndent
+        this.box.size.set(-1, 20)
     }
 }
 
 export default class LComponent extends Component {
+    valueDirty: boolean = false;
     protected label: string;
-
     private maxLabelWidth: number;
     private labelPos = new Vec2();
-    valueDirty: boolean =false;
-
-
-
+    private iconPos = new Vec2();
     constructor(id: number, label: string, settings: LComponentSettings) {
         super(id, settings);
         this.label = label;
@@ -40,39 +40,70 @@ export default class LComponent extends Component {
 
     layoutRelative() {
         super.layoutRelative()
-        let settings= this.settings as LComponentSettings
-        if(settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -settings.box.marginLeft-settings.box.marginRight;
-        if(settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -settings.box.marginTop-settings.box.marginRight;
+        let settings = this.settings as LComponentSettings
+        if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
+        if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginRight;
 
     }
 
     layoutAbsolute() {
-        if(!this.label.length) return
+        if (!this.label.length) return
 
         let settings = this.settings as LComponentSettings
         let textSize = Font.getTextSize(this.label);
 
-        this.maxLabelWidth = settings.box.paddingLeft- settings.labelPaddingRight-settings.labelPaddingLeft;
+        this.maxLabelWidth = settings.box.paddingLeft - settings.labelPaddingRight - settings.labelPaddingLeft;
+        if(this.isOver && settings.canCopyToClipBoard)
+        {
+            this.iconPos.copy(this.layoutRect.pos)
+            this.iconPos.y+=2;
+            this.iconPos.x+=5;
+            this.maxLabelWidth-=10;
+        }
         let labelLength = Math.min(textSize.x, this.maxLabelWidth)
 
         this.labelPos.copy(this.layoutRect.pos)
-       this.labelPos.x += settings.box.paddingLeft - labelLength - settings.labelPaddingRight; //align right
-        this.labelPos.y += Math.floor(Utils.getCenterPlace(textSize.y,settings.box.size.y))
+        this.labelPos.x += settings.box.paddingLeft - labelLength - settings.labelPaddingRight; //align right
+        this.labelPos.y += Math.floor(Utils.getCenterPlace(textSize.y, settings.box.size.y))
+        this.iconPos.x=this.labelPos.x-15;
 
+    }
+
+    onMouseClicked() {
+
+        if ((this.settings as LComponentSettings).canCopyToClipBoard) {
+            navigator.clipboard.writeText(this.getClipboardValue()).then(function () {
+            }, function (err) {
+                console.error('Async: Could not copy to clipboard: ', err);
+            });
+        }
+
+    }
+
+    getClipboardValue(): string {
+        return "overwrite me please"
     }
 
     prepDraw() {
         super.prepDraw()
-        if(!this.label.length) return
+        if (!this.label.length) return
 
-        let settings = this. settings as LComponentSettings
+        let settings = this.settings as LComponentSettings
         UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelWidth, settings.labelColor);
-
+        if(this.isOver && settings.canCopyToClipBoard)
+        {
+            UI_I.currentDrawBatch.textBatch.addIcon(this.iconPos,9,settings.labelOverColor);
+            UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelWidth, settings.labelOverColor);
+        }else
+        {
+            UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelWidth, settings.labelColor);
+        }
     }
-    setValueDirty(val:boolean) {
+
+    setValueDirty(val: boolean) {
 
         if (val == this.valueDirty) return
-        this.valueDirty =val;
+        this.valueDirty = val;
         //propagate
     }
 }

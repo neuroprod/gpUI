@@ -166,8 +166,14 @@ export default class Panel extends Component {
         if (data) {
             this.size.set(data.size.x, data.size.y);
 
+
             this.posOffset.set(data.posOffset.x, data.posOffset.y);
             this.collapsed = data.collapsed;
+            if(!this.collapsed){
+                this.size.min(new Vec2(50,50))
+            } else{
+                this.size.min(new Vec2(50,22))
+            }
         }
         if (this.collapsed) this.prevSize.y = 200;
     }

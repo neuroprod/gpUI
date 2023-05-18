@@ -31,7 +31,7 @@ export default class Texture extends Component
         super(id, settings);
         this.texture =texture
         this.size.copy(settings.box.size);
-
+        this.alwaysPassMouse =true;
     }
 
     layoutRelative() {
