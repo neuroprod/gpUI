@@ -95,7 +95,7 @@ export default class DockManager {
         }
         if (this.mainDockNode.resize(UI_I.screenSize)){
             this.mainDockNode.updateLayout()
-            console.log('resize')
+           
         }
 
         if (this.dragComponent) {

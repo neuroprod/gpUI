@@ -86,8 +86,16 @@ export default class Panel extends Component {
     }
 
     set collapsed(value: boolean) {
+        if(value == this._collapsed )return
         this._collapsed = value;
+        if (this._collapsed) {
+            this.prevSize.copy(this.size)
+            this.size.y = 22;
+        } else {
+            this.size.y = this.prevSize.y
+        }
         this.saveToLocal();
+        this.setDirty();
     }
     get isDockedInPanel(): boolean {
         return this._isDockedInPanel;
@@ -101,8 +109,7 @@ export default class Panel extends Component {
             this.settings.box =new Box()
             this.settings.box.size.set(-1,-1)
             this.settings.box.marginTop =25
-         //   this.settings.box.setMargin(0)
-           // this.settings.box.marginTop =23
+
             this.posOffset.set(0,0);
             this.setDirty()
         }else
@@ -149,13 +156,8 @@ export default class Panel extends Component {
 
     if(!this.isDocked) {
         if (UI_IC.toggleIcon("ib", this, "collapsed", 2, 1)) {
-        if (this.collapsed) {
-            this.prevSize.copy(this.size)
-            this.size.y = 22;
-        } else {
-            this.size.y = this.prevSize.y
-        }
-        this.setDirty();
+
+
         }
     }
 
@@ -168,14 +170,10 @@ export default class Panel extends Component {
 
 
             this.posOffset.set(data.posOffset.x, data.posOffset.y);
-            this.collapsed = data.collapsed;
-            if(!this.collapsed){
-                this.size.min(new Vec2(50,50))
-            } else{
-                this.size.min(new Vec2(50,22))
-            }
+            this._collapsed = data.collapsed;
+            if (this._collapsed) this.prevSize.y = 300;
         }
-        if (this.collapsed) this.prevSize.y = 200;
+
     }
 
     saveToLocal() {
@@ -290,7 +288,7 @@ export default class Panel extends Component {
     layoutRelative() {
         super.layoutRelative();
         if(this._isDockedInPanel) {
-            let settings = this.settings as ButtonBaseSettings
+            let settings = this.settings as PanelSettings
             if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
             if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginBottom;
         }
