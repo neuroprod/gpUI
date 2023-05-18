@@ -296,16 +296,17 @@ export default class UI_I {
             this.setFocusComponent(this.mouseOverComponent)
         }
         if (this.mouseListener.isUpThisFrame) {
+            if (this.mouseDownComponent) {
 
-            if (this.mouseDownComponent && this.mouseOverComponent === this.mouseDownComponent) {
-                this.mouseDownComponent.isClicked = true;
-                this.mouseDownComponent.onMouseClicked()
+                if ( this.mouseOverComponent === this.mouseDownComponent) {
+                    this.mouseDownComponent.isClicked = true;
+                    this.mouseDownComponent.onMouseClicked()
+                }
+
+                this.mouseDownComponent.onMouseUp()
+                this.mouseDownComponent.isDown = false;
+                this.mouseDownComponent = null;
             }
-
-            this.mouseDownComponent.onMouseUp()
-            this.mouseDownComponent.isDown = false;
-            this.mouseDownComponent = null;
-
 
         }
         this.mouseListener.reset();

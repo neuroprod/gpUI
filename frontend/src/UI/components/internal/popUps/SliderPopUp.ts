@@ -32,7 +32,7 @@ export default class SliderPopUpPopUp extends PopUpWindow {
 
 
     constructor(id: number, slider: LSlider, pos: Vec2, settings: SliderPopUpSettings) {
-        super(id,"Settings", settings);
+        super(id,"Slider Settings", settings);
         this.posOffset.copy(pos);
         this.slider = slider;
 
