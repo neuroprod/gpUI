@@ -5,6 +5,8 @@ import Vec2 from "../math/Vec2";
 import Color from "../math/Color";
 
 import {ActionKey} from "../input/KeyboardListener";
+import {HAlign} from "../UI_Types";
+import Utils from "../math/Utils";
 
 export class ComponentSettings {
     public box: Box = new Box();
@@ -37,6 +39,7 @@ export default class Component {
     public alwaysPassMouse = false;
     public isFocus = false;
     public isOver = false;
+    public isOverLayout: boolean;
     public isDown = false;
     public isDownThisFrame = false;
     public isClicked: boolean=false;
@@ -49,11 +52,13 @@ export default class Component {
     public scrollOffset: Vec2 = new Vec2();
 
     protected clippingRect = new Rect();
-    log: boolean =false;
+
+
+
     constructor(id: number, settings: ComponentSettings) {
         this.id = id;
         this.settings = settings;
-
+        this.size.copy(this.settings.box.size)
         this.hasOwnDrawBatch = settings.hasOwnDrawBatch;
 
     }
@@ -171,6 +176,12 @@ export default class Component {
 
             this.placeCursor.set(this.settings.box.paddingLeft, this.settings.box.paddingTop);
 
+            if(this.parent){
+                if(this.settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -this.settings.box.marginLeft-this.settings.box.marginRight;
+                if(this.settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -this.settings.box.marginTop-this.settings.box.marginBottom;
+
+            }
+
             this.layoutRelative();
             if (this.drawChildren) {
                 for (let child of this.children) {
@@ -191,7 +202,13 @@ export default class Component {
                 this.posRelative.x = this.parent.placeCursor.x + this.posOffset.x;
                 this.posRelative.y = this.parent.placeCursor.y + this.posOffset.y;
             }
-            this.posRelative.x += this.settings.box.marginLeft;
+            if(this.settings.box.hAlign ==HAlign.LEFT){
+                this.posRelative.x += this.settings.box.marginLeft;
+
+            }else
+            {
+                this.posRelative.x -= this.settings.box.marginRight;
+            }
             this.posRelative.y += this.settings.box.marginTop;
         }
         this.updateParentCursor();
@@ -228,7 +245,11 @@ export default class Component {
                 this.posAbsolute.copy(this.parent.posAbsolute);
                 this.posAbsolute.add(this.parent.scrollOffset);
                 this.posAbsolute.add(this.posRelative);
-
+                if(this.settings.box.hAlign ==HAlign.RIGHT)
+                {
+                    this.posAbsolute.x+=this.parent.layoutRect.size.x;
+                    this.posAbsolute.x -=this.size.x;
+                }
                 this.layoutRect.copyPos(this.posAbsolute);
                 this.layoutRect.copySize(this.size);
 
@@ -323,6 +344,7 @@ export default class Component {
             UI_I.setMouseOverComponent(this);
         }
         if (isChildrenOver) isOver = true;
+        this.isOverLayout =isOver;
 
         return isOver;
 

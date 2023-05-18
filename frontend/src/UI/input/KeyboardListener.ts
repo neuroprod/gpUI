@@ -2,6 +2,7 @@ import {LeftRightDialogHeader} from "next/dist/client/components/react-dev-overl
 
 export enum ActionKey{
     None,
+    Enter,
     BackSpace,
     ArrowLeft,
     ArrowRight,
@@ -41,6 +42,7 @@ export default class KeyboardListener {
     }
     setActionKey(key: string) {
 
+        if(key== "Enter")this.actionKey =ActionKey.Enter;
         if(key== "ArrowRight")this.actionKey =ActionKey.ArrowRight;
         if(key== "ArrowLeft")this.actionKey =ActionKey.ArrowLeft;
         if(key== "Backspace")this.actionKey =ActionKey.BackSpace;

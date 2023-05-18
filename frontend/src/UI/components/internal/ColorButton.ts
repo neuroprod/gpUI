@@ -33,17 +33,7 @@ export default class ColorButton extends Component {
         this.alphaGridTexture =TexturePool.getStatic("alphaGrid");
     }
 
-    layoutRelative() {
-        super.layoutRelative();
-        let settings = this.settings as ColorButtonSettings
-        if (settings.box.size.x < 0){
-            this.size.x = Utils.getMaxInnerWidth(this.parent) *settings.box.size.x*-1- settings.box.marginLeft - settings.box.marginRight;
 
-        }
-        if (settings.box.size.y < 0){
-            this.size.y = Utils.getMaxInnerHeight(this.parent) *settings.box.size.y*-1- settings.box.marginTop - settings.box.marginBottom;
-        }
-    }
 
     layoutAbsolute() {
         super.layoutAbsolute();

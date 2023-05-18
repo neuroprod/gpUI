@@ -25,7 +25,7 @@ export default class DockPanelIndicator extends Component
         this.item =item;
         this.posOffset.copy(this.item.rect.pos)
         this.size.copy(this.item.rect.size);
-
+        this.settings.box.size.copy(this.size)
     }
     checkMouseOverLayout(pos: Vec2) {
         let isOver = this.layoutRect.contains(pos);

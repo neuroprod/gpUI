@@ -1,4 +1,4 @@
-import SelectItem from "./SelectItem";
+import SelectItem from "./math/SelectItem";
 
 export default class UIUtils
 {

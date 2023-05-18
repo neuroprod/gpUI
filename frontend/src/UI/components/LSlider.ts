@@ -17,8 +17,8 @@ export default class LSlider extends LComponent {
     private value: number;
     private stringRef: string;
     private ref: any;
-    private min: number;
-    private max: number;
+    min: number;
+    max: number;
 
     private type: NumberType;
     private valueOld: number;
@@ -30,8 +30,8 @@ export default class LSlider extends LComponent {
         this.value = value;
         this.stringRef = label;
         this.ref = ref;
-        this.min = min;
-        this.max = max;
+
+
         this.type = type
         if(this.type ==NumberType.FLOAT)
         {
@@ -44,6 +44,8 @@ export default class LSlider extends LComponent {
         if (this.ref) {
             this.value = this.ref[this.stringRef]
         }
+        this.min = min != undefined ? min : this.value - 1;
+       this.max = max != undefined ? max : this.value + 1;
         this.valueOld = this.value;
 
 
@@ -80,7 +82,12 @@ export default class LSlider extends LComponent {
         btn.setValueDirty(this.valueDirty);
         UI_I.popComponent();
         if (UI_IC.settingsButton("LSset")) {
-            console.log("showSettings")
+
+            let popPos = this.layoutRect.pos.clone();
+            popPos.x+=this.layoutRect.size.x
+            popPos.x-=300;//popupsize
+            UI_IC.sliderPopUp(this,popPos);
+
         }
     }
 

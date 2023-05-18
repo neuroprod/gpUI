@@ -4,8 +4,11 @@ import Utils from "../../math/Utils";
 import UI_I from "../../UI_I";
 import Vec2 from "../../math/Vec2";
 import Font from "../../draw/Font";
-import {NumberType} from "../../UI_Types";
+import {HAlign, NumberType} from "../../UI_Types";
 import UI_Vars from "../../UI_Vars";
+import UI_IC from "../../UI_IC";
+import {IconButtonSettings} from "./IconButton";
+import {InputBaseSettings} from "./InputBase";
 
 
 export class DragBaseSettings extends ComponentSettings {
@@ -39,6 +42,11 @@ export default class DragBase extends Component {
     private startMouseX: number;
     private floatPrecision: number;
     private step: number;
+    private textLength: number;
+    private iconBtnRightSettings: IconButtonSettings;
+    private inputSettings: InputBaseSettings;
+    private showInput: boolean = false;
+    private valueString: string;
 
     constructor(id: number, ref: any, objName: string, type: NumberType, settings: DragBaseSettings) {
         super(id, settings);
@@ -57,34 +65,49 @@ export default class DragBase extends Component {
         }
         this.step = Math.pow(10, -this.floatPrecision);
 
+        this.iconBtnRightSettings = new IconButtonSettings()
+        this.iconBtnRightSettings.box.marginLeft = 21;
+        this.iconBtnRightSettings.box.hAlign = HAlign.RIGHT
 
+        this.inputSettings = new InputBaseSettings()
+        this.inputSettings.autoFocus = true;
+        this.inputSettings.filter =InputBaseSettings.floatFilter;
     }
 
 
     onAdded() {
         super.onAdded();
         if (this.value != this.ref [this.objName]) {
-            console.log("reset", this.value, this.ref [this.objName])
             this.value = this.ref [this.objName];
             this.setDirty()
         }
     }
 
-    updateMouse() {
 
-        if (this.isDown) {
-            if (this.isDownThisFrame) {
+    onMouseDown() {
+        this.startMouseX = UI_I.mouseListener.mousePos.x
+        // this.isDragging = true;
+    }
 
+    onMouseUp() {
 
-                this.startMouseX = UI_I.mouseListener.mousePos.x
-                this.isDragging = true;
+        if (!this.isDragging) {
+            if (this.startMouseX > this.textPos.x && this.startMouseX < this.textPos.x + this.textLength) {
+                this.showInput = true;
+                this.valueString = this.value.toFixed(this.floatPrecision);
             }
-        } else {
-            this.isDragging = false;
         }
+
+        this.isDragging = false;
     }
 
     updateOnMouseDown() {
+
+        if (!this.isDragging) {
+            let valueChange = (UI_I.mouseListener.mousePos.x - this.startMouseX)
+            if (valueChange != 0) this.isDragging = true;
+        }
+
         if (this.isDragging) {
 
             let valueChange = (UI_I.mouseListener.mousePos.x - this.startMouseX)
@@ -92,7 +115,7 @@ export default class DragBase extends Component {
             this.startMouseX = UI_I.mouseListener.mousePos.x;
 
 
-            this.value += Math.pow(valueChange, 1) * this.step;//*Math.sign(valueChange);
+            this.value += valueChange * this.step;//*Math.sign(valueChange);
             this.ref [this.objName] = this.value;
 
             this.changed = true;
@@ -112,33 +135,63 @@ export default class DragBase extends Component {
     layoutAbsolute() {
         super.layoutAbsolute();
 
-        this.textMaxWidth = this.layoutRect.size.x
+        this.textMaxWidth = this.layoutRect.size.x - 20;
         this.textPos.copy(this.layoutRect.pos)
-
 
 
         this.label = this.value.toFixed(this.floatPrecision)
 
+        this.textLength = Math.min(this.textMaxWidth, Font.charSize.x * this.label.length)
 
-
-        this.textPos.x += Utils.getCenterPlace(Font.charSize.x * this.label.length, this.layoutRect.size.x);
+        this.textPos.x += Utils.getCenterPlace(this.textLength, this.layoutRect.size.x);
         this.textPos.y += Utils.getCenterPlace(Font.charSize.y, this.layoutRect.size.y)
     }
 
     prepDraw() {
         super.prepDraw()
+        if (this.showInput) return;
         let settings = this.settings as DragBaseSettings
 
 
-        if (this.isOver || this.isDown) {
+        if (this.isOverLayout || this.isDown) {
             UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.colorBack)
         }
-
 
         UI_I.currentDrawBatch.textBatch.addLine(this.textPos, this.label, this.textMaxWidth, settings.labelColor);
 
     }
 
+    setSubComponents() {
+        super.setSubComponents();
+
+        if (this.showInput) {
+            if (UI_IC.inputBase("ib", this, "valueString", this.inputSettings, true)) {
+                let v = Number.parseFloat(this.valueString);
+                if (!isNaN(v)) {
+                    this.value = v
+                    this.ref [this.objName] = this.value;
+                    this.changed = true;
+                    this.setDirty(true);
+                }
+            }
+            if (UI_I.focusComponent != UI_I.currentComponent) this.showInput = false;
+            UI_I.popComponent()
+        } else if (this.isOverLayout || this.isDown) {
+
+            if (UI_IC.iconButton("left", 4)) {
+                this.value -= this.step;
+                this.ref [this.objName] = this.value;
+                this.changed = true;
+                this.setDirty(true);
+            }
+            if (UI_IC.iconButton("right", 3, this.iconBtnRightSettings)) {
+                this.value += this.step;
+                this.ref [this.objName] = this.value;
+                this.changed = true;
+                this.setDirty(true);
+            }
+        }
+    }
 
     showSettings(): void {
         console.log("implement settings popup")

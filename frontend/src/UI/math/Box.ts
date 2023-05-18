@@ -1,4 +1,5 @@
 import Vec2 from "./Vec2";
+import {HAlign} from "../UI_Types";
 
 export default class Box
 {
@@ -12,7 +13,7 @@ export default class Box
     public paddingTop =0;
     public paddingBottom =0;
     public size=new Vec2(-1,-1);
-
+    public hAlign  =HAlign.LEFT
     constructor() {
     }
 

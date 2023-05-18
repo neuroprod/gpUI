@@ -15,7 +15,7 @@ export class PanelSettings extends ComponentSettings {
     public static gPosition: Vec2 = new Vec2(10, 10);
 
     public position!: Vec2
-    public size: Vec2 = new Vec2(320, 300);
+
     public backgroundColor: Color = new Color().setHex("#403f3e", 1)
 
     public labelColor: Color = new Color().setHex("#d8d8d8", 1)
@@ -30,6 +30,7 @@ export class PanelSettings extends ComponentSettings {
         //this.position.add (PanelSettings.positionOffset)
         this.box.setPadding(3);
         this.box.paddingTop = 0;
+        this.box.size.set(320, 300);
     }
 }
 
@@ -66,7 +67,7 @@ export default class Panel extends Component {
             this.posOffset = settings.position.clone()
         }
 
-        this.size.copy(settings.size)
+       // this.size.copy(settings.size)
 
         this.hasOwnDrawBatch = true;
         this.label = label;
@@ -133,7 +134,7 @@ export default class Panel extends Component {
             this.posOffset.x -= this.dockSize.x / 2
             this.posOffset.y -= 10;
             let settings = this.settings as PanelSettings
-            this.size.copy(settings.size)
+            this.size.copy(settings.box.size)
 
         }
         if (value) {
@@ -288,10 +289,13 @@ export default class Panel extends Component {
     layoutRelative() {
         super.layoutRelative();
         if(this._isDockedInPanel) {
-            let settings = this.settings as PanelSettings
+           /* let settings = this.settings as PanelSettings
             if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
             if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginBottom;
+        */
+          //  console.log(this.size)
         }
+
     }
 
     layoutAbsolute() {

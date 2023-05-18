@@ -15,7 +15,7 @@ export class GroupSettings extends ComponentSettings {
         this.box.marginTop= 3;
         this.box.marginBottom = 0;
         this.box.marginLeft = UI_I.globalStyle.compIndent
-
+this.box.size.y =20;
     }
 
 }
@@ -34,7 +34,7 @@ export default class Group extends Component {
         this.drawChildren = true;
         this.label = label;
 
-        this.size.set(20,20)
+
         this.verticalLSettings = new VerticalLayoutSettings()
         this.verticalLSettings.needScrollBar = false;
         this.verticalLSettings.hasOwnDrawBatch = false;
@@ -81,10 +81,10 @@ export default class Group extends Component {
 
     layoutRelative() {
         super.layoutRelative();
-        let settings = this.settings;
+        /*let settings = this.settings;
         if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
         if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginRight;
-
+*/
     }
 
 

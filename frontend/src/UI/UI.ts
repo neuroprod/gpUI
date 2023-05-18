@@ -1,7 +1,8 @@
-import Panel from "./components/Panel";
 
 
 import UI_I from "./UI_I";
+
+import Panel from "./components/Panel";
 import LSlider, {LSliderSettings} from "./components/LSlider";
 import LButton, {LButtonSettings} from "./components/LButton";
 import LText, {LTextSettings} from "./components/LText";
@@ -10,7 +11,6 @@ import LColor, {LColorSettings} from "./components/LColor";
 import Color from "./math/Color";
 import LBoolean, {LBooleanSettings} from "./components/LBoolean";
 import Group, {GroupSettings} from "./components/Group";
-
 import UITexture from "./draw/UITexture";
 import LTexture, {LTextureSettings} from "./components/LTexture";
 import LTextInput, {LTextInputSettings} from "./components/LTextInput";
@@ -25,6 +25,7 @@ import Vec2 from "./math/Vec2";
 import Separator, { SeparatorSettings} from "./components/Separator";
 import {NumberType} from "./UI_Types";
 import UI_Vars from "./UI_Vars";
+import UI_IC from "./UI_IC";
 
 
 export default class UI {
@@ -32,7 +33,7 @@ export default class UI {
 
 
     static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement) {
-        let panel: Panel;
+
         UI_I.setWebgl(gl, canvas)
     }
 
@@ -154,22 +155,22 @@ export default class UI {
     }
 
     static LText(text: string, label: string = "", multiLine: boolean = false, settings?: LTextSettings) {
-
-        if (!UI_I.setComponent(text)) {
+        return UI_IC.LText(text, label, multiLine , settings);
+        /*if (!UI_I.setComponent(text)) {
             if (!settings) settings = new LTextSettings()
             let comp = new LText(UI_I.getID(text), label, text, multiLine, settings);
             UI_I.addComponent(comp);
         }
-        UI_I.popComponent();
+        UI_I.popComponent();*/
     }
     static separator( id: string = "",idAsLabel:boolean=true, settings?: SeparatorSettings) {
-
-        if (!UI_I.setComponent(id)) {
+            UI_IC.separator(id,idAsLabel,settings)
+       /* if (!UI_I.setComponent(id)) {
             if (!settings) settings = new SeparatorSettings()
             let comp = new Separator(UI_I.getID(id), id, idAsLabel, settings);
             UI_I.addComponent(comp);
         }
-        UI_I.popComponent();
+        UI_I.popComponent();*/
     }
     static LTexture(label: string, texture: UITexture, settings?: LTextureSettings) {
 
@@ -253,27 +254,7 @@ export default class UI {
     static LFloat(label: string, value: number, settings?: LNumberSettings)
     static LFloat(ref: any, property: string, settings?: LNumberSettings)
     static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
-        let label;
-        let ref = null;
-        let value = null;
-        if (typeof property_or_value === 'string') {
-            label = property_or_value;
-            ref = ref_or_label;
-        } else {
-            label = ref_or_label;
-            value = property_or_value;
-        }
-
-
-        if (!UI_I.setComponent(label)) {
-            if (!settings) settings = new LNumberSettings()
-
-            let comp = new LNumber(UI_I.getID(label), label, value, ref, settings, NumberType.FLOAT);
-            UI_I.addComponent(comp);
-        }
-        let result = UI_I.currentComponent.getReturnValue()
-        UI_I.popComponent();
-        return result
+        return UI_IC.LFloat(ref_or_label, property_or_value, settings);
     }
 
 

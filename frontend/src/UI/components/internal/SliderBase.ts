@@ -60,8 +60,8 @@ export default class SliderBase extends Component  {
             this.floatPrecision = 0;
         }
 
-        this.min = min != undefined ? min : value - 1;
-        this.max = max != undefined ? max : value + 1;
+        this.min = min != undefined ? min : this.value - 1;
+        this.max = max != undefined ? max : this.value + 1;
 
         this.updateValue();
 

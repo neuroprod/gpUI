@@ -12,6 +12,7 @@ export class SettingsButtonSettings extends ComponentSettings {
         super();
         this.backgroundColor.setHex("#1d1d1d",1)
         this.hasBackground =true
+        this.box.size.set(20,20);
     }
     public colorIconOver:Color =new Color().setHex("#999999",1);
     public colorIcon:Color =new Color().setHex("#747373",1);

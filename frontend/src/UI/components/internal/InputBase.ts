@@ -10,6 +10,10 @@ import Rect from "../../math/Rect";
 
 export class InputBaseSettings extends ComponentSettings {
 
+    static floatFilter =(val:string)=>{
+        val  = val.replace(/[^\d.-]/g, '');
+        return val
+    };
     public colorBack: Color = new Color().setHex("#2d2d2d", 1);
     public colorOutline: Color = new Color().setHex("#8b826d", 0.2);
     public colorText: Color = new Color().setHex("#cbcbcb", 1);
@@ -17,6 +21,7 @@ export class InputBaseSettings extends ComponentSettings {
     public colorOutlineFocus: Color = new Color().setHex("#ff6363", 0.5);
     public colorTextFocus: Color = new Color().setHex("#FFFFFF", 1);
     public colorCursor: Color = new Color().setHex("#c7c7c7", 1);
+    public autoFocus =false
     public filter:(val:string)=>string =(val:string)=>{return val};
     constructor() {
         super();
@@ -39,6 +44,7 @@ export default class InputBase extends Component {
     private ref: any;
     private prop: string;
     private filter:(val:string)=>string;
+    private prevFocusComponent: Component | null = null;
     constructor(id: number, ref: any, prop: string, settings: InputBaseSettings) {
         super(id, settings);
         this.filter =settings.filter;
@@ -46,7 +52,12 @@ export default class InputBase extends Component {
         this.prop =prop;
         this.size.copy(settings.box.size);
         this.text = this.filter(ref[prop]);
-        this.charWidth = Font.charSize.x
+        this.charWidth = Font.charSize.x;
+        this.cursorPos = this.text.length;
+        if(settings.autoFocus){
+            this.prevFocusComponent =UI_I.focusComponent;
+            UI_I.setFocusComponent(this)
+        }
     }
     /*filter(s:string){
          s  = s.replace(/[^\d.-]/g, '');
@@ -74,7 +85,9 @@ export default class InputBase extends Component {
     }
 
     setKeys(buffer: string, actionKey: ActionKey) {
-
+        if (actionKey == ActionKey.Enter) {
+            UI_I.setFocusComponent(this.prevFocusComponent)
+        }
         if (actionKey == ActionKey.Copy) {
 
             if (this.isSelecting) {

@@ -1,12 +1,14 @@
 //internal components
+import UI_I from "./UI_I";
+
 import SliderBase, {SliderBaseSettings} from "./components/internal/SliderBase";
 import DirtyButton, {DirtyButtonSettings} from "./components/internal/DirtyButton";
 import SettingsButton, {SettingsButtonSettings} from "./components/internal/SettingsButton";
-import UI_I from "./UI_I";
 import ButtonBase, {ButtonBaseSettings} from "./components/internal/ButtonBase";
 import ColorButton, {ColorButtonSettings} from "./components/internal/ColorButton";
 import ColorPickerPopUp, {ColorPickerPopupSettings} from "./components/internal/popUps/ColorPickerPopUp";
 import LColor from "./components/LColor";
+import LSlider from "./components/LSlider";
 import Color from "./math/Color";
 import ColorPicker, {ColorPickerSettings} from "./components/internal/ColorPicker";
 import CheckBox, {CheckBoxSettings} from "./components/internal/CheckBox";
@@ -16,6 +18,7 @@ import Texture, {TextureSettings} from "./components/internal/Texture";
 import InputBase, {InputBaseSettings} from "./components/internal/InputBase";
 import ToggleIcon, {ToggleIconSettings} from "./components/internal/ToggleIcon";
 import SelectPopUp, {SelectPopUpSettings} from "./components/internal/popUps/SelectPopUp";
+import SliderPopUp,{SliderPopUpSettings} from "./components/internal/popUps/SliderPopUp";
 import SelectItem from "./math/SelectItem";
 import Vec2 from "./math/Vec2";
 import VerticalLayout, {VerticalLayoutSettings} from "./components/VerticalLayout";
@@ -27,12 +30,60 @@ import DockTabData from "./docking/DockTabData";
 
 import DockPanelIndicator, {DockPanelIndicatorSettings} from "./components/internal/DockPanelIndicator";
 
-import Panel from "./components/Panel";
-import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
 import TabButton, {TabButtonSettings} from "./components/internal/TabButton";
 import {NumberType} from "./UI_Types";
+import IconButton, {IconButtonSettings} from "./components/internal/IconButton";
 
+
+import LText, {LTextSettings} from "./components/LText";
+import LNumber, {LNumberSettings} from "./components/LNumber";
+import Separator, {SeparatorSettings} from "./components/Separator";
+import Component, {ComponentSettings} from "./components/Component";
 export default class UI_IC {
+
+    static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
+        let label;
+        let ref = null;
+        let value = null;
+        if (typeof property_or_value === 'string') {
+            label = property_or_value;
+            ref = ref_or_label;
+        } else {
+            label = ref_or_label;
+            value = property_or_value;
+        }
+
+
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new LNumberSettings()
+
+            let comp = new LNumber(UI_I.getID(label), label, value, ref, settings, NumberType.FLOAT);
+            UI_I.addComponent(comp);
+        }
+        let result = UI_I.currentComponent.getReturnValue()
+        UI_I.popComponent();
+        return result
+    }
+
+    static LText(text: string, label: string = "", multiLine: boolean = false, settings?: LTextSettings) {
+
+        if (!UI_I.setComponent(text)) {
+            if (!settings) settings = new LTextSettings()
+            let comp = new LText(UI_I.getID(text), label, text, multiLine, settings);
+            UI_I.addComponent(comp);
+        }
+        UI_I.popComponent();
+    }
+    static pushComponent(id:string,settings:ComponentSettings)
+    {
+        if (!UI_I.setComponent(id)) {
+            if (!settings) settings = new ComponentSettings();
+            let comp = new Component(UI_I.getID(id), settings);
+            UI_I.addComponent(comp);
+        }
+
+
+    }
     static dockIndicator(name: string, settings: DockIndicatorSettings) {
         UI_I.currentComponent = UI_I.overlayLayer;
 
@@ -77,7 +128,15 @@ export default class UI_IC {
         UI_I.popComponent();
         return v
     }
+    static separator( id: string = "",idAsLabel:boolean=true, settings?: SeparatorSettings) {
 
+        if (!UI_I.setComponent(id)) {
+            if (!settings) settings = new SeparatorSettings()
+            let comp = new Separator(UI_I.getID(id), id, idAsLabel, settings);
+            UI_I.addComponent(comp);
+        }
+        UI_I.popComponent();
+    }
     static dragBase(name: string, ref: any, objName: string, type: NumberType, settings?: DragBaseSettings): SliderBase {
         if (!UI_I.setComponent(name)) {
             if (!settings) settings = new DragBaseSettings()
@@ -167,14 +226,14 @@ export default class UI_IC {
 
     }
 
-    static inputBase(name: string, ref: any, prop: string, settings?: InputBaseSettings): boolean {
+    static inputBase(name: string, ref: any, prop: string ,settings?: InputBaseSettings,noPop?:boolean): boolean {
         if (!UI_I.setComponent(name)) {
             if (!settings) settings = new InputBaseSettings()
             let comp = new InputBase(UI_I.getID(name), ref, prop, settings);
             UI_I.addComponent(comp);
         }
         let retValue = UI_I.currentComponent.getReturnValue();
-        UI_I.popComponent();
+        if(!noPop)UI_I.popComponent();
         return retValue;
 
     }
@@ -193,6 +252,17 @@ export default class UI_IC {
         if (!UI_I.setComponent(buttonText)) {
             if (!settings) settings = new ButtonBaseSettings()
             let comp = new ButtonBase(UI_I.getID(buttonText), buttonText, settings);
+            UI_I.addComponent(comp);
+        }
+        let retValue = UI_I.currentComponent.getReturnValue();
+        UI_I.popComponent();
+        return retValue;
+
+    }
+    static iconButton(id: string,icon:number, settings?: IconButtonSettings) {
+        if (!UI_I.setComponent(id)) {
+            if (!settings) settings = new IconButtonSettings()
+            let comp = new IconButton(UI_I.getID(id), icon, settings);
             UI_I.addComponent(comp);
         }
         let retValue = UI_I.currentComponent.getReturnValue();
@@ -225,7 +295,17 @@ export default class UI_IC {
     }
 
     // Popups
+    static sliderPopUp(comp:LSlider,pos:Vec2, settings: SliderPopUpSettings = new SliderPopUpSettings()) {
 
+        let old = UI_I.currentComponent;
+
+        UI_I.currentComponent = UI_I.popupLayer;
+        let compPopup = new SliderPopUp(UI_I.getID(comp.id + ""), comp,pos, settings);
+        UI_I.addComponent(compPopup);
+        UI_I.hasPopup = true;
+
+        UI_I.currentComponent = old;
+    }
     static colorPickerPopUp(comp: LColor, settings: ColorPickerPopupSettings = new ColorPickerPopupSettings()) {
 
         let old = UI_I.currentComponent;

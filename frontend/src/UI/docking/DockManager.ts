@@ -95,7 +95,7 @@ export default class DockManager {
         }
         if (this.mainDockNode.resize(UI_I.screenSize)){
             this.mainDockNode.updateLayout()
-           
+
         }
 
         if (this.dragComponent) {
@@ -188,6 +188,7 @@ export default class DockManager {
             let tabData = new DockTabData()
             tabData.panel = child as Panel;
             tabData.rect.copy(tabData.panel.layoutRect)
+            console.log(tabData.panel.layoutRect)
             tabData.rect.size.y = 20;
 
             this.tabItems.push(tabData)

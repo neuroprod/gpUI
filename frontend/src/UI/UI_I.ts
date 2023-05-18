@@ -1,6 +1,6 @@
 import RendererGL from "./GL/RendererGL";
 import Layer from "./components/Layer";
-import Component from "./components/Component";
+import Component, {ComponentSettings} from "./components/Component";
 import Panel from "./components/Panel";
 import DrawBatch from "./draw/DrawBatch";
 import Font from "./draw/Font";
@@ -12,11 +12,9 @@ import Vec2 from "./math/Vec2";
 import Local from "./local/Local";
 
 
-
 import TexturePool from "./draw/TexturePool";
 import UI_Style from "./UI_Style";
 import KeyboardListener from "./input/KeyboardListener";
-
 
 
 export default class UI_I {
@@ -35,15 +33,7 @@ export default class UI_I {
     public static globalStyle: UI_Style;
 
 
-
-   public static drawBatches = new Map<number, DrawBatch>();
-    private static mainDrawBatch: DrawBatch;
-    private static mouseOverComponent: Component | null = null;
-    private static mouseDownComponent: Component | null = null;
-    private static focusComponent: Component | null = null;
-    private static canvas: HTMLCanvasElement;
-    private static keyboardListener: KeyboardListener;
-
+    public static drawBatches = new Map<number, DrawBatch>();
     static mainComp: Layer;
     static panelDockingLayer: Layer;
     static panelLayer: Layer;
@@ -51,7 +41,12 @@ export default class UI_I {
     static popupLayer: Layer;
     static overlayLayer: Component;
     static panelDockingDividingLayer: Layer;
-
+    private static mainDrawBatch: DrawBatch;
+    private static mouseOverComponent: Component | null = null;
+    private static mouseDownComponent: Component | null = null;
+    static focusComponent: Component | null = null;
+    private static canvas: HTMLCanvasElement;
+    private static keyboardListener: KeyboardListener;
 
     constructor() {
     }
@@ -61,44 +56,47 @@ export default class UI_I {
         this.canvas = canvas;
         this.pixelRatio = window.devicePixelRatio
         this.globalStyle = new UI_Style()
+        this.screenSize.set(this.canvas.offsetWidth, this.canvas.offsetHeight);
 
         Local.init()
         Font.init()
 
         this.mouseListener = new MouseListener(canvas);
         this.keyboardListener = new KeyboardListener();
+        let layerSettings  =new ComponentSettings()
+        layerSettings.box.size=this.screenSize
 
-        UI_I.mainComp = new Layer(UI_I.getHash("mainLayer"));
-        UI_I.mainComp.log =true;
+        UI_I.mainComp = new Layer(UI_I.getHash("mainLayer"),layerSettings);
+
         UI_I.currentComponent = UI_I.mainComp;
 
-        UI_I.panelDockingLayer = new Layer(UI_I.getID("dockingLayer"));
+        UI_I.panelDockingLayer = new Layer(UI_I.getID("dockingLayer"),layerSettings);
         UI_I.addComponent(UI_I.panelDockingLayer);
         this.popComponent();
 
-        UI_I.panelDockingDividingLayer = new Layer(UI_I.getID("panelDockingDividingLayer"));
+        UI_I.panelDockingDividingLayer = new Layer(UI_I.getID("dockingDividingLayer"),layerSettings);
         UI_I.addComponent(UI_I.panelDockingDividingLayer);
         this.popComponent();
 
-        UI_I.panelLayer = new Layer(UI_I.getID("panelLayer"));
+        UI_I.panelLayer = new Layer(UI_I.getID("panelLayer"),layerSettings);
         UI_I.addComponent(UI_I.panelLayer);
         this.popComponent();
 
-        UI_I.panelDragLayer = new Layer(UI_I.getID("panelDragLayer"));
+        UI_I.panelDragLayer = new Layer(UI_I.getID("panelDragLayer"),layerSettings);
         UI_I.addComponent(UI_I.panelDragLayer);
         this.popComponent();
 
 
-        UI_I.popupLayer = new Layer(UI_I.getID("popupLayer"));
+        UI_I.popupLayer = new Layer(UI_I.getID("popupLayer"),layerSettings);
         UI_I.addComponent(UI_I.popupLayer);
         this.popComponent();
 
 
-        UI_I.overlayLayer = new Layer(UI_I.getID("dockingOverLayer"));
+        UI_I.overlayLayer = new Layer(UI_I.getID("dockingOverLayer"),layerSettings);
         UI_I.addComponent(UI_I.overlayLayer);
         this.popComponent();
 
-        UI_I.dockManager = new DockManager( UI_I.panelDockingLayer, UI_I.overlayLayer)
+        UI_I.dockManager = new DockManager(UI_I.panelDockingLayer, UI_I.overlayLayer)
 
 
         UI_I.mainDrawBatch = new DrawBatch(UI_I.mainComp.id)
@@ -106,24 +104,18 @@ export default class UI_I {
     }
 
 
-
-
-
-
-
-
-
     static setComponent(localID) {
         const id = this.getID(localID);
         if (this.hasComponent(id)) {
             this.currentComponent = this.components.get(id);
             //   console.log(this.currentComponent.renderOrder)
-            if(this.currentComponent.parent){
-            this.currentComponent.renderOrder = this.currentComponent.parent.renderOrderCount
-            this.currentComponent.useThisFrame = true;
-            this.currentComponent.parent.renderOrderCount++
-            this.currentComponent.setSubComponents();
-            this.currentComponent.onAdded()}
+            if (this.currentComponent.parent) {
+                this.currentComponent.renderOrder = this.currentComponent.parent.renderOrderCount
+                this.currentComponent.useThisFrame = true;
+                this.currentComponent.parent.renderOrderCount++
+                this.currentComponent.setSubComponents();
+                this.currentComponent.onAdded()
+            }
             return true;
         }
         return false;
@@ -148,8 +140,8 @@ export default class UI_I {
 
     }
 
-    static popComponent(callPop=true) {
-        if(callPop){
+    static popComponent(callPop = true) {
+        if (callPop) {
             this.currentComponent.onPopComponent()
         }
 
@@ -158,19 +150,18 @@ export default class UI_I {
     }
 
 
-
     static hasComponent(id: number) {
         return this.components.has(id);
     }
 
     static getID(seed: string) {
 
-        return this.getHash( UI_I.currentComponent.id +seed+ " ");
+        return this.getHash(UI_I.currentComponent.id + seed + " ");
     }
 
     static getHash(str: string) {
         let hash = 0;
-        let l =Math.min(str.length,30)
+        let l = Math.min(str.length, 30)
         for (let i = 0; i < l; i++) {
             let char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
@@ -220,9 +211,8 @@ export default class UI_I {
         this.dockManager.update()
 
 
-
         this.components.forEach((comp) => {
-            if(comp.keepAlive){
+            if (comp.keepAlive) {
                 this.currentComponent = comp;
                 comp.setSubComponents()
             }
@@ -232,14 +222,14 @@ export default class UI_I {
             if (comp.isDirty && comp.needsChildrenSortingByRenderOrder) {
                 comp.sortChildrenByRenderOrder()
             }
+
         })
 
         this.checkMouse();
         let buffer = this.keyboardListener.getBuffer()
-        let actionKey =this.keyboardListener.getActionKey()
-        if(this.focusComponent)
-        {
-            this.focusComponent.setKeys(buffer,actionKey);
+        let actionKey = this.keyboardListener.getActionKey()
+        if (this.focusComponent) {
+            this.focusComponent.setKeys(buffer, actionKey);
         }
         if (this.mainComp.isDirty) {
 
@@ -269,14 +259,22 @@ export default class UI_I {
         Local.saveDockData();
 
     }
-    static removePopup(p:Component)
-    {
+
+    static removePopup(p: Component) {
         p.keepAlive = false;
         this.hasPopup = false;
     }
+
     ////input
     static checkMouse() {
         if (this.mouseListener.isDirty < 0) return
+
+        this.components.forEach((comp) => {
+            comp.isOverLayout =false;
+
+
+        })
+
         let mousePos = this.mouseListener.mousePos;
 
         if (this.hasPopup && this.mouseListener.isDownThisFrame) {
@@ -298,7 +296,7 @@ export default class UI_I {
         if (this.mouseListener.isDownThisFrame) {
 
             this.setMouseDownComponent(this.mouseOverComponent);
-            this.setFocusComponent()
+            this.setFocusComponent(this.mouseOverComponent)
         }
         if (this.mouseListener.isUpThisFrame) {
 
@@ -329,7 +327,7 @@ export default class UI_I {
 
     }
 
-    static setMouseDownComponent(comp:Component) {
+    static setMouseDownComponent(comp: Component) {
 
         this.mouseDownComponent = comp;
 
@@ -366,28 +364,7 @@ export default class UI_I {
 
     }
 
-   /* static setPanelToBack(panel: Panel) {
-        if (this.panelLayer.children[0] === panel) {
-            //already bottom panel
-            return;
-        }
-        //set panel to the front(=draw on top);
-        let index = this.panelLayer.children.indexOf(panel);
-        this.panelLayer.children.splice(index, 1);
-        this.panelLayer.children.unshift(panel);
 
-        //also update drawBatches
-        if (!this.drawBatches.has(panel.id)) {
-            return;
-        }
-        let batch = this.drawBatches.get(panel.id);
-        let batchParent = batch.parent;
-        index = batchParent.children.indexOf(batch);
-        batchParent.children.splice(index, 1);
-        batchParent.children.unshift(batch);
-
-
-    }*/
 
     static setPanelFocus(comp: Component) {
 
@@ -430,13 +407,14 @@ export default class UI_I {
 
     }
 
-    static setFocusComponent() {
+    static setFocusComponent(comp:Component) {
 
         if (this.focusComponent) {
+            if (this.focusComponent ==comp) return;
             this.focusComponent.isFocus = false;
             this.focusComponent.setDirty();
         }
-        this.focusComponent = this.mouseOverComponent;
+        this.focusComponent = comp;//this.mouseOverComponent;
 
         if (this.focusComponent) {
             this.focusComponent.isFocus = true;
@@ -463,25 +441,24 @@ export default class UI_I {
 
         this.currentDrawBatch = batch;
     }
-    static generateDrawBatch(id,parentDrawBatchID,clipRect)
-    {
+
+    static generateDrawBatch(id, parentDrawBatchID, clipRect) {
         let batch = new DrawBatch(id, clipRect);
         this.drawBatches.set(id, batch);
         this.drawBatches.get(parentDrawBatchID).addChild(batch);
     }
+
     static popDrawBatch() {
         this.currentDrawBatch = this.currentDrawBatch.parent;
 
     }
 
 
-
-
-    static setDrawBatchVisible(id:number,isVisible: boolean) {
+    static setDrawBatchVisible(id: number, isVisible: boolean) {
         if (this.drawBatches.has(id)) {
             let batch = this.drawBatches.get(id);
-            batch.isVisible =isVisible
-            batch.isDirty =true;
+            batch.isVisible = isVisible
+            batch.isDirty = true;
         }
     }
 }

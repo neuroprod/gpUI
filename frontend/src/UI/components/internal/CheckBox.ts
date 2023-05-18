@@ -12,7 +12,7 @@ export class CheckBoxSettings extends ComponentSettings
 {
     constructor() {
         super();
-
+this.box.size.set(20,20)
 
     }
     public labelColor: Color = new Color().setHex("#bfbfbf", 1);
@@ -66,8 +66,7 @@ export default class CheckBox extends Component
 
 
         let settings= this.settings as ButtonBaseSettings
-        if(settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -settings.box.marginLeft-settings.box.marginRight;
-        if(settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -settings.box.marginTop-settings.box.marginRight;
+
         let ts =Font.getTextSize(this.label).x+20+5;
         if(this.size.x>  ts){
             this.size.x =ts

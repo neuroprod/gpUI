@@ -11,7 +11,7 @@ import UI from "./UI/UI";
 import Scene from "./scene/Scene";
 import SelectItem from "./UI/math/SelectItem";
 import Vec2 from "./UI/math/Vec2";
-import UIUtils from "./UI/math/UIUtils";
+import UIUtils from "./UI/UIUtils";
 
  export enum TestEnum {
     Up,
@@ -90,7 +90,7 @@ export default class Main {
     }
 
     update() {
-        0.0064
+
         this.scene.update();
 
         UI.pushWindow("Examples");
@@ -138,9 +138,9 @@ export default class Main {
 
         let a = UI.LFloatSlider("localVal", 2);
         UI.LFloatSlider(this, "myFloat", -1, 1);
-        UI.LIntSlider("intSlider", 5.5, 0, 10);
+        UI.LIntSlider("intSlider", 6, 0, 10);
 
-        UI.separator("Drag")
+        UI.separator("Drag/Input")
         UI.LFloat(this, "myFloat2");
         UI.floatPrecision =4;
         UI.LFloat("testP", 0.001);

@@ -98,7 +98,7 @@ export default class VerticalLayout extends Component {
         this.isDraggingScroll = false;
         this.scrollBarStartY+=this.scrollBarOffset;
         this.scrollBarOffset =0
-        console.log("onUp")
+
     }
     updateOnMouseDown()
     {

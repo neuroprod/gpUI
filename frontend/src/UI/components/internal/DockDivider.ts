@@ -44,7 +44,7 @@ export default class DockDivider extends Component {
         } else {
             this.size.set(settings.smallSize, settings.wideSize);
         }
-
+        settings.box.size.copy(this.size)
         this.posOffset.set(0, 0)
     }
 
