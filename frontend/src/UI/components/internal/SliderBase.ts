@@ -6,7 +6,6 @@ import Vec2 from "../../math/Vec2";
 import Rect from "../../math/Rect";
 import Font from "../../draw/Font";
 import {NumberType} from "../../UI_Types";
-import UI_Vars from "../../UI_Vars";
 
 
 export class SliderBaseSettings extends ComponentSettings {
@@ -14,6 +13,11 @@ export class SliderBaseSettings extends ComponentSettings {
 
     barColor = new Color().setHex("#65625e", 1);
     labelColor = Color.white.clone();
+    min: number = 0
+    max: number = 1
+    type: NumberType = NumberType.FLOAT
+    floatPrecision: number;
+    isDirty: boolean = false;
 
     constructor() {
         super();
@@ -23,45 +27,31 @@ export class SliderBaseSettings extends ComponentSettings {
 
 }
 
-export default class SliderBase extends Component  {
-    value: number;
+export default class SliderBase extends Component {
+    private value: number;
     private startValue: number;
     private textMaxWidth: number;
     private textPos: Vec2 = new Vec2();
     private barRect: Rect = new Rect();
-    private min: number;
-    private max: number;
+
     private valueNorm: number;
     private isDragging: boolean = false;
-    private isRef: boolean = false;
+
     private ref: any;
     private objName: string;
-    private type: NumberType;
-    private changed: boolean =false;
-    private floatPrecision: number;
 
-    constructor(id: number, value: number, ref: any, objName: string, min: number, max: number, type: NumberType, settings: SliderBaseSettings) {
+    private changed: boolean = false;
+
+
+    constructor(id: number, ref: any, objName: string, settings: SliderBaseSettings) {
         super(id, settings);
         this.size.set(20, 20);
         this.ref = ref;
         this.objName = objName;
-        if (value) {
-            this.value = value;
-            this.startValue = value;
-        } else {
-            this.value = ref[objName];
-            this.startValue = this.value;
-            this.isRef = true;
-        }
-        this.type = type;
-        if (this.type == NumberType.FLOAT) {
-            this.floatPrecision = UI_Vars.floatPrecision;
-        } else {
-            this.floatPrecision = 0;
-        }
 
-        this.min = min != undefined ? min : this.value - 1;
-        this.max = max != undefined ? max : this.value + 1;
+        this.value = ref[objName];
+        this.startValue = this.value;
+
 
         this.updateValue();
 
@@ -69,34 +59,38 @@ export default class SliderBase extends Component  {
 
 
     updateValue() {
-
-        if (this.type == NumberType.INT) {
+        let settings = this.settings as SliderBaseSettings
+        if (settings.type == NumberType.INT) {
             this.value = Math.round(this.value)
             this.startValue = Math.round(this.value)
         }
 
-        if (this.value < this.min) this.min = this.value;
-        if (this.value > this.max) this.max = this.value;
+        if (this.value < settings.min) settings.min = this.value;
+        if (this.value > settings.max) settings.max = this.value;
 
-        if (this.type == NumberType.INT) {
-            this.min = Math.round(this.min)
-            this.max = Math.round(this.max)
+        if (settings.type == NumberType.INT) {
+            settings.min = Math.round(settings.min)
+            settings.max = Math.round(settings.max)
         }
 
 
-        this.valueNorm = (this.value - this.min) / (this.max - this.min)
+        this.valueNorm = (this.value - settings.min) / (settings.max - settings.min)
         this.setDirty();
     }
 
-    updateMouse() {
-        if (this.isRef) {
-
-            if (this.value != this.ref [this.objName]) {
-                this.value = this.ref [this.objName]
-                this.startValue = this.value;
-                this.updateValue()
-            }
+    onAdded() {
+        if (this.value != this.ref [this.objName]) {
+            this.value = this.ref [this.objName]
+            this.startValue = this.value;
+            this.updateValue()
         }
+        if((this.settings as SliderBaseSettings).isDirty){
+            (this.settings as SliderBaseSettings).isDirty =false;
+            this.updateValue();
+        }
+    }
+
+    updateMouse() {
 
 
         if (this.isDown) {
@@ -110,19 +104,19 @@ export default class SliderBase extends Component  {
 
     updateOnMouseDown() {
         if (this.isDragging) {
-
+            let settings = this.settings as SliderBaseSettings
             this.valueNorm = (UI_I.mouseListener.mousePos.x - this.layoutRect.pos.x) / this.layoutRect.size.x
             this.valueNorm = Math.max(Math.min(this.valueNorm, 1), 0);
-            this.value = (this.valueNorm * (this.max - this.min)) + this.min;
-            if (this.type == NumberType.INT) {
+            this.value = (this.valueNorm * (settings.max - settings.min)) + settings.min;
+            if (settings.type == NumberType.INT) {
                 this.value = Math.round(this.value);
-                this.valueNorm = (this.value - this.min) / (this.max - this.min);
+                this.valueNorm = (this.value - settings.min) / (settings.max - settings.min);
             }
-            this.value = Number.parseFloat(this.value.toFixed(this.floatPrecision))
-            if (this.isRef) {
-                this.ref [this.objName] = this.value;
-            }
-            this.changed =true;
+            this.value = Number.parseFloat(this.value.toFixed(settings.floatPrecision))
+
+            this.ref [this.objName] = this.value;
+
+            this.changed = true;
             this.setDirty(true);
         }
     }
@@ -151,8 +145,7 @@ export default class SliderBase extends Component  {
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.barRect, settings.barColor);
 
-        let label = this.value.toFixed(this.floatPrecision)
-
+        let label = this.value.toFixed(settings.floatPrecision)
 
 
         UI_I.currentDrawBatch.textBatch.addLine(this.textPos, label, this.textMaxWidth, settings.labelColor);
@@ -160,12 +153,9 @@ export default class SliderBase extends Component  {
     }
 
 
-    showSettings(): void {
-        console.log("implement settings popup")
-    }
     getReturnValue(): boolean {
-        let change =this.changed
-        this.changed =false
+        let change = this.changed
+        this.changed = false
         return change
 
     }

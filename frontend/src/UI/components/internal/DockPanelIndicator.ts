@@ -6,12 +6,11 @@ import UI_I from "../../UI_I";
 
 export class DockPanelIndicatorSettings extends ComponentSettings
 {
-    public colorMain: Color = new Color().setHex("#00a8ff", 0.5);
+    public colorMain: Color = new Color().setHex("#00a8ff", 0.3);
     public colorMainOver: Color = new Color().setHex("#00a8ff", 0.6);
     constructor() {
         super();
-        this.hasBackground =true;
-        this.backgroundColor.copy(this.colorMain)
+
     }
 }
 
@@ -42,5 +41,17 @@ export default class DockPanelIndicator extends Component
             this.setDirty();
         }
         return isOver;
+    }
+    prepDrawInt() {
+        let settings  =this.settings as DockPanelIndicatorSettings
+        if (this.isOverDrag) {
+
+            UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.colorMainOver);
+
+        } else {
+            UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.colorMain);
+
+        }
+
     }
 }

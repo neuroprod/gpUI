@@ -5,6 +5,7 @@ export enum NumberType {
 
 export enum HAlign {
     LEFT,
+    CENTER,
     RIGHT
 }
 

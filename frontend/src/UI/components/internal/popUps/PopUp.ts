@@ -6,8 +6,8 @@ import Vec2 from "../../../math/Vec2";
 import Utils from "../../../math/Utils";
 
 export class PopUpSettings extends ComponentSettings {
-    popUpBackground = new Color().setHex("#262626", 1)
-    outlineColor: Color = new Color().setHex("#FFFFFF", 0.05)
+    popUpBackground = new Color().setHex("#2d2d2d", 1)
+    outlineColor: Color = new Color().setHex("#FFFFFF", 0.07)
 
 
 }

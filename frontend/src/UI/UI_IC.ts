@@ -118,10 +118,10 @@ export default class UI_IC {
         }
     }
 
-    static sliderBase(name: string, value: number, ref: any, objName: string, min: number, max: number, type: NumberType, settings?: SliderBaseSettings): SliderBase {
-        if (!UI_I.setComponent(name)) {
+    static sliderBase( ref: any, objName: string,settings?: SliderBaseSettings): SliderBase {
+        if (!UI_I.setComponent(objName)) {
             if (!settings) settings = new SliderBaseSettings()
-            let comp = new SliderBase(UI_I.getID(name), value, ref, objName, min, max, type, settings);
+            let comp = new SliderBase(UI_I.getID(objName),  ref, objName,  settings);
             UI_I.addComponent(comp);
         }
         let v = UI_I.currentComponent.getReturnValue()

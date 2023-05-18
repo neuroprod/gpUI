@@ -60,4 +60,11 @@ export default class Color {
     toString() {
         return  this.r.toPrecision(2)+","+this.g.toPrecision(2)+","+this.b.toPrecision(2)+","+this.a.toPrecision(2);
     }
+
+    set(r: number, g: number, b: number, a: number =1) {
+        this.r =r;
+        this.g=g;
+        this.b =b;
+        this.a =a;
+    }
 }

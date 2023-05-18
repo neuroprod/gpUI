@@ -5,6 +5,8 @@ import UI_I from "../UI_I";
 import DirtyButton from "./internal/DirtyButton";
 import {NumberType} from "../UI_Types";
 import UI_Vars from "../UI_Vars";
+import SliderBase, {SliderBaseSettings} from "./internal/SliderBase";
+import Local from "../local/Local";
 
 export class LSliderSettings extends LComponentSettings {
     constructor() {
@@ -14,7 +16,7 @@ export class LSliderSettings extends LComponentSettings {
 }
 
 export default class LSlider extends LComponent {
-    private value: number;
+    value: number;
     private stringRef: string;
     private ref: any;
     min: number;
@@ -23,6 +25,7 @@ export default class LSlider extends LComponent {
     private type: NumberType;
     private valueOld: number;
     private floatPrecision: number;
+    private sliderBaseSettings: SliderBaseSettings;
 
     constructor(id: number, label: string, value: number | null, ref: any, settings: LSliderSettings, min?: number, max?: number, type: NumberType= NumberType.FLOAT) {
 
@@ -33,11 +36,10 @@ export default class LSlider extends LComponent {
 
 
         this.type = type
-        if(this.type ==NumberType.FLOAT)
-        {
-            this.floatPrecision=UI_Vars.floatPrecision;
-        }else{
-            this.floatPrecision =0;
+        if (this.type == NumberType.FLOAT) {
+            this.floatPrecision = UI_Vars.floatPrecision;
+        } else {
+            this.floatPrecision = 0;
         }
 
 
@@ -45,11 +47,39 @@ export default class LSlider extends LComponent {
             this.value = this.ref[this.stringRef]
         }
         this.min = min != undefined ? min : this.value - 1;
-       this.max = max != undefined ? max : this.value + 1;
-        this.valueOld = this.value;
+        this.max = max != undefined ? max : this.value + 1;
+        this.setFromLocal() ;
 
+        if(this.max<this.value)this.max =this.value;
+        if(this.min>this.value)this.min =this.value;
+
+        this.valueOld = this.value;
+        this.sliderBaseSettings = new SliderBaseSettings();
+        this.sliderBaseSettings.min = this.min;
+        this.sliderBaseSettings.max = this.max;
+        this.sliderBaseSettings.type =this.type;
+        this.sliderBaseSettings.floatPrecision= this.floatPrecision;
+    }
+
+    setFromLocal() {
+        let data = Local.getItem(this.id);
+        if (data) {
+            this.min =data.min;
+            this.max =data.max;
+        }
 
     }
+
+    saveToLocal() {
+
+        let a = {
+            min: this.min,
+            max:this.max,
+        };
+
+        Local.setItem(this.id, a)
+    }
+
 
     onAdded() {
         if (this.ref) {
@@ -59,7 +89,7 @@ export default class LSlider extends LComponent {
 
     setSubComponents() {
         super.setSubComponents();
-        if (UI_IC.sliderBase("LSsl", null, this, "value", this.min, this.max, this.type)) {
+        if (UI_IC.sliderBase( this, "value",  this.sliderBaseSettings)) {
             if (this.valueOld != this.value) {
                 this.setValueDirty(true)
             } else {
@@ -96,7 +126,16 @@ export default class LSlider extends LComponent {
     }
 
     getClipboardValue(): string {
-        return this.value.toPrecision(this.floatPrecision) + "";
+        return this.value.toFixed(this.floatPrecision) ;
     }
 
+    setMinMax(min: number, max: number) {
+        this.min=min;
+        this.max =max;
+        this.sliderBaseSettings.min =this.min;
+        this.sliderBaseSettings.max=this.max;
+        this.sliderBaseSettings.isDirty =true;
+        this.saveToLocal();
+        this.setDirty(true)
+    }
 }

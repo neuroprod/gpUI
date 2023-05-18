@@ -9,18 +9,18 @@ import UI_IC from "../UI_IC";
 import DockTabData from "./DockTabData";
 import UI from "../UI";
 import DockingPanel from "../components/internal/DockingPanel";
-import macro from "styled-jsx/macro";
 
 
 export default class DockManager {
     public mainDockNode: DockNode;
+    public panelsByOldId: Map<number, DockingPanel> = new Map();
     private dockLayer: Layer;
     private overlayLayer: Layer;
     private dragComponent: Panel | null = null;
     private setPanelsFirst: number = 0
     private tabItems: Array<DockTabData> = [];
     private dockingPanels: Array<DockingPanel> = [];
-    public panelsByOldId:Map<number,DockingPanel> =new Map();
+
     constructor(dockLayer: Layer, overlayLayer: Layer) {
         this.dockLayer = dockLayer;
         this.overlayLayer = overlayLayer;
@@ -85,15 +85,15 @@ export default class DockManager {
 
     update() {
         //wait for panels rendered 1 time
-        if (this.setPanelsFirst==1) {
-            this.setPanelsFirst ++;
+        if (this.setPanelsFirst == 1) {
+            this.setPanelsFirst++;
             this.restoreLocalData()
         }
-        if(this.setPanelsFirst<1){
-            this.setPanelsFirst ++;
+        if (this.setPanelsFirst < 1) {
+            this.setPanelsFirst++;
             return;
         }
-        if (this.mainDockNode.resize(UI_I.screenSize)){
+        if (this.mainDockNode.resize(UI_I.screenSize)) {
             this.mainDockNode.updateLayout()
 
         }
@@ -108,12 +108,12 @@ export default class DockManager {
 
             if (overNode) {
 
-                if (!overNode.panel) UI_IC.dockIndicator(overNode.id+"CenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.Center, overNode));
+                if (!overNode.panel) UI_IC.dockIndicator(overNode.id + "CenterDockIndicator" + overNode.id, new DockIndicatorSettings(DockType.Center, overNode));
 
-                UI_IC.dockIndicator( overNode.id+"rightCenterDockIndicator" , new DockIndicatorSettings(DockType.RightCenter, overNode));
-                UI_IC.dockIndicator(overNode.id+"leftCenterDockIndicator" , new DockIndicatorSettings(DockType.LeftCenter, overNode))
-                UI_IC.dockIndicator(overNode.id+"topCenterDockIndicator" , new DockIndicatorSettings(DockType.TopCenter, overNode))
-                UI_IC.dockIndicator(overNode.id+"bottomCenterDockIndicator" , new DockIndicatorSettings(DockType.BottomCenter, overNode))
+                UI_IC.dockIndicator(overNode.id + "rightCenterDockIndicator", new DockIndicatorSettings(DockType.RightCenter, overNode));
+                UI_IC.dockIndicator(overNode.id + "leftCenterDockIndicator", new DockIndicatorSettings(DockType.LeftCenter, overNode))
+                UI_IC.dockIndicator(overNode.id + "topCenterDockIndicator", new DockIndicatorSettings(DockType.TopCenter, overNode))
+                UI_IC.dockIndicator(overNode.id + "bottomCenterDockIndicator", new DockIndicatorSettings(DockType.BottomCenter, overNode))
             }
         }
 
@@ -181,20 +181,6 @@ export default class DockManager {
 
     }
 
-    private collectTabItems(layer: Layer) {
-        for (let child of layer.children) {
-            let panel = child as Panel;
-
-            let tabData = new DockTabData()
-            tabData.panel = child as Panel;
-            tabData.rect.copy(tabData.panel.layoutRect)
-            console.log(tabData.panel.layoutRect)
-            tabData.rect.size.y = 20;
-
-            this.tabItems.push(tabData)
-
-        }
-    }
     public saveLocal() {
         let data = {panelData: [], dockData: {}}
 
@@ -212,34 +198,46 @@ export default class DockManager {
         this.mainDockNode.getDocStructure(data.dockData)
         Local.setDockData(data);
     }
+
+    private collectTabItems(layer: Layer) {
+        for (let child of layer.children) {
+
+            let tabData = new DockTabData()
+            tabData.panel = child as Panel;
+            tabData.rect.copy(tabData.panel.layoutRect)
+
+            tabData.rect.size.y = 22;
+
+            this.tabItems.push(tabData)
+
+        }
+    }
+
     private restoreLocalData() {
         if (!Local.dockData) return;
 
-        if(Local.dockData.panelData)
-        {
-            for(let pd of Local.dockData.panelData)
-            {
+        if (Local.dockData.panelData) {
+            for (let pd of Local.dockData.panelData) {
 
                 let lsData = Local.getItem(pd.id);
-                if(pd.children.length ==0)continue;
-                let comp1 =UI_I.components.get(pd.children[0]) as Panel
-                let comp2 =UI_I.components.get(pd.children[1])as Panel
+                if (pd.children.length == 0) continue;
+                let comp1 = UI_I.components.get(pd.children[0]) as Panel
+                let comp2 = UI_I.components.get(pd.children[1]) as Panel
 
-                comp1.size.set(lsData["size"].x,lsData["size"].y)
-                comp1.posOffset.set(lsData["posOffset"].x,lsData["posOffset"].y)
+                comp1.size.set(lsData["size"].x, lsData["size"].y)
+                comp1.posOffset.set(lsData["posOffset"].x, lsData["posOffset"].y)
                 let dockingPanel = UI.dockingPanel(comp1, comp2);
                 this.dockingPanels.push(dockingPanel)
 
-                for(let i=2;i<pd.children.length;i++){
-                    let comp =UI_I.components.get(pd.children[i]) as Panel
+                for (let i = 2; i < pd.children.length; i++) {
+                    let comp = UI_I.components.get(pd.children[i]) as Panel
                     dockingPanel.addPanelChild(comp)
                 }
                 dockingPanel.selectIndex(pd.index);
-                this.panelsByOldId.set(pd.id,dockingPanel)
+                this.panelsByOldId.set(pd.id, dockingPanel)
 
             }
         }
-
 
 
         //set the panels in the docknodes

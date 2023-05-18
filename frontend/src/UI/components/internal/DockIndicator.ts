@@ -29,7 +29,7 @@ export default class DockIndicator extends Component {
     public isOverDrag: boolean = false
     private localSettings: DockIndicatorSettings;
     private dockRect: Rect;
-    private isHit: boolean =false;
+
 
 
     constructor(id: number, settings: DockIndicatorSettings) {

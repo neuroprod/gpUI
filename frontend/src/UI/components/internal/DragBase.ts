@@ -124,13 +124,7 @@ export default class DragBase extends Component {
     }
 
 
-    layoutRelative() {
-        super.layoutRelative()
-        let settings = this.settings
-        if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
-        if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginBottom;
 
-    }
 
     layoutAbsolute() {
         super.layoutAbsolute();

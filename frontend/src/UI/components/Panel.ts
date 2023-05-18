@@ -51,7 +51,7 @@ export default class Panel extends Component {
     private tryDrag = false;
     private tryDragMouse = new Vec2();
     private dockSize: Vec2 = new Vec2();
-    private prevSize: Vec2 = new Vec2()
+    protected prevSize: Vec2 = new Vec2()
     private _isDockedInPanel: boolean =false;
     private saveBox: Box;
 
@@ -80,7 +80,7 @@ export default class Panel extends Component {
 
     }
 
-    private _collapsed = false;
+    protected _collapsed = false;
 
     get collapsed(): boolean {
         return this._collapsed;
@@ -106,6 +106,7 @@ export default class Panel extends Component {
         this._isDockedInPanel = value;
         if(this._isDockedInPanel)
         {
+            if(this._collapsed) this.collapsed =false
             this.saveBox = this.settings.box;
             this.settings.box =new Box()
             this.settings.box.size.set(-1,-1)
@@ -138,7 +139,7 @@ export default class Panel extends Component {
 
         }
         if (value) {
-
+            if(this._collapsed) this.collapsed =false
             this.tryDrag = false
             this.isDragging = false;
             this.isResizing = false;
