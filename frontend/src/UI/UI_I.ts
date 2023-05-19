@@ -24,6 +24,7 @@ export default class UI_I {
     static mouseListener: MouseListener;
     public static dockManager: DockManager;
     static screenSize: Vec2 = new Vec2();
+    static canvasSize: Vec2 = new Vec2();
     static renderer: RendererGL;
 
     static pixelRatio: number;
@@ -47,6 +48,7 @@ export default class UI_I {
     private static mouseDownComponent: Component | null = null;
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
+
 
     constructor() {
     }
@@ -208,6 +210,7 @@ export default class UI_I {
     public static draw() {
 
         this.screenSize.set(this.canvas.offsetWidth, this.canvas.offsetHeight)
+        this.canvasSize.set(this.canvas.width, this.canvas.height)
         this.dockManager.update()
 
 

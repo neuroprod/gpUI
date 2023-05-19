@@ -58,7 +58,8 @@ export default class Viewport extends Panel {
     }
 
     startRender() {
-        // UI_I.renderer.gl.viewport(100,100,100,100)
+    ///   let sX =100
+       // let sY =100
         this.renderSize.set(this.layoutRect.size.x, this.layoutRect.size.y)
         if (this.texture.setSize(this.renderSize.x, this.renderSize.y)) this.setDirty();
         this.texture.bind()

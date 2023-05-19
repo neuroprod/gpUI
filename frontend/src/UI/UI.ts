@@ -80,7 +80,7 @@ export default class UI {
 
         if (vp.collapsed) {
             UI.viewPort = null
-            return UI_I.screenSize.clone()
+            return UI_I.canvasSize.clone()
         }
         UI.viewPort = vp;
 

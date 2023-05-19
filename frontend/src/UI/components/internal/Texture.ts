@@ -43,9 +43,11 @@ export default class Texture extends Component
         let textureWidth =Math.min(this.texture.width, this.size.x);
         let textureHeight = Math.max(textureWidth*this.texture.getRatio(),20)
 
-        this.size.y =textureHeight;
+        //this.size.y =textureHeight;
 
         this.textureRect.size.set(textureWidth,textureHeight)
+        this.textureRect.pos.x =Utils.getCenterPlace(textureWidth,this.size.x)
+        this.textureRect.pos.x =Utils.getCenterPlace(textureHeight,this.size.y)
 
     }
 
@@ -58,7 +60,7 @@ export default class Texture extends Component
 
     prepDraw() {
         super.prepDraw()
-       UI_I.currentDrawBatch.textureBatch.addTexture(this.textureRect,this.texture)
+     UI_I.currentDrawBatch.textureBatch.addTexture(this.textureRect,this.texture)
 
 
     }

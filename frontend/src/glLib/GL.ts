@@ -13,6 +13,7 @@ export default class GL {
     public  viewportHeight: number;
     private ratio: number;
     private _resizeTimeOut: NodeJS.Timeout;
+    private pixelRatio: number;
     constructor(canvas:HTMLCanvasElement,preLoader:PreLoader,assetsPath:string) {
 
         this.assetPath  = assetsPath;
@@ -20,7 +21,7 @@ export default class GL {
         this.canvas = canvas;
         this.gl = canvas.getContext("webgl2",{antialias: true}) as WebGL2RenderingContext;
 
-
+        this.pixelRatio =window.devicePixelRatio
         this.resizeFunctions=[];
         window.onresize =this.delayedResize.bind(this);
         //this.extDerivatives = this.gl.getExtension('OES_standard_derivatives');
@@ -34,8 +35,8 @@ export default class GL {
     {
         this.canvas.style.width = window.innerWidth + 'px';
         this.canvas.style.height =window.innerHeight+ 'px';
-        this.canvas.width = window.innerWidth*window.devicePixelRatio;
-        this.canvas.height = window.innerHeight*window.devicePixelRatio;
+        this.canvas.width = window.innerWidth*this.pixelRatio;
+        this.canvas.height = window.innerHeight*this.pixelRatio;
         this.viewportWidth = this.canvas.width;
         this.viewportHeight = this.canvas.height;
         this.viewportSize[0] = this.viewportWidth;
