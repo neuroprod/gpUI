@@ -11,6 +11,7 @@ import Rect from "../../math/Rect";
 
 export class TextureSettings extends ComponentSettings {
 
+    setSizeToHeight=true
     constructor() {
         super();
         this.backgroundColor.gray(0.16);
@@ -37,25 +38,36 @@ export default class Texture extends Component
     layoutRelative() {
         super.layoutRelative();
         let settings= this.settings as TextureSettings
-        if(settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -settings.box.marginLeft-settings.box.marginRight;
-        if(settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -settings.box.marginTop-settings.box.marginRight;
+        if(settings.setSizeToHeight)
+        {
+            let textureWidth =Math.min(this.texture.width, this.size.x);
+            let textureHeight = Math.max(textureWidth*this.texture.getRatio(),20)
+            this.size.y =textureHeight;
+        }
 
-        let textureWidth =Math.min(this.texture.width, this.size.x);
-        let textureHeight = Math.max(textureWidth*this.texture.getRatio(),20)
-
-        //this.size.y =textureHeight;
-
-        this.textureRect.size.set(textureWidth,textureHeight)
-        this.textureRect.pos.x =Utils.getCenterPlace(textureWidth,this.size.x)
-        this.textureRect.pos.x =Utils.getCenterPlace(textureHeight,this.size.y)
 
     }
 
     layoutAbsolute() {
         super.layoutAbsolute();
 
-        this.textureRect.pos.copy(this.layoutRect.pos)
-        this.textureRect.pos.x+=(this.layoutRect.size.x -this.textureRect.size.x)/2;
+        let textureWidth =Math.min(this.texture.width, this.size.x);
+        let textureHeight = Math.max(textureWidth*this.texture.getRatio(),20)
+        if(textureHeight>this.layoutRect.size.y)
+        {
+           textureHeight=this.layoutRect.size.y;
+           textureWidth = textureHeight/this.texture.getRatio()
+        }
+        //this.size.y =textureHeight;
+
+        this.textureRect.size.set(textureWidth,textureHeight)
+        this.textureRect.pos.x =Utils.getCenterPlace(textureWidth,this.size.x)
+       this.textureRect.pos.y =Utils.getCenterPlace(textureHeight,this.size.y)
+
+      this.textureRect.pos.add(this.layoutRect.pos)
+
+
+       // this.textureRect.pos.x+=(this.layoutRect.size.x -this.textureRect.size.x)/2;*/
     }
 
     prepDraw() {

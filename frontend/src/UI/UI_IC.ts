@@ -39,6 +39,8 @@ import LText, {LTextSettings} from "./components/LText";
 import LNumber, {LNumberSettings} from "./components/LNumber";
 import Separator, {SeparatorSettings} from "./components/Separator";
 import Component, {ComponentSettings} from "./components/Component";
+import Viewport from "./components/Viewport";
+import ViewportPopUp, {ViewportPopUpSettings} from "./components/internal/popUps/ViewportPopUp";
 export default class UI_IC {
 
     static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
@@ -295,6 +297,17 @@ export default class UI_IC {
     }
 
     // Popups
+    static viewportPopUp(comp:Viewport,pos:Vec2, settings: ViewportPopUpSettings = new ViewportPopUpSettings()) {
+
+        let old = UI_I.currentComponent;
+
+        UI_I.currentComponent = UI_I.popupLayer;
+        let compPopup = new ViewportPopUp(UI_I.getID(comp.id + ""), comp,pos, settings);
+        UI_I.addComponent(compPopup);
+        UI_I.hasPopup = true;
+
+        UI_I.currentComponent = old;
+    }
     static sliderPopUp(comp:LSlider,pos:Vec2, settings: SliderPopUpSettings = new SliderPopUpSettings()) {
 
         let old = UI_I.currentComponent;

@@ -21,19 +21,21 @@ export default class Viewport extends Panel {
     public renderSize: Vec2 = new Vec2(1, 1)
     private texture: UIRenderTexture;
     private textureSettings: TextureSettings;
+    private fill: boolean =true;
 
     constructor(id: number, label: string, settings: ViewportSettings) {
         super(id, label, settings);
         this.texture = new UIRenderTexture()
         this.textureSettings = new TextureSettings()
         this.textureSettings.box.marginTop = 0;
+        this.textureSettings.setSizeToHeight =false;
         this.renderSize = this.size.clone()
 
         //start collapsed...
-        this._collapsed = true;
+       /* this._collapsed = true;
         this.prevSize.copy(this.size)
         if(this.prevSize.y<100)this.prevSize.y=300;
-        this.size.y = 22;
+        this.size.y = 22;*/
     }
 
     setSubComponents() {
@@ -41,7 +43,11 @@ export default class Viewport extends Panel {
 
         if (this.collapsed) return;
         if (UI_IC.settingsButton("LSset")) {
-            console.log("showSettings")
+
+            let pos =this.layoutRect.pos.clone()
+            pos.x+=this.layoutRect.size.x/2-150;
+            pos.y+=this.layoutRect.size.y/2-100;
+            UI_IC.viewportPopUp(this,pos)
         }
         UI_IC.texture("t", this.texture, this.textureSettings)
 
@@ -50,18 +56,25 @@ export default class Viewport extends Panel {
     setIsDockedInPanel(value: boolean) {
 
         super.setIsDockedInPanel(value)
-        if (value) {
+      /*  if (value) {
             this.textureSettings.box.marginTop = 0
         } else {
             this.textureSettings.box.marginTop = 20
-        }
+        }*/
     }
 
     startRender() {
-    ///   let sX =100
-       // let sY =100
-        this.renderSize.set(this.layoutRect.size.x, this.layoutRect.size.y)
-        if (this.texture.setSize(this.renderSize.x, this.renderSize.y)) this.setDirty();
+        let sX = this.layoutRect.size.x;
+        let sY =this.layoutRect.size.y;
+        if(!this.fill){
+
+            let ratio =1.5
+            let sX = this.layoutRect.size.x
+            let sY =this.layoutRect.size.x*ratio
+        }
+
+        this.renderSize.set(sX, sY)
+        if (this.texture.setSize(sX,sY)) this.setDirty();
         this.texture.bind()
     }
 

@@ -156,6 +156,7 @@ export default class Main {
         UI.LColor("color2", this.color2)
 
         UI.LTexture("mijnTexture", this.parrotTexture)
+        UI.LTextInput("test", "2")
         UI.popGroup()
 
 
