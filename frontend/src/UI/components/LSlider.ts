@@ -58,6 +58,8 @@ export default class LSlider extends LComponent {
         this.sliderBaseSettings.min = this.min;
         this.sliderBaseSettings.max = this.max;
         this.sliderBaseSettings.type =this.type;
+        this.sliderBaseSettings.box.marginRight =12
+        this.sliderBaseSettings.box.marginLeft =4
         this.sliderBaseSettings.floatPrecision= this.floatPrecision;
     }
 
@@ -115,7 +117,7 @@ export default class LSlider extends LComponent {
 
             let popPos = this.layoutRect.pos.clone();
             popPos.x+=this.layoutRect.size.x
-            popPos.x-=300;//popupsize
+            popPos.x-=330;//popupsize
             UI_IC.sliderPopUp(this,popPos);
 
         }

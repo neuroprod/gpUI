@@ -12,10 +12,10 @@ export class SettingsButtonSettings extends ComponentSettings {
         super();
         this.backgroundColor.setHex("#1d1d1d",1)
         this.hasBackground =true
-        this.box.size.set(20,20);
+        this.box.size.set(12,20);
     }
-    public colorIconOver:Color =new Color().setHex("#999999",1);
-    public colorIcon:Color =new Color().setHex("#747373",1);
+    public colorIconOver:Color =new Color().setHex("#FFFFFF",1);
+    public colorIcon:Color =new Color().setHex("#a3a3a3",1);
 }
 
 export default class SettingsButton extends Component
@@ -24,7 +24,7 @@ export default class SettingsButton extends Component
 
     constructor(id: number, settings: SettingsButtonSettings) {
         super(id, settings);
-        this.size.set(20,20);
+
 
     }
 

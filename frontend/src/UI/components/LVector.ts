@@ -175,7 +175,7 @@ export default class LVector extends LComponent {
              }
          }*/
     }
-   
+
     getReturnValue(): UI_VEC2 | UI_VEC3 | UI_VEC4 {
         return this.value;
     }

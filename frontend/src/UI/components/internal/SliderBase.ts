@@ -45,7 +45,7 @@ export default class SliderBase extends Component {
 
     constructor(id: number, ref: any, objName: string, settings: SliderBaseSettings) {
         super(id, settings);
-        this.size.set(20, 20);
+
         this.ref = ref;
         this.objName = objName;
 
@@ -122,12 +122,7 @@ export default class SliderBase extends Component {
     }
 
 
-    layoutRelative() {
-        super.layoutRelative()
-        let maxWidth = Utils.getMaxInnerWidth(this.parent);
-        this.size.x = maxWidth - 4 - 20;
-        this.posOffset.x = 4
-    }
+
 
     layoutAbsolute() {
         super.layoutAbsolute();
