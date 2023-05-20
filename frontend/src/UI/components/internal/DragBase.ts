@@ -4,7 +4,7 @@ import Utils from "../../math/Utils";
 import UI_I from "../../UI_I";
 import Vec2 from "../../math/Vec2";
 import Font from "../../draw/Font";
-import {HAlign, NumberType} from "../../UI_Types";
+import {HAlign, NumberType} from "../../UI_Enums";
 import UI_Vars from "../../UI_Vars";
 import UI_IC from "../../UI_IC";
 import {IconButtonSettings} from "./IconButton";
@@ -16,6 +16,7 @@ export class DragBaseSettings extends ComponentSettings {
 
     colorBack = new Color().setHex("#4c4c4c", 1);
     labelColor = new Color().gray(0.8)
+    posOffsetRelative: Vec2 =new Vec2()
 
     constructor() {
         super();
@@ -55,7 +56,7 @@ export default class DragBase extends Component {
         this.objName = objName;
 
         this.value = ref[objName];
-
+        this.posOffsetRelative =settings.posOffsetRelative;
         this.type = type;
         if (this.type == NumberType.FLOAT) {
             this.floatPrecision = UI_Vars.floatPrecision;

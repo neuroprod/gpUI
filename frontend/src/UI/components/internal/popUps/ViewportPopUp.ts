@@ -4,7 +4,7 @@ import UI_IC from "../../../UI_IC";
 import Vec2 from "../../../math/Vec2";
 import {ComponentSettings} from "../../Component";
 import {ButtonBaseSettings} from "../ButtonBase";
-import {HAlign} from "../../../UI_Types";
+import {HAlign} from "../../../UI_Enums";
 import PopUpWindow, {PopUpWindowSettings} from "./PopUpWindow";
 import Viewport from "../../Viewport";
 

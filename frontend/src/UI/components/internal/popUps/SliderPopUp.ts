@@ -6,7 +6,7 @@ import Vec2 from "../../../math/Vec2";
 import {LNumberSettings} from "../../LNumber";
 import {ComponentSettings} from "../../Component";
 import {ButtonBaseSettings} from "../ButtonBase";
-import {HAlign} from "../../../UI_Types";
+import {HAlign} from "../../../UI_Enums";
 import PopUpWindow, {PopUpWindowSettings} from "./PopUpWindow";
 
 export class SliderPopUpSettings extends PopUpWindowSettings {

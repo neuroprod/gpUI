@@ -4,12 +4,12 @@ import UI_IC from "../UI_IC";
 import UI_I from "../UI_I";
 import DirtyButton from "./internal/DirtyButton";
 import {DragBaseSettings} from "./internal/DragBase";
-import {NumberType} from "../UI_Types";
+import {NumberType} from "../UI_Enums";
 import UI_Vars from "../UI_Vars";
 
 export class LNumberSettings extends LComponentSettings {
     showDirty: boolean = true;
-    showSettings: boolean = true;
+    showSettings: boolean = false;
 
     constructor() {
         super();

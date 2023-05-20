@@ -1,5 +1,5 @@
 import Vec2 from "./Vec2";
-import {HAlign} from "../UI_Types";
+import {HAlign} from "../UI_Enums";
 
 export default class Box
 {

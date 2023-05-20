@@ -3,7 +3,7 @@ import LComponent, {LComponentSettings} from "./LComponent";
 import UI_IC from "../UI_IC";
 import UI_I from "../UI_I";
 import DirtyButton from "./internal/DirtyButton";
-import {NumberType} from "../UI_Types";
+import {NumberType} from "../UI_Enums";
 import UI_Vars from "../UI_Vars";
 import SliderBase, {SliderBaseSettings} from "./internal/SliderBase";
 import Local from "../local/Local";

@@ -23,13 +23,19 @@ import LNumber, {LNumberSettings} from "./components/LNumber";
 import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
 import Vec2 from "./math/Vec2";
 import Separator, { SeparatorSettings} from "./components/Separator";
-import {NumberType} from "./UI_Types";
+import {NumberType} from "./UI_Enums";
 import UI_Vars from "./UI_Vars";
 import UI_IC from "./UI_IC";
+import {UI_VEC2, UI_VEC3, UI_VEC4} from "./UI_Types";
+import LVector, {LVectorSettings} from "./components/LVector";
+
+
 
 
 export default class UI {
     private static viewPort: Viewport | null;
+
+
 
 
     static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement) {
@@ -225,6 +231,20 @@ export default class UI {
         return result;
     }
 
+    static LVector(label:string, vector:UI_VEC2|UI_VEC3|UI_VEC4,settings?:LVectorSettings){
+
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new LVectorSettings()
+            let comp = new LVector(UI_I.getID(label), label, vector, settings);
+            UI_I.addComponent(comp);
+        }
+
+        let result = UI_I.currentComponent.getReturnValue()
+        UI_I.popComponent();
+        return result;
+
+    }
+
 
     static LFloatSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings)
     static LFloatSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings)
@@ -301,4 +321,6 @@ export default class UI {
     static clearLocalData() {
         Local.clearLocalData();
     }
+
+
 }

@@ -5,7 +5,7 @@ import UI_I from "../../UI_I";
 import Vec2 from "../../math/Vec2";
 import Rect from "../../math/Rect";
 import Font from "../../draw/Font";
-import {NumberType} from "../../UI_Types";
+import {NumberType} from "../../UI_Enums";
 
 
 export class SliderBaseSettings extends ComponentSettings {

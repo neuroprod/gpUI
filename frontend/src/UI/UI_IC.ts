@@ -31,7 +31,7 @@ import DockTabData from "./docking/DockTabData";
 import DockPanelIndicator, {DockPanelIndicatorSettings} from "./components/internal/DockPanelIndicator";
 
 import TabButton, {TabButtonSettings} from "./components/internal/TabButton";
-import {NumberType} from "./UI_Types";
+import {NumberType} from "./UI_Enums";
 import IconButton, {IconButtonSettings} from "./components/internal/IconButton";
 
 

@@ -7,11 +7,18 @@ import PreLoader from "./glLib/PreLoader";
 import UITexture from "./UI/draw/UITexture";
 import Texture from "./glLib/Texture";
 import Font from "./UI/draw/Font";
-import UI from "./UI/UI";
+
 import Scene from "./scene/Scene";
 import SelectItem from "./UI/math/SelectItem";
-import Vec2 from "./UI/math/Vec2";
+
 import UIUtils from "./UI/UIUtils";
+import Vec2 from "./UI/math/Vec2";
+import {Vector2, Vector3, Vector4} from "math.gl";
+
+
+
+import UI from "./UI/UI";
+import {getUI_VEC2} from "./UI/UI_Types";
 
  export enum TestEnum {
     Up,
@@ -34,7 +41,7 @@ export default class Main {
     private myFloat2 = 0.5;
     private myBool = false;
     private myText = "hello Tokyo"
-
+    private myVec3:Vector3 =new Vector3(100,-200,1.0);
     private parrotTextureGL: Texture;
     private parrotTexture: UITexture;
     private textTexture: UITexture;
@@ -47,6 +54,13 @@ export default class Main {
 
         this.preloader = new PreLoader(this.loadProgress.bind(this), this.init.bind(this))
         this.glMain = new GL(canvas, this.preloader, "")
+
+
+        let v =new Vector3();
+
+
+
+        let v2 =getUI_VEC2();
 
 
         UI.setWebgl(this.glMain.gl, canvas);
@@ -62,6 +76,11 @@ export default class Main {
 
         this.scene = new Scene(this.glMain, this.preloader)
         this.glMain.gl.clearColor(0.22, 0.25, 0.29,1);
+
+
+
+
+
     }
 
     public loadProgress(n: number) {
@@ -133,7 +152,6 @@ export default class Main {
 
 
 
-
         UI.pushGroup("Numbers")
 
         let a = UI.LFloatSlider("localVal", 2);
@@ -145,9 +163,12 @@ export default class Main {
         UI.floatPrecision =4;
         UI.LFloat("testP", 0.001);
         UI.floatPrecision =2;
-        UI.separator("Input")
-        UI.LTextInput("iFloat", "2")
-        UI.LTextInput("iInt","2.5")
+        UI.separator("Vectors")
+        UI.LVector('myVec3',this.myVec3);
+        let v2 = UI.LVector("vec2Test",new Vector2(0.5,0.2))
+        let v3 = UI.LVector("vec3Test",new Vector3(0.5,0.2,1.33))
+        let v4 = UI.LVector("vec4Test",new Vector4(0.5,0.2,1.33,2.0))
+        UI.LText(this.myVec3+"-"+v2+"-"+v3+"-"+v4,"test");
         UI.popGroup()
 
         UI.pushGroup("Colors")

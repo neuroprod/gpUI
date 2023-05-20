@@ -163,7 +163,7 @@ export default class UI_I {
 
     static getHash(str: string) {
         let hash = 0;
-        let l = Math.min(str.length, 30)
+        const l = str.length;
         for (let i = 0; i < l; i++) {
             let char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;

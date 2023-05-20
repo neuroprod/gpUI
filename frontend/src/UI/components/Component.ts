@@ -5,7 +5,7 @@ import Vec2 from "../math/Vec2";
 import Color from "../math/Color";
 
 import {ActionKey} from "../input/KeyboardListener";
-import {HAlign} from "../UI_Types";
+import {HAlign} from "../UI_Enums";
 import Utils from "../math/Utils";
 
 export class ComponentSettings {
@@ -30,11 +30,15 @@ export default class Component {
     public posAbsolute = new Vec2();
     public layoutRect = new Rect();
 
+    public posOffset = new Vec2();
+    public posOffsetRelative = new Vec2();
+
+
     public keepAlive = false;
     public isDirty = true;
     public useThisFrame: boolean = true
     public hasOwnDrawBatch: boolean = false;
-    public posOffset = new Vec2();
+
     public size = new Vec2();
     public alwaysPassMouse = false;
     public isFocus = false;
@@ -121,21 +125,6 @@ export default class Component {
     addChild(comp: Component) {
         if (comp.parent) {
 
-           /* let thisDrawBatch = UI_I.drawBatches.get(this.id)
-            let parentDrawBatch = UI_I.drawBatches.get(comp.parent.id)
-            let compDrawBatch = UI_I.drawBatches.get(comp.id)
-
-            if (parentDrawBatch  && compDrawBatch) {
-                parentDrawBatch.removeChild(compDrawBatch)
-
-
-            }
-            if ( thisDrawBatch && compDrawBatch) {
-
-                thisDrawBatch.addChild(compDrawBatch)
-
-            }*/
-
             comp.parent.removeChild(comp);
         }
         let thisDrawBatch  = UI_I.drawBatches.get(this.id)
@@ -149,26 +138,7 @@ export default class Component {
         this.children.push(comp);
         comp.setDirty();
     }
-    addChildAt(comp: Component,index:number) {
-        if (comp.parent) {
 
-            let thisDrawBatch = UI_I.drawBatches.get(this.id)
-            let parentDrawBatch = UI_I.drawBatches.get(comp.parent.id)
-            let compDrawBatch = UI_I.drawBatches.get(comp.id)
-
-            if (parentDrawBatch && thisDrawBatch && compDrawBatch) {
-                parentDrawBatch.removeChild(compDrawBatch)
-                thisDrawBatch.addChildAt(compDrawBatch,index)
-
-            }
-            comp.parent.removeChild(comp);
-        }
-
-        comp.parent = this;
-        this.children.splice(index, 0, comp);
-
-        comp.setDirty();
-    }
 
     layoutRelativeInt() {
 
@@ -177,8 +147,8 @@ export default class Component {
             this.placeCursor.set(this.settings.box.paddingLeft, this.settings.box.paddingTop);
 
             if(this.parent){
-                if(this.settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -this.settings.box.marginLeft-this.settings.box.marginRight;
-                if(this.settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -this.settings.box.marginTop-this.settings.box.marginBottom;
+                if(this.settings.box.size.x<0) this.size.x =-this.settings.box.size.x*( Utils.getMaxInnerWidth(this.parent)) -this.settings.box.marginLeft-this.settings.box.marginRight;
+                if(this.settings.box.size.y<0) this.size.y =-this.settings.box.size.y*(  Utils.getMaxInnerHeight(this.parent) )-this.settings.box.marginTop-this.settings.box.marginBottom;
 
             }
 
@@ -199,8 +169,8 @@ export default class Component {
                 }
             }
             if (this.parent) {
-                this.posRelative.x = this.parent.placeCursor.x + this.posOffset.x;
-                this.posRelative.y = this.parent.placeCursor.y + this.posOffset.y;
+                this.posRelative.x = this.parent.placeCursor.x + this.posOffset.x+this.posOffsetRelative.x* Utils.getMaxInnerWidth(this.parent) ;
+                this.posRelative.y = this.parent.placeCursor.y + this.posOffset.y+this.posOffsetRelative.y*Utils.getMaxInnerHeight(this.parent);
             }
             if(this.settings.box.hAlign ==HAlign.LEFT){
                 this.posRelative.x += this.settings.box.marginLeft;
