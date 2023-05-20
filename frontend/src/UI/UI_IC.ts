@@ -8,7 +8,7 @@ import ButtonBase, {ButtonBaseSettings} from "./components/internal/ButtonBase";
 import ColorButton, {ColorButtonSettings} from "./components/internal/ColorButton";
 import ColorPickerPopUp, {ColorPickerPopupSettings} from "./components/internal/popUps/ColorPickerPopUp";
 import LColor from "./components/LColor";
-import LSlider from "./components/LSlider";
+import LSlider, {LSliderSettings} from "./components/LSlider";
 import Color from "./math/Color";
 import ColorPicker, {ColorPickerSettings} from "./components/internal/ColorPicker";
 import CheckBox, {CheckBoxSettings} from "./components/internal/CheckBox";
@@ -119,7 +119,30 @@ export default class UI_IC {
             UI_I.addComponent(comp);
         }
     }
+    static LIntSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings)
+    static LIntSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings)
+    static LIntSlider(ref_or_label: any, property_or_value: any, min?: number, max?: number, settings?: LSliderSettings) {
+        let label;
+        let ref = null;
+        let value = null;
+        if (typeof property_or_value === 'string') {
+            label = property_or_value;
+            ref = ref_or_label;
+        } else {
+            label = ref_or_label;
+            value = property_or_value;
+        }
 
+
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new LSliderSettings()
+            let comp = new LSlider(UI_I.getID(label), label, value, ref, settings, min, max, NumberType.INT);
+            UI_I.addComponent(comp);
+        }
+        let result = UI_I.currentComponent.getReturnValue()
+        UI_I.popComponent();
+        return result;
+    }
     static sliderBase( ref: any, objName: string,settings?: SliderBaseSettings): SliderBase {
         if (!UI_I.setComponent(objName)) {
             if (!settings) settings = new SliderBaseSettings()

@@ -281,26 +281,7 @@ export default class UI {
     static LIntSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings)
     static LIntSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings)
     static LIntSlider(ref_or_label: any, property_or_value: any, min?: number, max?: number, settings?: LSliderSettings) {
-        let label;
-        let ref = null;
-        let value = null;
-        if (typeof property_or_value === 'string') {
-            label = property_or_value;
-            ref = ref_or_label;
-        } else {
-            label = ref_or_label;
-            value = property_or_value;
-        }
-
-
-        if (!UI_I.setComponent(label)) {
-            if (!settings) settings = new LSliderSettings()
-            let comp = new LSlider(UI_I.getID(label), label, value, ref, settings, min, max, NumberType.INT);
-            UI_I.addComponent(comp);
-        }
-        let result = UI_I.currentComponent.getReturnValue()
-        UI_I.popComponent();
-        return result;
+        return UI_IC.LIntSlider(ref_or_label, property_or_value,min,max, settings)
     }
 
     static dockingPanel(panelMain: Panel, panelChild: Panel): DockingPanel {
