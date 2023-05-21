@@ -132,6 +132,7 @@ export default class UI {
            let comp = new LListItem(UI_I.getID(label), label,new LListItemSettings());
            UI_I.addComponent(comp);
        }
+       (UI_I.currentComponent as LListItem).setSelected(selected)
        let result = UI_I.currentComponent.getReturnValue()
        UI_I.popComponent();
        return result;

@@ -2,8 +2,7 @@
 import UI_I from "../UI_I";
 import Component, {ComponentSettings} from "./Component";
 import VerticalLayout, {VerticalLayoutSettings} from "./VerticalLayout";
-import UI from "../UI";
-import Utils from "../math/Utils";
+
 import UI_IC from "../UI_IC";
 import Local from "../local/Local";
 
@@ -14,8 +13,8 @@ export class GroupSettings extends ComponentSettings {
         super();
         this.box.marginTop= 3;
         this.box.marginBottom = 0;
-        this.box.marginLeft = UI_I.globalStyle.compIndent+Math.min(UI_I.groupDepth,1)*10
-this.box.size.y =20;
+        this.box.marginLeft = UI_I.globalStyle.compIndent
+        this.box.size.y =20;
     }
 
 }

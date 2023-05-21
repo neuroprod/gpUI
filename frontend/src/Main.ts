@@ -44,7 +44,7 @@ export default class Main {
     private parrotTextureGL: Texture;
     private parrotTexture: UITexture;
     private textTexture: UITexture;
-
+    private testIndex = 0;
     private scene: Scene;
     private viewPortSize: Vec2;
 
@@ -108,7 +108,7 @@ export default class Main {
 
         UI.pushWindow("Examples");
         //text
-        UI.LText("hello world " + this.myFloat, "label dit is een fucking long label")
+        UI.LText("hello world " + this.myFloat, "label")
         UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?", "multiline", true)
         UI.LTextInput("input text", this, "myText")
 
@@ -157,23 +157,20 @@ export default class Main {
         let t: TestEnum = UI.LSelect("Enum", UIUtils.EnumToSelectItem(TestEnum), 0)
 
         let selectArray = [];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 50; i++) {
             selectArray.push(new SelectItem("item" + i, i))
         }
         let selectedItem = UI.LSelect("select", selectArray, 0)
         UI.LText("selected item: " + selectedItem);
 
-        UI.pushLList("mijnList", 100);
+        UI.pushLList("myList", 100);
         for (let i = 0; i < 10; i++) {
-            let selected = false;
-            if (i == 0) selected = true
-            if (UI.LListItem("name" + i, selected)) {
-                console.log("index", i)
+            if (UI.LListItem("name" + i, (i == this.testIndex))) {
+                this.testIndex = i;
             }
         }
         UI.popList()
         UI.popGroup()
-
 
 
         UI.pushGroup("Vectors")
@@ -181,20 +178,29 @@ export default class Main {
         let v2 = UI.LVector("vec2", new Vector2(0.5, 0.2))
         let v3 = UI.LVector("vec3", new Vector3(0.5, 0.2, 1.33))
         let v4 = UI.LVector("vec4", new Vector4(0.5, 0.2, 1.33, 2.0))
-        UI.LText(this.myVec3 + "-" + v2 + "-" + v3 + "-" + v4, "test");
+        UI.LText(this.myVec3 + "-" + v2, "test");
         let v5 = UI.LVector("normalized", new Vector3(1, 0.0, 0), true)
         UI.LText(v5 + "", "test");
         UI.popGroup()
 
 
-
         UI.pushGroup("Group")
-        UI.pushGroup("nested Group")
-        UI.pushGroup("and deeper")
-        UI.LText("test", "test")
+            UI.pushGroup("nested Group")
+                UI.pushGroup("and deeper")
+                    UI.LText("test", "test")
+                UI.popGroup()
+                UI.pushGroup("and deeper2")
+                    UI.LText("test", "test")
+                UI.popGroup()
+                UI.pushGroup("and deeper3")
+                    UI.LText("test", "test")
+                UI.popGroup()
+            UI.popGroup()
+            UI.pushGroup("nested Group2")
+                UI.LText("test", "test")
+            UI.popGroup()
         UI.popGroup()
-        UI.popGroup()
-        UI.popGroup()
+
         UI.popWindow();
 
         UI.pushWindow("UI");
@@ -205,16 +211,15 @@ export default class Main {
         UI.LText(UI_I.numDrawCalls + "", "UI DrawCalls")
         UI.LTexture("atlas", this.textTexture)
         UI.setLLabelSize()
-
         UI.popWindow();
 
         UI.pushWindow("1TestWindow1");
 
         UI.popWindow();
 
-        /* UI.pushWindow("2TestWindow2");
-         UI.LText( "2TestWindow2")
-         UI.popWindow();*/
+        UI.pushWindow("2TestWindow2");
+        UI.LText( "2TestWindow2")
+        UI.popWindow();
     }
 
     draw() {

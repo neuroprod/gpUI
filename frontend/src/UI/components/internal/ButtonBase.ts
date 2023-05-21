@@ -9,6 +9,7 @@ import Font from "../../draw/Font";
 
 export class ButtonBaseSettings extends ComponentSettings {
 
+
     constructor() {
         super();
 
@@ -16,6 +17,7 @@ export class ButtonBaseSettings extends ComponentSettings {
     public backColor:Color =new Color().setHex("#65625e",1);
     public overColor:Color =new Color().setHex("#868480",1);
     public downColor:Color =new Color().setHex("#8b826d",1);
+    public disableColor:Color =new Color().setHex("#575757",1);
     public labelColor:Color =new Color().setHex("#ffffff",1);
     public transparent:boolean =false;
 }
@@ -25,7 +27,7 @@ export default class ButtonBase extends Component
     private label: string;
     private textPos: Vec2;
     private textMaxSize: number;
-
+    public enabled =true;
     constructor(id: number,label:string, settings: ButtonBaseSettings) {
         super(id, settings);
 
@@ -54,22 +56,28 @@ export default class ButtonBase extends Component
         UI_I.currentDrawBatch.textBatch.addLine(this.textPos,this.label ,this.textMaxSize,settings.labelColor)
 
         if(settings.transparent)return
+
         let color;
-        if (this.isDown) {
-            color =settings.downColor;
-        } else if (this.isOver) {
-            color = settings.overColor;
-        } else {
-            color = settings.backColor;
+        if(this.enabled) {
+            if (this.isDown) {
+                color = settings.downColor;
+            } else if (this.isOver) {
+                color = settings.overColor;
+            } else {
+                color = settings.backColor;
 
+            }
+        }else
+        {
+            color =settings.disableColor;
         }
-
         UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, color);
 
 
 
     }
     getReturnValue() {
+        if(!this.enabled)return false
         return this.isClicked
     }
 
