@@ -129,8 +129,30 @@ export default class Main {
             }
             UI.setIndent(0)
         }
+        UI.pushGroup("Numbers")
 
-        UI.separator("Selection")
+        let a = UI.LFloatSlider("localVal", 2);
+        UI.LFloatSlider(this, "myFloat", -1, 1);
+        UI.LIntSlider("intSlider", 6, 0, 10);
+
+        UI.separator("Drag/Input")
+        UI.LFloat(this, "myFloat2");
+        UI.floatPrecision = 4;
+        UI.LFloat("testP", 0.001);
+        UI.floatPrecision = 2;
+        UI.popGroup()
+
+        UI.pushGroup("Colors")
+        //color
+        UI.LColor("color1", this.color1);
+        UI.LColor("color2", this.color2)
+
+        UI.LTexture("mijnTexture", this.parrotTexture)
+
+        UI.popGroup()
+
+
+        UI.pushGroup("Select")
         //select
         let t: TestEnum = UI.LSelect("Enum", UIUtils.EnumToSelectItem(TestEnum), 0)
 
@@ -150,20 +172,10 @@ export default class Main {
             }
         }
         UI.popList()
-
-
-        UI.pushGroup("Numbers")
-
-        let a = UI.LFloatSlider("localVal", 2);
-        UI.LFloatSlider(this, "myFloat", -1, 1);
-        UI.LIntSlider("intSlider", 6, 0, 10);
-
-        UI.separator("Drag/Input")
-        UI.LFloat(this, "myFloat2");
-        UI.floatPrecision = 4;
-        UI.LFloat("testP", 0.001);
-        UI.floatPrecision = 2;
         UI.popGroup()
+
+
+
         UI.pushGroup("Vectors")
         UI.LVector('myVec3', this.myVec3);
         let v2 = UI.LVector("vec2", new Vector2(0.5, 0.2))
@@ -174,14 +186,7 @@ export default class Main {
         UI.LText(v5 + "", "test");
         UI.popGroup()
 
-        UI.pushGroup("Colors")
-        //color
-        UI.LColor("color1", this.color1);
-        UI.LColor("color2", this.color2)
 
-        UI.LTexture("mijnTexture", this.parrotTexture)
-
-        UI.popGroup()
 
         UI.pushGroup("Group")
         UI.pushGroup("nested Group")
