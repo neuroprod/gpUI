@@ -325,11 +325,7 @@ export default class Panel extends Component {
         let settings = this.settings as PanelSettings
 
         if(!this.isDocked) {
-            let r = new Rect()
-            r.copy(this.layoutRect)
-            r.pos.x += 5
-            r.pos.y += 5
-            UI_I.currentDrawBatch.fillBatch.addRect(r, new Color(0, 0, 0, 0.1));
+            UI_I.currentDrawBatch.fillBatch.addShadow(this.layoutRect)
         }
         Utils.drawOutlineRect(this.layoutRect, settings.outlineColor)
 
