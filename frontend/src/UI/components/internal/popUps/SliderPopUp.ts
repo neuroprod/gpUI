@@ -85,9 +85,9 @@ export default class SliderPopUpPopUp extends PopUpWindow {
         // this.box.marginLeft
     }
 
-    setSubComponents() {
-        super.setSubComponents();
-        UI_IC.pushVerticalLayout("v");
+    setPopupContent(){
+
+       UI_IC.pushVerticalLayout("v");
 
         UI_IC.pushComponent("min", this.hCompSettings)
         UI_IC.LFloat(this, "min", this.lFloatSettings);
@@ -110,7 +110,7 @@ export default class SliderPopUpPopUp extends PopUpWindow {
         UI_IC.pushComponent("ok", this.hCompBtnSettings)
         if(UI_IC.buttonBase("Cancel", this.btnCancelSettings))
         {
-           // this.keepAlive =false;
+
             UI_I.removePopup(this);
         }
 

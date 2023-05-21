@@ -17,7 +17,7 @@ export class ButtonBaseSettings extends ComponentSettings {
     public overColor:Color =new Color().setHex("#868480",1);
     public downColor:Color =new Color().setHex("#8b826d",1);
     public labelColor:Color =new Color().setHex("#ffffff",1);
-
+    public transparent:boolean =false;
 }
 
 export default class ButtonBase extends Component
@@ -56,6 +56,9 @@ export default class ButtonBase extends Component
 
         let settings= this.settings as ButtonBaseSettings
 
+        UI_I.currentDrawBatch.textBatch.addLine(this.textPos,this.label ,this.textMaxSize,settings.labelColor)
+
+        if(settings.transparent)return
         let color;
         if (this.isDown) {
             color =settings.downColor;
@@ -67,7 +70,7 @@ export default class ButtonBase extends Component
         }
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, color);
-        UI_I.currentDrawBatch.textBatch.addLine(this.textPos,this.label ,this.textMaxSize,settings.labelColor)
+
 
 
     }

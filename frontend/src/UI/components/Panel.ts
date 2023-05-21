@@ -21,7 +21,7 @@ export class PanelSettings extends ComponentSettings {
     public labelColor: Color = new Color().setHex("#d8d8d8", 1)
     public topBarColor: Color = new Color().setHex("#2b2927", 1)
     public resizeColor: Color = new Color().setHex("#1c1c1c", 1)
-    public outlineColor: Color = new Color().setHex("#FFFFFF", 0.1)
+    public outlineColor: Color = new Color().setHex("#575757", 1)
     public topBarHeight = 22;
     public minSize = new Vec2(156, 100);
 
@@ -324,6 +324,13 @@ export default class Panel extends Component {
 
         let settings = this.settings as PanelSettings
 
+        if(!this.isDocked) {
+            let r = new Rect()
+            r.copy(this.layoutRect)
+            r.pos.x += 5
+            r.pos.y += 5
+            UI_I.currentDrawBatch.fillBatch.addRect(r, new Color(0, 0, 0, 0.1));
+        }
         Utils.drawOutlineRect(this.layoutRect, settings.outlineColor)
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.backgroundColor);

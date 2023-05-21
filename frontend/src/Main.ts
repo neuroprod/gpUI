@@ -111,7 +111,7 @@ export default class Main {
     update() {
 
         this.scene.update();
-
+        this.glMain.gl.clearColor(this.color1.r, this.color1.g, this.color1.b,1);
         UI.pushWindow("Examples");
         //text
         UI.LText("hello world " + this.myFloat, "label dit is een fucking long label")

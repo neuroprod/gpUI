@@ -30,12 +30,7 @@ export default class IconButton extends Component
         this.icon =icon;
     }
 
-    layoutRelative() {
-        super.layoutRelative();
-        let settings= this.settings as ButtonBaseSettings
-        if(settings.box.size.x==-1) this.size.x = Utils.getMaxInnerWidth(this.parent) -settings.box.marginLeft-settings.box.marginRight;
-        if(settings.box.size.y==-1) this.size.y = Utils.getMaxInnerHeight(this.parent) -settings.box.marginTop-settings.box.marginBottom;
-    }
+
 
     layoutAbsolute() {
         super.layoutAbsolute();
@@ -50,7 +45,9 @@ export default class IconButton extends Component
         super.prepDraw()
 
         let settings= this.settings as ButtonBaseSettings
+        UI_I.currentDrawBatch.textBatch.addIcon(  this.iconPos,this.icon ,settings.labelColor)
 
+        if(settings.transparent)return;
         let color;
         if (this.isDown) {
             color =settings.downColor;
@@ -62,7 +59,7 @@ export default class IconButton extends Component
         }
 
         UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, color);
-        UI_I.currentDrawBatch.textBatch.addIcon(  this.iconPos,this.icon ,settings.labelColor)
+
 
 
     }

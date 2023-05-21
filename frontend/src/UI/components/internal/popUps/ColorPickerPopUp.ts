@@ -49,7 +49,7 @@ export default class ColorPickerPopUp extends PopUpWindow {
     }
 
 
-    setSubComponents() {
+    setPopupContent() {
 
         if (UI_IC.colorPicker("cp", this.color)) {
             this.comp.setValueDirty(true)

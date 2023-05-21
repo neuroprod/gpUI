@@ -9,7 +9,7 @@ import UI_Vars from "../UI_Vars";
 
 export class LNumberSettings extends LComponentSettings {
     showDirty: boolean = true;
-    showSettings: boolean = false;
+    showSettings: boolean = true;
 
     constructor() {
         super();
@@ -54,7 +54,7 @@ export default class LNumber extends LComponent {
         this.showDirty = settings.showDirty;
         this.showSettings = settings.showSettings
         if (settings.showDirty) this.dragSettings.box.marginLeft = 4;
-        if (settings.showSettings) this.dragSettings.box.marginRight = 20;
+        if (settings.showSettings) this.dragSettings.box.marginRight = 12;
 
     }
 

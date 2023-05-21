@@ -57,8 +57,8 @@ export default class ViewportPopUp extends PopUpWindow {
 
     }
 
-    setSubComponents() {
-        super.setSubComponents();
+    setPopupContent()  {
+
         UI_IC.pushVerticalLayout("v");
 
       //  UI_IC.pushComponent("min", this.hCompSettings)
