@@ -17,12 +17,19 @@ export default class LList extends LComponent {
 
         this.size.copy( settings.box.size);
         this.vlSettings.box.size.y=size;
-        this.vlSettings.backgroundColor.setHex("#220020",1)
-        this.vlSettings.hasBackground =true;
+
         this.vlSettings.needScrollBar =true;
     }
     setSubComponents() {
         super.setSubComponents();
         UI_IC.pushVerticalLayout("vl",this.vlSettings)
+    }
+    onPopComponent() {
+        let c =this.children[0].children
+        for(let i=0;i<c.length;i++)
+        {
+
+
+        }
     }
 }

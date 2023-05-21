@@ -6,9 +6,9 @@ import Utils from "../math/Utils";
 
 
 export class VerticalLayoutSettings extends ComponentSettings {
-    scrollBarWidth = 2;
+    scrollBarWidth = 1;
     scrollbarMargin = 3;
-    scrollBarColor = new Color().setHex("#6f6f6f", 1);
+    scrollBarColor = new Color().setHex("#686868", 1);
     hasOwnDrawBatch =true;
     needScrollBar =true;
     constructor() {

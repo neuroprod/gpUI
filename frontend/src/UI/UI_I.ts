@@ -419,19 +419,22 @@ export default class UI_I {
     //draw batches
     static pushDrawBatch(id, clipRect, isDirty) {
 
-        let batch;
+        let batch:DrawBatch;
         if (this.drawBatches.has(id)) {
             batch = this.drawBatches.get(id);
             batch.isDirty = isDirty;
+
             batch.clear()
         } else {
             batch = new DrawBatch(id, clipRect);
             this.drawBatches.set(id, batch);
             this.currentDrawBatch.addChild(batch);
+
             batch.isDirty = true;
 
         }
 
+        batch.useThisFrame =true;
         this.currentDrawBatch = batch;
     }
 
@@ -460,7 +463,7 @@ export default class UI_I {
         if(!this.mouseOverComponent)return;
 
         let delta =this.mouseListener.wheelDelta;
-        console.log("s",delta,this.mouseOverComponent);
+
         this.mouseListener.wheelDelta =0;
         let sc =this.mouseOverComponent.getScrollComponent();
         if(sc)sc.setScrollDelta(delta)

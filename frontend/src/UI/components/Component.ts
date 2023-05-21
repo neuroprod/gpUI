@@ -223,6 +223,8 @@ export default class Component {
                 this.layoutRect.copyPos(this.posAbsolute);
                 this.layoutRect.copySize(this.size);
 
+            }else{
+                this.layoutRect.copySize(UI_I.screenSize)
             }
 
             this.layoutAbsolute();
@@ -246,6 +248,12 @@ export default class Component {
 
         if (this.hasOwnDrawBatch) {
             this.clippingRect.copy(this.layoutRect)
+            if(UI_I.currentDrawBatch.clipRect) {
+                if (!UI_I.currentDrawBatch.clipRect.containsRect(this.clippingRect)){
+                    return;
+
+                }
+            }
             UI_I.pushDrawBatch(this.id, this.clippingRect, this.isDirty);
         }
         if (this.isDirty || !this.hasOwnDrawBatch) {
@@ -253,7 +261,7 @@ export default class Component {
             if (this.drawChildren) {
                 for (let child of this.children) {
                     //TODO remove cliped children
-                   // if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
+                   if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
                         child.prepDrawInt();
                 }
             }

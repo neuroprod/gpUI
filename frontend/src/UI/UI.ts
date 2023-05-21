@@ -29,6 +29,7 @@ import UI_IC from "./UI_IC";
 import {UI_VEC2, UI_VEC3, UI_VEC4} from "./UI_Types";
 import LVector, {LVectorSettings} from "./components/LVector";
 import LList, {LListSettings} from "./components/LList";
+import LListItem, {LListItemSettings} from "./components/LListItem";
 
 
 
@@ -117,7 +118,7 @@ export default class UI {
         UI_I.popComponent();
     }
 
-    static pushList(label: string,size:number=200, settings?: LListSettings) {
+    static pushLList(label: string,size:number=200, settings?: LListSettings) {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LListSettings();
             let comp = new LList(UI_I.getID(label), label,size, settings);
@@ -125,9 +126,19 @@ export default class UI {
         }
 
     }
-
+   static LListItem(label: string,selected:boolean=false)
+   {
+       if (!UI_I.setComponent(label)) {
+           let comp = new LListItem(UI_I.getID(label), label,new LListItemSettings());
+           UI_I.addComponent(comp);
+       }
+       let result = UI_I.currentComponent.getReturnValue()
+       UI_I.popComponent();
+       return result;
+   }
     static popList() {
         UI_I.popComponent();
+
         UI_I.popComponent();
     }
     static setIndent(value: number) {

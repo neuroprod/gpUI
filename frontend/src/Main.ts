@@ -16,11 +16,10 @@ import Vec2 from "./UI/math/Vec2";
 import {Vector2, Vector3, Vector4} from "math.gl";
 
 
-
 import UI from "./UI/UI";
 import {getUI_VEC2} from "./UI/UI_Types";
 
- export enum TestEnum {
+export enum TestEnum {
     Up,
     Down,
     Left,
@@ -41,7 +40,7 @@ export default class Main {
     private myFloat2 = 0.5;
     private myBool = false;
     private myText = "hello Tokyo"
-    private myVec3:Vector3 =new Vector3(100,-200,1.0);
+    private myVec3: Vector3 = new Vector3(100, -200, 1.0);
     private parrotTextureGL: Texture;
     private parrotTexture: UITexture;
     private textTexture: UITexture;
@@ -56,11 +55,10 @@ export default class Main {
         this.glMain = new GL(canvas, this.preloader, "")
 
 
-        let v =new Vector3();
+        let v = new Vector3();
 
 
-
-        let v2 =getUI_VEC2();
+        let v2 = getUI_VEC2();
 
 
         UI.setWebgl(this.glMain.gl, canvas);
@@ -75,10 +73,7 @@ export default class Main {
 
 
         this.scene = new Scene(this.glMain, this.preloader)
-        this.glMain.gl.clearColor(0.22, 0.25, 0.29,1);
-
-
-
+        this.glMain.gl.clearColor(0.22, 0.25, 0.29, 1);
 
 
     }
@@ -100,7 +95,7 @@ export default class Main {
         });
         this.update();
 
-        this.viewPortSize =UI.pushViewport("viewport");
+        this.viewPortSize = UI.pushViewport("viewport");
         this.draw();
         UI.popViewport();
         UI.draw();
@@ -111,13 +106,13 @@ export default class Main {
 
         this.scene.update();
 
-      UI.pushWindow("Examples");
+        UI.pushWindow("Examples");
         //text
         UI.LText("hello world " + this.myFloat, "label dit is een fucking long label")
         UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?", "multiline", true)
         UI.LTextInput("input text", this, "myText")
 
-        UI.separator("separator1 ",false)
+        UI.separator("separator1 ", false)
         if (UI.LButton("Press Me!", "button")) {
             console.log("Thanks!")
         }
@@ -126,8 +121,7 @@ export default class Main {
         }
 
 
-
-        UI.separator("Boolean" )
+        UI.separator("Boolean")
         if (UI.LBool(this, "myBool")) {
             UI.setIndent(20)
             if (UI.LBool("animate myFloat", false)) {
@@ -136,19 +130,26 @@ export default class Main {
             UI.setIndent(0)
         }
 
-        UI.separator("Selection" )
+        UI.separator("Selection")
         //select
-        let t:TestEnum =UI.LSelect("Enum",  UIUtils.EnumToSelectItem(TestEnum),0)
+        let t: TestEnum = UI.LSelect("Enum", UIUtils.EnumToSelectItem(TestEnum), 0)
 
-        let selectArray =[];
-        for(let i=0;i<100;i++)
-        {
-            selectArray.push( new SelectItem("item"+i,i))
+        let selectArray = [];
+        for (let i = 0; i < 100; i++) {
+            selectArray.push(new SelectItem("item" + i, i))
         }
+        let selectedItem = UI.LSelect("select", selectArray, 0)
+        UI.LText("selected item: " + selectedItem);
 
-        let selectedItem =UI.LSelect("select",selectArray,0)
-        UI.LText("selected item: "+selectedItem );
-
+        UI.pushLList("mijnList", 100);
+        for (let i = 0; i < 10; i++) {
+            let selected = false;
+            if (i == 0) selected = true
+            if (UI.LListItem("name" + i, selected)) {
+                console.log("index", i)
+            }
+        }
+        UI.popList()
 
 
         UI.pushGroup("Numbers")
@@ -159,18 +160,18 @@ export default class Main {
 
         UI.separator("Drag/Input")
         UI.LFloat(this, "myFloat2");
-        UI.floatPrecision =4;
+        UI.floatPrecision = 4;
         UI.LFloat("testP", 0.001);
-        UI.floatPrecision =2;
+        UI.floatPrecision = 2;
         UI.popGroup()
         UI.pushGroup("Vectors")
-        UI.LVector('myVec3',this.myVec3);
-        let v2 = UI.LVector("vec2",new Vector2(0.5,0.2))
-        let v3 = UI.LVector("vec3",new Vector3(0.5,0.2,1.33))
-        let v4 = UI.LVector("vec4",new Vector4(0.5,0.2,1.33,2.0))
-        UI.LText(this.myVec3+"-"+v2+"-"+v3+"-"+v4,"test");
-        let v5 = UI.LVector("normalized",new Vector3(1,0.0,0),true)
-        UI.LText(v5+"","test");
+        UI.LVector('myVec3', this.myVec3);
+        let v2 = UI.LVector("vec2", new Vector2(0.5, 0.2))
+        let v3 = UI.LVector("vec3", new Vector3(0.5, 0.2, 1.33))
+        let v4 = UI.LVector("vec4", new Vector4(0.5, 0.2, 1.33, 2.0))
+        UI.LText(this.myVec3 + "-" + v2 + "-" + v3 + "-" + v4, "test");
+        let v5 = UI.LVector("normalized", new Vector3(1, 0.0, 0), true)
+        UI.LText(v5 + "", "test");
         UI.popGroup()
 
         UI.pushGroup("Colors")
@@ -203,29 +204,20 @@ export default class Main {
         UI.popWindow();
 
         UI.pushWindow("1TestWindow1");
-            UI.LColor("color2", this.color2)
-            UI.pushList("mijnList",100);
 
-
-            for(let i=0;i<10;i++){
-                UI.LButton("name"+i)
-            }
-
-            UI.popList()
-            UI.LColor("color1", this.color1);
         UI.popWindow();
 
-       /* UI.pushWindow("2TestWindow2");
-        UI.LText( "2TestWindow2")
-        UI.popWindow();*/
+        /* UI.pushWindow("2TestWindow2");
+         UI.LText( "2TestWindow2")
+         UI.popWindow();*/
     }
 
     draw() {
         let gl = this.glMain.gl;
-        gl.viewport(0,0,this.viewPortSize.x,this.viewPortSize.y)
+        gl.viewport(0, 0, this.viewPortSize.x, this.viewPortSize.y)
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        this.scene.camera.update(this.viewPortSize.x/this.viewPortSize.y)
+        this.scene.camera.update(this.viewPortSize.x / this.viewPortSize.y)
 
         this.scene.draw();
 

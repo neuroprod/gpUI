@@ -14,9 +14,10 @@ export default class DrawBatch
     public children =[];
     public id: number;
     public clipRect!: Rect|null;
-    needsClipping: boolean=false ;
+    public needsClipping: boolean=false ;
 
     private _isVisible: boolean =true;
+    useThisFrame: boolean=true;
 
     constructor(id:number,clipRect:Rect|null=null) {
         this.id = id;
@@ -81,6 +82,10 @@ export default class DrawBatch
         if(!this.isVisible){
             return;
         };
+       /* if(!this.useThisFrame){
+            return;
+        };
+        this.useThisFrame =false*/
         if(this.clipRect){
 
             array.push(this);

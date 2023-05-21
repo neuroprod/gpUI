@@ -81,7 +81,7 @@ export default class Rect {
     containsRect(inR: Rect) {
         if(this.size.x==0)return true
         if(inR.size.x==0)return true
-        return true;
+
         let thisBR  =this.getBottomRight()
         let inTL =inR.getTopLeft();
 
