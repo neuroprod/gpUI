@@ -10,6 +10,7 @@ export default class MouseListener {
     public isDownThisFrame: boolean =false;
     public isUpThisFrame: boolean =false;
     public isDirty: number =1;
+    public wheelDelta: number=0;
 
 
     constructor(element:HTMLElement) {
@@ -29,7 +30,7 @@ export default class MouseListener {
         this.element.addEventListener('mouseout', this.endListener.bind(this), false);
         this.element.addEventListener('touchcancel', this.endListener.bind(this), false);
 
-
+        this.element.addEventListener("wheel", (event) => {this.wheelDelta =event.deltaY});
 
         this.mousePos = new Vec2(-1, -1);
         this.mousePosDown = new Vec2(-1, -1);

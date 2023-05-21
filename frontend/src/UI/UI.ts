@@ -28,6 +28,7 @@ import UI_Vars from "./UI_Vars";
 import UI_IC from "./UI_IC";
 import {UI_VEC2, UI_VEC3, UI_VEC4} from "./UI_Types";
 import LVector, {LVectorSettings} from "./components/LVector";
+import LList, {LListSettings} from "./components/LList";
 
 
 
@@ -108,12 +109,27 @@ export default class UI {
             let comp = new Group(UI_I.getID(label), label, settings);
             UI_I.addComponent(comp);
         }
+        UI_I.groupDepth++
     }
 
     static popGroup() {
+        UI_I.groupDepth--
         UI_I.popComponent();
     }
 
+    static pushList(label: string,size:number=200, settings?: LListSettings) {
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new LListSettings();
+            let comp = new LList(UI_I.getID(label), label,size, settings);
+            UI_I.addComponent(comp);
+        }
+
+    }
+
+    static popList() {
+        UI_I.popComponent();
+        UI_I.popComponent();
+    }
     static setIndent(value: number) {
         UI_I.globalStyle.compIndent = value;
     }
@@ -231,11 +247,11 @@ export default class UI {
         return result;
     }
 
-    static LVector(label:string, vector:UI_VEC2|UI_VEC3|UI_VEC4,settings?:LVectorSettings){
+    static LVector(label:string, vector:UI_VEC2|UI_VEC3|UI_VEC4,normalized=false,settings?:LVectorSettings){
 
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LVectorSettings()
-            let comp = new LVector(UI_I.getID(label), label, vector, settings);
+            let comp = new LVector(UI_I.getID(label), label, vector,normalized, settings);
             UI_I.addComponent(comp);
         }
 

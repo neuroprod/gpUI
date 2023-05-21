@@ -9,11 +9,12 @@ import DirtyButton from "./internal/DirtyButton";
 import {DragBaseSettings} from "./internal/DragBase";
 import {ComponentSettings} from "./Component";
 import UI_Vars from "../UI_Vars";
+import {SettingsButtonSettings} from "./internal/SettingsButton";
 
 
 export class LVectorSettings extends LComponentSettings {
     showDirty: boolean = true;
-    showSettings: boolean = false;
+    showSettings: boolean = true;
 
     constructor() {
         super();
@@ -39,9 +40,11 @@ export default class LVector extends LComponent {
     private posZSettings: DragBaseSettings;
     private posWSettings: DragBaseSettings;
     private holderSettings: ComponentSettings;
-    private floatPrecision: number;
+    public floatPrecision: number;
+    public step: number;
+    private needNormalize: boolean =true;
 
-    constructor(id: number, label: string, value: UI_VEC2 | UI_VEC3 | UI_VEC4, settings: LVectorSettings) {
+    constructor(id: number, label: string, value: UI_VEC2 | UI_VEC3 | UI_VEC4,normalized:boolean=false, settings: LVectorSettings) {
 
 
         super(id, label, settings);
@@ -49,19 +52,20 @@ export default class LVector extends LComponent {
         this.showDirty = settings.showDirty;
         this.showSettings = settings.showSettings
         this.floatPrecision = UI_Vars.floatPrecision;
+        this.step =this.floatPrecision;
         this.type = VectorType.VEC2;
         this.numBoxes = 2;
-
+        this.needNormalize =normalized;
         this.x = value.x;
         this.y = value.y;
 
 
-        if ((<UI_VEC3>this.value).z) {
+        if (typeof (<UI_VEC3>this.value).z =="number") {
             this.type = VectorType.VEC3;
             this.numBoxes = 3;
             this.z = (<UI_VEC3>this.value).z;
         }
-        if ((<UI_VEC4>this.value).w) {
+        if (typeof (<UI_VEC4>this.value).w=="number") {
             this.type = VectorType.VEC4;
             this.numBoxes = 4;
             this.w = (<UI_VEC4>this.value).w;
@@ -71,7 +75,8 @@ export default class LVector extends LComponent {
         let offsetSize = 1 / this.numBoxes
 
         this.holderSettings = new ComponentSettings()
-        this.holderSettings.box.marginLeft = 4;
+        if(this.showDirty)   this.holderSettings.box.marginLeft = 4;
+        if(this.showSettings)   this.holderSettings.box.marginRight= SettingsButtonSettings.width;
 
         this.posXSettings = new DragBaseSettings()
         this.posXSettings.box.size.x = size;
@@ -99,6 +104,20 @@ export default class LVector extends LComponent {
         this.posWSettings.box.marginLeft = 1;
         this.posWSettings.posOffsetRelative.x = offsetSize * 3;
 
+
+
+        this.posXSettings.floatPrecision =  this.floatPrecision;
+        this.posXSettings.step=Math.pow(10,-this.step);
+
+        this.posYSettings.floatPrecision =  this.floatPrecision;
+        this.posYSettings.step=Math.pow(10,-this.step);
+
+        this.posZSettings.floatPrecision =  this.floatPrecision;
+        this.posZSettings.step=Math.pow(10,-this.step);
+
+        this.posWSettings.floatPrecision =  this.floatPrecision;
+        this.posWSettings.step=Math.pow(10,-this.step);
+
     }
 
 
@@ -109,6 +128,7 @@ export default class LVector extends LComponent {
         if (UI_IC.dragBase("x", this.value, "x", NumberType.FLOAT, this.posXSettings)) {
 
             if (this.x != this.value.x) {
+                if(this.needNormalize)this.normalize()
                 this.setValueDirty(true)
             } else {
                 this.setValueDirty(false)
@@ -119,6 +139,7 @@ export default class LVector extends LComponent {
         if (UI_IC.dragBase("y", this.value, "y", NumberType.FLOAT, this.posYSettings)) {
 
             if (this.y != this.value.y) {
+                if(this.needNormalize)this.normalize()
                 this.setValueDirty(true)
             } else {
                 this.setValueDirty(false)
@@ -129,6 +150,7 @@ export default class LVector extends LComponent {
             if (UI_IC.dragBase("z", this.value, "z", NumberType.FLOAT, this.posZSettings)) {
 
                 if (this.z != (this.value as UI_VEC3).z) {
+                    if(this.needNormalize)this.normalize()
                     this.setValueDirty(true)
                 } else {
                     this.setValueDirty(false)
@@ -141,6 +163,7 @@ export default class LVector extends LComponent {
             if (UI_IC.dragBase("w", this.value, "w", NumberType.FLOAT, this.posWSettings)) {
 
                 if (this.w != (this.value as UI_VEC4).w) {
+                    if(this.needNormalize)this.normalize()
                     this.setValueDirty(true)
                 } else {
                     this.setValueDirty(false)
@@ -169,13 +192,28 @@ export default class LVector extends LComponent {
             btn.setValueDirty(this.valueDirty);
             UI_I.popComponent();
         }
-        /* if (this.showSettings) {
+         if (this.showSettings) {
              if (UI_IC.settingsButton("LSset")) {
-                 console.log("showSettings")
+                 UI_IC.dragPopUp(this,this.layoutRect.pos,"LVector Settings")
              }
-         }*/
+         }
     }
+    setFromSettings(precision:number,step:number)
+    {
+        this.floatPrecision =precision;
+        this.step =step
+        this.posXSettings.floatPrecision =  this.floatPrecision;
+        this.posXSettings.step=Math.pow(10,-this.step);
 
+        this.posYSettings.floatPrecision =  this.floatPrecision;
+        this.posYSettings.step=Math.pow(10,-this.step);
+
+        this.posZSettings.floatPrecision =  this.floatPrecision;
+        this.posZSettings.step=Math.pow(10,-this.step);
+
+        this.posWSettings.floatPrecision =  this.floatPrecision;
+        this.posWSettings.step=Math.pow(10,-this.step);
+    }
     getReturnValue(): UI_VEC2 | UI_VEC3 | UI_VEC4 {
         return this.value;
     }
@@ -193,4 +231,7 @@ export default class LVector extends LComponent {
         return ret;
     }
 
+    private normalize() {
+        this.value.normalize()
+    }
 }

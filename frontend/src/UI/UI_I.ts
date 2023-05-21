@@ -48,6 +48,7 @@ export default class UI_I {
     private static mouseDownComponent: Component | null = null;
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
+    static groupDepth: number =0;
 
 
     constructor() {
@@ -229,6 +230,7 @@ export default class UI_I {
         })
 
         this.checkMouse();
+        this.checkWheel();
         let buffer = this.keyboardListener.getBuffer()
         let actionKey = this.keyboardListener.getActionKey()
         if (this.focusComponent) {
@@ -451,5 +453,16 @@ export default class UI_I {
             batch.isVisible = isVisible
             batch.isDirty = true;
         }
+    }
+
+    private static checkWheel() {
+        if(this.mouseListener.wheelDelta==0)return;
+        if(!this.mouseOverComponent)return;
+
+        let delta =this.mouseListener.wheelDelta;
+        console.log("s",delta,this.mouseOverComponent);
+        this.mouseListener.wheelDelta =0;
+        let sc =this.mouseOverComponent.getScrollComponent();
+        if(sc)sc.setScrollDelta(delta)
     }
 }

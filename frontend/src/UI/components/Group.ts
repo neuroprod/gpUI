@@ -14,7 +14,7 @@ export class GroupSettings extends ComponentSettings {
         super();
         this.box.marginTop= 3;
         this.box.marginBottom = 0;
-        this.box.marginLeft = UI_I.globalStyle.compIndent
+        this.box.marginLeft = UI_I.globalStyle.compIndent+Math.min(UI_I.groupDepth,1)*10
 this.box.size.y =20;
     }
 

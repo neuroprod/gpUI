@@ -17,6 +17,8 @@ export class DragBaseSettings extends ComponentSettings {
     colorBack = new Color().setHex("#4c4c4c", 1);
     labelColor = new Color().gray(0.8)
     posOffsetRelative: Vec2 =new Vec2()
+    floatPrecision: number =2;
+    step: number=0.01;
 
     constructor() {
         super();
@@ -41,8 +43,8 @@ export default class DragBase extends Component {
     private changed: boolean = false;
     private label: string;
     private startMouseX: number;
-    private floatPrecision: number;
-    private step: number;
+
+
     private textLength: number;
     private iconBtnRightSettings: IconButtonSettings;
     private inputSettings: InputBaseSettings;
@@ -58,13 +60,8 @@ export default class DragBase extends Component {
         this.value = ref[objName];
         this.posOffsetRelative =settings.posOffsetRelative;
         this.type = type;
-        if (this.type == NumberType.FLOAT) {
-            this.floatPrecision = UI_Vars.floatPrecision;
 
-        } else {
-            this.floatPrecision = 0;
-        }
-        this.step = Math.pow(10, -this.floatPrecision);
+
 
         this.iconBtnRightSettings = new IconButtonSettings()
         this.iconBtnRightSettings.box.marginLeft = 21;
@@ -95,7 +92,7 @@ export default class DragBase extends Component {
         if (!this.isDragging) {
             if (this.startMouseX > this.textPos.x && this.startMouseX < this.textPos.x + this.textLength) {
                 this.showInput = true;
-                this.valueString = this.value.toFixed(this.floatPrecision);
+                this.valueString = this.value.toFixed((this.settings as DragBaseSettings).floatPrecision);
             }
         }
 
@@ -116,7 +113,7 @@ export default class DragBase extends Component {
             this.startMouseX = UI_I.mouseListener.mousePos.x;
 
 
-            this.value += valueChange * this.step;//*Math.sign(valueChange);
+            this.value += valueChange * (this.settings as DragBaseSettings).step;//*Math.sign(valueChange);
             this.ref [this.objName] = this.value;
 
             this.changed = true;
@@ -134,7 +131,7 @@ export default class DragBase extends Component {
         this.textPos.copy(this.layoutRect.pos)
 
 
-        this.label = this.value.toFixed(this.floatPrecision)
+        this.label = this.value.toFixed((this.settings as DragBaseSettings).floatPrecision)
 
         this.textLength = Math.min(this.textMaxWidth, Font.charSize.x * this.label.length)
 
@@ -174,13 +171,13 @@ export default class DragBase extends Component {
         } else if (this.isOverLayout || this.isDown) {
 
             if (UI_IC.iconButton("left", 4)) {
-                this.value -= this.step;
+                this.value -= (this.settings as DragBaseSettings).step;
                 this.ref [this.objName] = this.value;
                 this.changed = true;
                 this.setDirty(true);
             }
             if (UI_IC.iconButton("right", 3, this.iconBtnRightSettings)) {
-                this.value += this.step;
+                this.value += (this.settings as DragBaseSettings).step;
                 this.ref [this.objName] = this.value;
                 this.changed = true;
                 this.setDirty(true);

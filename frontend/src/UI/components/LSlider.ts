@@ -7,6 +7,7 @@ import {NumberType} from "../UI_Enums";
 import UI_Vars from "../UI_Vars";
 import {SliderBaseSettings} from "./internal/SliderBase";
 import Local from "../local/Local";
+import {SettingsButtonSettings} from "./internal/SettingsButton";
 
 export class LSliderSettings extends LComponentSettings {
     showDirty: boolean = true;
@@ -65,7 +66,7 @@ export default class LSlider extends LComponent {
         this.sliderBaseSettings.min = this.min;
         this.sliderBaseSettings.max = this.max;
         this.sliderBaseSettings.type = this.type;
-        if (this.showSettings) this.sliderBaseSettings.box.marginRight = 12
+        if (this.showSettings) this.sliderBaseSettings.box.marginRight = SettingsButtonSettings.width
         if (this.showDirty) this.sliderBaseSettings.box.marginLeft = 4
         this.sliderBaseSettings.floatPrecision = this.floatPrecision;
     }

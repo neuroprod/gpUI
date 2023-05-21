@@ -20,7 +20,7 @@ export class SliderPopUpSettings extends PopUpWindowSettings {
 
 }
 
-export default class SliderPopUpPopUp extends PopUpWindow {
+export default class SliderPopUp extends PopUpWindow {
     private slider: LSlider;
     private lFloatSettings: LNumberSettings;
     private hCompSettings: ComponentSettings;

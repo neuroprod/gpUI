@@ -103,7 +103,6 @@ export default class Main {
         this.viewPortSize =UI.pushViewport("viewport");
         this.draw();
         UI.popViewport();
-
         UI.draw();
 
     }
@@ -112,7 +111,7 @@ export default class Main {
 
         this.scene.update();
 
-        UI.pushWindow("Examples");
+      UI.pushWindow("Examples");
         //text
         UI.LText("hello world " + this.myFloat, "label dit is een fucking long label")
         UI.LText("Een lange lap tekst of kort en bondig? De woorden zeggen het al: 'een lange lap' klinkt saai, terwijl 'kort en bondig' vlot overkomt. Maar betekent dat dat je lange teksten dan altijd moet vermijden?", "multiline", true)
@@ -163,12 +162,15 @@ export default class Main {
         UI.floatPrecision =4;
         UI.LFloat("testP", 0.001);
         UI.floatPrecision =2;
-        UI.separator("Vectors")
+        UI.popGroup()
+        UI.pushGroup("Vectors")
         UI.LVector('myVec3',this.myVec3);
-        let v2 = UI.LVector("vec2Test",new Vector2(0.5,0.2))
-        let v3 = UI.LVector("vec3Test",new Vector3(0.5,0.2,1.33))
-        let v4 = UI.LVector("vec4Test",new Vector4(0.5,0.2,1.33,2.0))
+        let v2 = UI.LVector("vec2",new Vector2(0.5,0.2))
+        let v3 = UI.LVector("vec3",new Vector3(0.5,0.2,1.33))
+        let v4 = UI.LVector("vec4",new Vector4(0.5,0.2,1.33,2.0))
         UI.LText(this.myVec3+"-"+v2+"-"+v3+"-"+v4,"test");
+        let v5 = UI.LVector("normalized",new Vector3(1,0.0,0),true)
+        UI.LText(v5+"","test");
         UI.popGroup()
 
         UI.pushGroup("Colors")
@@ -177,10 +179,16 @@ export default class Main {
         UI.LColor("color2", this.color2)
 
         UI.LTexture("mijnTexture", this.parrotTexture)
-        UI.LTextInput("test", "2")
+
         UI.popGroup()
 
-
+        UI.pushGroup("Group")
+        UI.pushGroup("nested Group")
+        UI.pushGroup("and deeper")
+        UI.LText("test", "test")
+        UI.popGroup()
+        UI.popGroup()
+        UI.popGroup()
         UI.popWindow();
 
         UI.pushWindow("UI");
@@ -195,12 +203,21 @@ export default class Main {
         UI.popWindow();
 
         UI.pushWindow("1TestWindow1");
-        UI.LText( "1TestWindow1")
+            UI.LColor("color2", this.color2)
+            UI.pushList("mijnList",100);
+
+
+            for(let i=0;i<10;i++){
+                UI.LButton("name"+i)
+            }
+
+            UI.popList()
+            UI.LColor("color1", this.color1);
         UI.popWindow();
 
-        UI.pushWindow("2TestWindow2");
+       /* UI.pushWindow("2TestWindow2");
         UI.LText( "2TestWindow2")
-        UI.popWindow();
+        UI.popWindow();*/
     }
 
     draw() {

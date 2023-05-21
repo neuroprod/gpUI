@@ -7,15 +7,15 @@ import Font from "../../draw/Font";
 
 
 export class SettingsButtonSettings extends ComponentSettings {
-
+static width =8
     constructor() {
         super();
-        this.backgroundColor.setHex("#1d1d1d",1)
+        this.backgroundColor.setHex("#505050",1)
         this.hasBackground =true
-        this.box.size.set(12,20);
+        this.box.size.set(SettingsButtonSettings.width,20);
     }
-    public colorIconOver:Color =new Color().setHex("#FFFFFF",1);
-    public colorIcon:Color =new Color().setHex("#a3a3a3",1);
+    public colorIconOver:Color =new Color().setHex("#848484",1);
+    public colorIcon:Color =new Color().setHex("#e3e3e3",1);
 }
 
 export default class SettingsButton extends Component

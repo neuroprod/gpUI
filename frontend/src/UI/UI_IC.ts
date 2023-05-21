@@ -41,6 +41,8 @@ import Separator, {SeparatorSettings} from "./components/Separator";
 import Component, {ComponentSettings} from "./components/Component";
 import Viewport from "./components/Viewport";
 import ViewportPopUp, {ViewportPopUpSettings} from "./components/internal/popUps/ViewportPopUp";
+import LVector from "./components/LVector";
+import DragPopUp, {DragPopUpSettings} from "./components/internal/popUps/DragPopUp";
 export default class UI_IC {
 
     static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
@@ -342,6 +344,16 @@ export default class UI_IC {
 
         UI_I.currentComponent = old;
     }
+    static dragPopUp(comp: LNumber|LVector, pos: Vec2, name: string,settings: DragPopUpSettings = new DragPopUpSettings()) {
+        let old = UI_I.currentComponent;
+
+        UI_I.currentComponent = UI_I.popupLayer;
+        let compPopup = new DragPopUp(UI_I.getID(comp.id + ""), comp,pos,name, settings);
+        UI_I.addComponent(compPopup);
+        UI_I.hasPopup = true;
+
+        UI_I.currentComponent = old;
+    }
     static colorPickerPopUp(comp: LColor, settings: ColorPickerPopupSettings = new ColorPickerPopupSettings()) {
 
         let old = UI_I.currentComponent;
@@ -378,6 +390,7 @@ export default class UI_IC {
 
         UI_I.popComponent();
     }
+
 
 
 }

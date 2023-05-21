@@ -6,6 +6,7 @@ import DirtyButton from "./internal/DirtyButton";
 import {DragBaseSettings} from "./internal/DragBase";
 import {NumberType} from "../UI_Enums";
 import UI_Vars from "../UI_Vars";
+import {SettingsButtonSettings} from "./internal/SettingsButton";
 
 export class LNumberSettings extends LComponentSettings {
     showDirty: boolean = true;
@@ -26,10 +27,12 @@ export default class LNumber extends LComponent {
     private type: NumberType;
     private valueOld: number;
     private dragSettings: DragBaseSettings;
-    private floatPrecision: number;
+
     private showDirty: boolean;
     private showSettings: boolean;
 
+    public step: number;
+    public floatPrecision: number;
     constructor(id: number, label: string, value: number | null, ref: any, settings: LNumberSettings, type: NumberType = NumberType.FLOAT) {
 
 
@@ -45,16 +48,19 @@ export default class LNumber extends LComponent {
         } else {
             this.floatPrecision = 0;
         }
+        this.step =this.floatPrecision;
 
         if (this.ref) {
             this.value = this.ref[this.stringRef]
         }
         this.valueOld = this.value;
         this.dragSettings = new DragBaseSettings()
+        this.dragSettings.floatPrecision =this.floatPrecision;
+        this.dragSettings.step=Math.pow(10,-this.step);
         this.showDirty = settings.showDirty;
         this.showSettings = settings.showSettings
         if (settings.showDirty) this.dragSettings.box.marginLeft = 4;
-        if (settings.showSettings) this.dragSettings.box.marginRight = 12;
+        if (settings.showSettings) this.dragSettings.box.marginRight = SettingsButtonSettings.width;
 
     }
 
@@ -92,11 +98,17 @@ export default class LNumber extends LComponent {
         }
         if (this.showSettings) {
             if (UI_IC.settingsButton("LSset")) {
-                console.log("showSettings")
+                UI_IC.dragPopUp(this,this.layoutRect.pos,"LNumber Settings")
             }
         }
     }
-
+    setFromSettings(precision:number,step:number)
+    {
+        this.floatPrecision =precision;
+        this.step =step
+        this.dragSettings.floatPrecision =precision;
+        this.dragSettings.step=Math.pow(10,-this.step);
+    }
     getReturnValue(): number {
         return this.value;
     }

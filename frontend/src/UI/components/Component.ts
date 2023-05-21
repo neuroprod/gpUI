@@ -56,7 +56,7 @@ export default class Component {
     public scrollOffset: Vec2 = new Vec2();
 
     protected clippingRect = new Rect();
-
+    protected hasScrollBar: boolean = false;
 
 
     constructor(id: number, settings: ComponentSettings) {
@@ -370,6 +370,18 @@ export default class Component {
     }
 
     onMouseDown() {
+
+    }
+
+    getScrollComponent():Component|null {
+
+        if(this.hasScrollBar)return this
+
+        if(this.parent)return this.parent.getScrollComponent();
+        return null;
+    }
+    public setScrollDelta(delta:number)
+    {
 
     }
 }

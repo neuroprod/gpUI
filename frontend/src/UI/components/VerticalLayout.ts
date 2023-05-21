@@ -6,8 +6,8 @@ import Utils from "../math/Utils";
 
 
 export class VerticalLayoutSettings extends ComponentSettings {
-    scrollBarWidth = 8;
-    scrollbarMargin = 2;
+    scrollBarWidth = 2;
+    scrollbarMargin = 3;
     scrollBarColor = new Color().setHex("#6f6f6f", 1);
     hasOwnDrawBatch =true;
     needScrollBar =true;
@@ -18,7 +18,7 @@ export class VerticalLayoutSettings extends ComponentSettings {
 }
 
 export default class VerticalLayout extends Component {
-    private hasScrollBar: boolean = false;
+
     private childrenHeight: number = 0
     private scrollBarRect: Rect = new Rect();
     private isDraggingScroll: boolean;
@@ -87,22 +87,22 @@ export default class VerticalLayout extends Component {
     }
     onMouseDown() {
 
-        if(!this.hasScrollBar)return;
+     /*   if(!this.hasScrollBar)return;
         if (this.scrollBarRect.contains(UI_I.mouseListener.mousePos)) {
             this.isDraggingScroll = true;
             this.downPosY =UI_I.mouseListener.mousePos.y
-        }
+        }*/
     }
     onMouseUp() {
 
-        this.isDraggingScroll = false;
+       /* this.isDraggingScroll = false;
         this.scrollBarStartY+=this.scrollBarOffset;
         this.scrollBarOffset =0
-
+*/
     }
     updateOnMouseDown()
     {
-        if (this.isDraggingScroll) {
+     /*   if (this.isDraggingScroll) {
 
 
             this.scrollBarOffset = UI_I.mouseListener.mousePos.y-this.downPosY;
@@ -117,15 +117,23 @@ export default class VerticalLayout extends Component {
             this.scrollOffset.y =-scrollRel*( this.childrenHeight-this.layoutRect.size.y);
 
             this.setDirty(true);
-        }
+        }*/
+    }
+    public setScrollDelta(delta:number)
+    {
+        this.scrollOffset.y-=delta
+        if(this.scrollOffset.y>0)this.scrollOffset.y =0;
+        let maxHeight = this.childrenHeight-this.layoutRect.size.y;
+        if(this.scrollOffset.y< -maxHeight)this.scrollOffset.y =-maxHeight;
+        this.setDirty(true);
     }
     layoutRelative() {
         this.settings.box.paddingRight = 0//reset box padding
-        let maxWidth =Utils.getMaxInnerWidth(this.parent) -this.settings.box.marginLeft-this.settings.box.marginRight;
+     /*   let maxWidth =Utils.getMaxInnerWidth(this.parent) -this.settings.box.marginLeft-this.settings.box.marginRight;
         let maxHeight = Utils.getMaxInnerHeight(this.parent)-this.settings.box.marginTop-this.settings.box.marginBottom;
 
         this.size.x = maxWidth;
-        this.size.y = maxHeight;
+        this.size.y = maxHeight;*/
 
 
     }
@@ -137,7 +145,7 @@ export default class VerticalLayout extends Component {
         let settings = this.settings as VerticalLayoutSettings;
         this.scrollBarRect.copyPos(this.layoutRect.pos);
 
-        this.scrollBarRect.pos.y+=this.scrollBarY;
+        this.scrollBarRect.pos.y-=(this.scrollOffset.y/this.childrenHeight)*this.layoutRect.size.y;
         this.scrollBarRect.pos.x += this.layoutRect.size.x - settings.scrollBarWidth
 
         let sbh = (this.layoutRect.size.y / this.childrenHeight) * this.layoutRect.size.y

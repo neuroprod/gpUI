@@ -38,13 +38,7 @@ export default class LComponent extends Component {
 
     }
 
-    layoutRelative() {
-        super.layoutRelative()
-        let settings = this.settings as LComponentSettings
-        if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
-        if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginRight;
 
-    }
 
     layoutAbsolute() {
         if (!this.label.length) return
@@ -64,7 +58,7 @@ export default class LComponent extends Component {
 
         this.labelPos.copy(this.layoutRect.pos)
         this.labelPos.x += settings.box.paddingLeft - labelLength - settings.labelPaddingRight; //align right
-        this.labelPos.y += Math.floor(Utils.getCenterPlace(textSize.y, settings.box.size.y))
+        this.labelPos.y += Math.floor(Utils.getCenterPlace(textSize.y, 20))
         this.iconPos.x=this.labelPos.x-15;
 
     }
