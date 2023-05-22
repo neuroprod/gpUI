@@ -145,7 +145,7 @@ export default class DragBase extends Component {
         let settings = this.settings as DragBaseSettings
 
 
-        if (this.isOverLayout || this.isDown) {
+        if (this.isOverChild || this.isDown) {
 
             UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.colorBack)
         }
@@ -169,7 +169,7 @@ export default class DragBase extends Component {
             }
             if (UI_I.focusComponent != UI_I.currentComponent) this.showInput = false;
             UI_I.popComponent()
-        } else if (this.isOverLayout || this.isDown) {
+        } else if (this.isOverChild || this.isDown) {
 
             if (UI_IC.iconButton("left", 4)) {
                 this.value -= (this.settings as DragBaseSettings).step;

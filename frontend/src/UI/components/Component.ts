@@ -43,7 +43,7 @@ export default class Component {
     public alwaysPassMouse = false;
     public isFocus = false;
     public isOver = false;
-    public isOverLayout: boolean;
+    public isOverChild: boolean=false;
     public isDown = false;
     public isDownThisFrame = false;
     public isClicked: boolean=false;
@@ -77,7 +77,7 @@ export default class Component {
         if (this._drawChildren == value) return;
         this._drawChildren = value;
 
-       
+
 
         this.setDirty()
 
@@ -322,12 +322,16 @@ export default class Component {
             UI_I.setMouseOverComponent(this);
         }
         if (isChildrenOver) isOver = true;
-        this.isOverLayout =isOver;
+        //this.isOverLayout =isOver;
 
         return isOver;
 
     }
-
+    setOverChild(value:boolean)
+    {
+        this.isOverChild =value;
+        if(this.parent)this.parent.setOverChild(value)
+    }
     checkMouseOverLayout(pos: Vec2) {
         let isOver = this.layoutRect.contains(pos);
         return isOver;

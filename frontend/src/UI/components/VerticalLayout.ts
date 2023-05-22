@@ -8,7 +8,8 @@ import Utils from "../math/Utils";
 export class VerticalLayoutSettings extends ComponentSettings {
     scrollBarWidth = 3;
     scrollbarMargin = 3;
-    scrollBarColor = new Color().setHex("#686868", 1);
+    scrollBarColor = new Color().setHex("#525252", 1);
+    scrollBarOverColor = new Color().setHex("#6c6c6c", 1);
     hasOwnDrawBatch =true;
     needScrollBar =true;
     constructor() {
@@ -159,7 +160,12 @@ export default class VerticalLayout extends Component {
         if (!this.hasScrollBar) return
         UI_I.currentDrawBatch.needsClipping =true;
         let settings = this.settings as VerticalLayoutSettings;
-        UI_I.currentDrawBatch.fillBatch.addRect(this.scrollBarRect, settings.scrollBarColor);
+        if(this.isOverChild){
+            UI_I.currentDrawBatch.fillBatch.addRect(this.scrollBarRect, settings.scrollBarOverColor);
+        }else{
+            UI_I.currentDrawBatch.fillBatch.addRect(this.scrollBarRect, settings.scrollBarColor);
+        }
+
 
     }
 

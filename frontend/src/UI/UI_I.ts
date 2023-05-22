@@ -346,6 +346,7 @@ export default class UI_I {
         if (this.mouseOverComponent) {
 
             this.mouseOverComponent.isOver = false;
+            this.mouseOverComponent.setOverChild(false);
             this.mouseOverComponent.setDirty();
         }
         this.mouseOverComponent = comp;
@@ -353,6 +354,7 @@ export default class UI_I {
             if (this.mouseDownComponent && this.mouseDownComponent != this.mouseOverComponent) return
 
             this.mouseOverComponent.isOver = true;
+            this.mouseOverComponent.setOverChild(true);
             this.mouseOverComponent.setDirty();
         }
 
