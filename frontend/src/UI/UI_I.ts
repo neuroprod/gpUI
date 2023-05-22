@@ -174,11 +174,12 @@ export default class UI_I {
     }
 
 
-    public static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement) {
+    public static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement,settings?:any) {
         UI_I.renderType = "gl";
         UI_I.renderer = new RendererGL();
         UI_I.renderer.init(gl, canvas);
         TexturePool.init();
+        if(settings)Local.setSettings(settings)
         UI_I.init(canvas);
 
     }

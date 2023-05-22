@@ -40,9 +40,9 @@ export default class UI {
 
 
 
-    static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement) {
+    static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement,settings?:any) {
 
-        UI_I.setWebgl(gl, canvas)
+        UI_I.setWebgl(gl, canvas,settings)
     }
 
     static draw() {

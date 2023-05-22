@@ -5,8 +5,11 @@ export default class Local {
     private static isDirty: boolean;
 
     static init() {
-        this.uiData["itemData"] = this.itemData
-        this.uiData["dockData"] = this.dockData
+
+        if(!this.uiData["itemData"]) {
+            this.uiData["itemData"] = this.itemData
+            this.uiData["dockData"] = this.dockData
+        }
         let data = localStorage.getItem("uiData");
 
         if (data) {
@@ -45,8 +48,6 @@ export default class Local {
 
         let s = JSON.stringify(this.uiData);
         localStorage.setItem("uiData", s);
-
-
         this.isDirty = false;
     }
 
@@ -67,5 +68,10 @@ export default class Local {
         a.download = fileName;
         a.click();
     }
+
+    static setSettings(settings: any) {
+        this.uiData =settings;
+    }
+
 
 }

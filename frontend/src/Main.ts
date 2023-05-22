@@ -18,7 +18,7 @@ import {Vector2, Vector3, Vector4} from "math.gl";
 
 import UI from "./UI/UI";
 import {getUI_VEC2} from "./UI/UI_Types";
-
+import uiSettings from "./uiSettings.json"
 export enum TestEnum {
     Up,
     Down,
@@ -61,7 +61,7 @@ export default class Main {
         let v2 = getUI_VEC2();
 
 
-        UI.setWebgl(this.glMain.gl, canvas);
+        UI.setWebgl(this.glMain.gl, canvas,uiSettings);
 
 
         this.textTexture = new UITexture();
