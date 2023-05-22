@@ -1,1 +1,1 @@
-https://neuroprod.github.io/webUI/
+https://neuroprod.github.io/gpUI/
