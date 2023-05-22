@@ -24,12 +24,5 @@ export default class LList extends LComponent {
         super.setSubComponents();
         UI_IC.pushVerticalLayout("vl",this.vlSettings)
     }
-    onPopComponent() {
-        let c =this.children[0].children
-        for(let i=0;i<c.length;i++)
-        {
 
-
-        }
-    }
 }

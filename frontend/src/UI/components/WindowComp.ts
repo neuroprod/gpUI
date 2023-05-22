@@ -35,6 +35,7 @@ export default class WindowComp extends Panel {
         UI_IC.pushVerticalLayout("panelVert", this.contentVLSetting);
 
         UI_I.currentComponent.drawChildren = !this.collapsed
+
     }
 
 }

@@ -290,11 +290,12 @@ export default class Panel extends Component {
     layoutRelative() {
         super.layoutRelative();
         if(this._isDockedInPanel) {
+
            /* let settings = this.settings as PanelSettings
             if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
             if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginBottom;
         */
-          //  console.log(this.size)
+
         }
 
     }

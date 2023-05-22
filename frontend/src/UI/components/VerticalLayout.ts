@@ -46,6 +46,8 @@ export default class VerticalLayout extends Component {
         if (this.size.y < this.placeCursor.y) {
 
             if(this.needScrollBar) {
+
+              ///   if(this.settings.box.size.y<0) this.size.y =-this.settings.box.size.y*(  Utils.getMaxInnerHeight(this.parent) )-this.settings.box.marginTop-this.settings.box.marginBottom;
                 this.hasScrollBar = true;
                 this.childrenHeight = this.placeCursor.y
                 let settings = this.settings as VerticalLayoutSettings;
@@ -131,10 +133,10 @@ export default class VerticalLayout extends Component {
     layoutRelative() {
         this.settings.box.paddingRight = 0//reset box padding
      /*   let maxWidth =Utils.getMaxInnerWidth(this.parent) -this.settings.box.marginLeft-this.settings.box.marginRight;
-        let maxHeight = Utils.getMaxInnerHeight(this.parent)-this.settings.box.marginTop-this.settings.box.marginBottom;
+        */let maxHeight = Utils.getMaxInnerHeight(this.parent)-this.settings.box.marginTop-this.settings.box.marginBottom;
 
-        this.size.x = maxWidth;
-        this.size.y = maxHeight;*/
+        //this.size.x = maxWidth;
+        this.size.y = maxHeight;
 
 
     }

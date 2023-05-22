@@ -79,13 +79,7 @@ export default class Group extends Component {
         return false;
     }
 
-    layoutRelative() {
-        super.layoutRelative();
-        /*let settings = this.settings;
-        if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
-        if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginRight;
-*/
-    }
+
 
 
     setSubComponents() {
@@ -95,6 +89,7 @@ export default class Group extends Component {
         {
             this.open =open;
             this.saveToLocal()
+            this.setDirty(true);
         }
 
         UI_IC.dirtyButton("LSdb");

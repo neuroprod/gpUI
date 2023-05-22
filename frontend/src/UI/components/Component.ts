@@ -241,17 +241,32 @@ export default class Component {
 
     }
 
+    getActiveDrawBatchIds(arr:Array<number>)
+    {
 
+        if (this.hasOwnDrawBatch)
+        {
+            if (!this.drawChildren)return;
+            arr.push(this.id)
+
+        }
+        if (this.drawChildren) {
+            for (let child of this.children)
+            {
+                child.getActiveDrawBatchIds(arr)
+            }
+        }
+    }
     prepDrawInt() {
 
         if (this.hasOwnDrawBatch) {
             this.clippingRect.copy(this.layoutRect)
             if(UI_I.currentDrawBatch.clipRect) {
-                if (!UI_I.currentDrawBatch.clipRect.containsRect(this.clippingRect)){
-                    UI_I.removeDrawBatch(this.id);
+               /* if (!UI_I.currentDrawBatch.clipRect.containsRect(this.clippingRect)){
+                  //  UI_I.removeDrawBatch(this.id);
                     return;
-                }
-                this.clippingRect.resizeToFit(UI_I.currentDrawBatch.clipRect)
+                }*/
+              //this.clippingRect.resizeToFit(UI_I.currentDrawBatch.clipRect)
             }
 
             UI_I.pushDrawBatch(this.id, this.clippingRect, this.isDirty);
@@ -261,7 +276,7 @@ export default class Component {
             if (this.drawChildren) {
                 for (let child of this.children) {
                     //TODO remove cliped children
-                  // if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
+                  if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
                         child.prepDrawInt();
                 }
             }

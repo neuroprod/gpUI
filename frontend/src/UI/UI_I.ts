@@ -49,6 +49,7 @@ export default class UI_I {
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
     static groupDepth: number =0;
+    private static oldDrawBatchIDs: number[]=[];
 
 
     constructor() {
@@ -244,7 +245,20 @@ export default class UI_I {
             this.mainComp.updateMouseInt();
             this.mainComp.layoutRelativeInt();
             this.mainComp.layoutAbsoluteInt();
+            let drawBatchIds =new Array<number>()
+            this.mainComp.getActiveDrawBatchIds(drawBatchIds)
 
+            for(let old of this.oldDrawBatchIDs)
+            {
+                if(!drawBatchIds.includes(old))
+                {
+                    console.log("remove",old)
+                    this.removeDrawBatch(old)
+                }
+            }
+
+
+            this.oldDrawBatchIDs = drawBatchIds;
             this.mainComp.prepDrawInt();
             let drawBatches: Array<DrawBatch> = []
             this.mainDrawBatch.collectBatches(drawBatches);
@@ -466,8 +480,10 @@ export default class UI_I {
     static removeDrawBatch(id: number) {
         if (this.drawBatches.has(id)) {
             let batch = this.drawBatches.get(id);
-            batch.useThisUpdate =false;
-            batch.isDirty = true;
+            if(batch.parent) batch.parent.removeChild(batch)
+
+            this.drawBatches.delete(id);
+
         }
     }
 }
