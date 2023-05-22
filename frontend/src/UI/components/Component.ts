@@ -250,18 +250,20 @@ export default class Component {
             this.clippingRect.copy(this.layoutRect)
             if(UI_I.currentDrawBatch.clipRect) {
                 if (!UI_I.currentDrawBatch.clipRect.containsRect(this.clippingRect)){
+                    UI_I.removeDrawBatch(this.id);
                     return;
-
                 }
+                this.clippingRect.resizeToFit(UI_I.currentDrawBatch.clipRect)
             }
+
             UI_I.pushDrawBatch(this.id, this.clippingRect, this.isDirty);
         }
         if (this.isDirty || !this.hasOwnDrawBatch) {
-            this.prepDraw();
+            if (UI_I.currentDrawBatch.clipRect.containsRect(this.layoutRect)) this.prepDraw();
             if (this.drawChildren) {
                 for (let child of this.children) {
                     //TODO remove cliped children
-                   if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
+                  // if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
                         child.prepDrawInt();
                 }
             }

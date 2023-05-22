@@ -146,6 +146,7 @@ export default class DragBase extends Component {
 
 
         if (this.isOverLayout || this.isDown) {
+
             UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.colorBack)
         }
 

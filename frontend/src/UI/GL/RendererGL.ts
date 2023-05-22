@@ -16,7 +16,7 @@ export default class RendererGL {
     public textRenderer: TextRenderer;
     private textureRenderer: TextureRenderer;
 
-    private drawArray: Array<DrawBatchGL>
+    private drawArray: Array<DrawBatchGL>=[]
     private drawBatchesGL: Map<number, DrawBatchGL> = new Map<number, DrawBatchGL>();
 
 
@@ -44,8 +44,14 @@ export default class RendererGL {
     }
 
     setDrawBatches(drawBatches: Array<DrawBatch>) {
-        this.drawArray = []
+        for(let a of this.drawArray)
+        {
+            a.useThisUpdate =false;
+        }
 
+
+
+        let tempArr =[]
         for (let batch of drawBatches) {
             let id = batch.id;
             if (this.drawBatchesGL.has(id)) {
@@ -53,18 +59,31 @@ export default class RendererGL {
                 if (batch.isDirty) {
                     drawBatch.setBatchData(batch)
                 }
-                this.drawArray.push(drawBatch)
+                drawBatch.useThisUpdate =true
+                tempArr.push(drawBatch)
             } else {
 
                 let drawBatch = new DrawBatchGL(batch.id, this.gl)
                 drawBatch.setBatchData(batch)
                 this.drawBatchesGL.set(batch.id, drawBatch)
-                this.drawArray.push(drawBatch)
+                drawBatch.useThisUpdate =true
+                tempArr.push(drawBatch)
 
             }
+
             batch.isDirty = false;
         }
+        for(let a of this.drawArray)
+        {
+            if(!a.useThisUpdate)
+            {
+               a.destroy()
+                this.drawBatchesGL.delete(a.id);
 
+            }
+        }
+
+        this.drawArray =tempArr
     }
 
     draw() {

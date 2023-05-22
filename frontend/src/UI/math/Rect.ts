@@ -104,4 +104,19 @@ export default class Rect {
         r.size.copy(this.size);
         return r;
     }
+
+    resizeToFit(clipRect: Rect) {
+        if(this.pos.y<clipRect.pos.y)
+        {
+            let dif = clipRect.pos.y-this.pos.y;
+            this.pos.y = clipRect.pos.y;
+            this.size.y-=dif
+        }
+
+        if(this.pos.y+this.size.y>clipRect.pos.y+clipRect.size.y)
+        {
+            let dif = (this.pos.y+this.size.y)-(clipRect.pos.y+clipRect.size.y);
+            this.size.y-=dif
+        }
+    }
 }

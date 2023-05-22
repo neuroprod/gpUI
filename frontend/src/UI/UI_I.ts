@@ -434,7 +434,7 @@ export default class UI_I {
 
         }
 
-        batch.useThisFrame =true;
+        batch.useThisUpdate =true;
         this.currentDrawBatch = batch;
     }
 
@@ -467,5 +467,13 @@ export default class UI_I {
         this.mouseListener.wheelDelta =0;
         let sc =this.mouseOverComponent.getScrollComponent();
         if(sc)sc.setScrollDelta(delta)
+    }
+
+    static removeDrawBatch(id: number) {
+        if (this.drawBatches.has(id)) {
+            let batch = this.drawBatches.get(id);
+            batch.useThisUpdate =false;
+            batch.isDirty = true;
+        }
     }
 }

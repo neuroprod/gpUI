@@ -12,6 +12,7 @@ export default class DrawBatchGL{
     private gl: WebGL2RenderingContext|WebGLRenderingContext;
     public clipRect: Rect|null;
     public needsClipping: boolean=false ;
+    public useThisUpdate: boolean=true;
 
     constructor(id:number,gl:WebGL2RenderingContext|WebGLRenderingContext)
     {
