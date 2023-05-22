@@ -116,6 +116,7 @@ export default class UI {
     static popGroup() {
         UI_I.groupDepth--
         UI_I.popComponent();
+        UI_I.popComponent();
     }
 
     static pushLList(label: string,size:number=200, settings?: LListSettings) {

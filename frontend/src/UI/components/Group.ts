@@ -14,6 +14,7 @@ export class GroupSettings extends ComponentSettings {
         this.box.marginTop= 3;
         this.box.marginBottom = 0;
         this.box.marginLeft = UI_I.globalStyle.compIndent
+        this.box.paddingLeft =10*Math.min(UI_I.groupDepth,1);
         this.box.size.y =20;
     }
 
@@ -109,9 +110,7 @@ export default class Group extends Component {
 
     }
 
-    onPopComponent() {
-        UI_I.popComponent(false)
-    }
+  
 
 
 
