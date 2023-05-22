@@ -214,7 +214,7 @@ export default class Panel extends Component {
 
         if (this.isDragging || this.isResizing) {
             this.saveToLocal();
-            console.log("saveToLocal")
+
         }
         if (this.isDragging) {
 

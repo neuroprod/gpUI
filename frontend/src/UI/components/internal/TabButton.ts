@@ -11,10 +11,10 @@ export class TabButtonSettings extends ComponentSettings {
 
     constructor() {
         super();
-        this.box.marginTop =2;
+        this.box.marginTop =3;
         this.box.marginLeft =20;
         this.box.marginRight=50;
-        this.box.size.set(-1,22-2)
+        this.box.size.set(-1,22-3)
         this.box.paddingRight =0
         this.box.paddingLeft =0
         this.box.paddingBottom =0

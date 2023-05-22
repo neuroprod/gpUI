@@ -11,7 +11,7 @@ export class DockDividerSettings extends ComponentSettings {
     public splitType: DockSplit;
     public color: Color = new Color().setHex("#868686", 1);
     public colorOver: Color = new Color().setHex("#d7d7d7", 1);
-    public wideSize = 36
+    public wideSize = 50
     public smallSize = 7
 
     constructor(type: DockSplit) {
@@ -99,10 +99,10 @@ export default class DockDivider extends Component {
     layoutAbsolute() {
         super.layoutAbsolute();
         this.drawRect.copy(this.layoutRect)
-        this.drawRect.size.x -= 4
-        this.drawRect.size.y -= 4
-        this.drawRect.pos.x += 2
-        this.drawRect.pos.y += 2
+        this.drawRect.size.x -= 5
+        this.drawRect.size.y -= 5
+        this.drawRect.pos.x += 2.5
+        this.drawRect.pos.y += 2.5
     }
 
     prepDrawInt() {

@@ -6,7 +6,7 @@ export default class Local {
 
     static init() {
 
-        if(!this.uiData["itemData"]) {
+        if (!this.uiData["itemData"]) {
             this.uiData["itemData"] = this.itemData
             this.uiData["dockData"] = this.dockData
         }
@@ -15,8 +15,8 @@ export default class Local {
         if (data) {
             this.uiData = JSON.parse(data);
             this.itemData = this.uiData["itemData"];
-
             this.dockData = this.uiData["dockData"];
+
         } else {
 
         }
@@ -34,7 +34,11 @@ export default class Local {
     static getItem(id: number): any {
         return this.uiData["itemData"][id];
     }
-
+    static getAndDeletItem(id) {
+        let r=this.uiData["itemData"][id];
+        delete this.uiData["itemData"][id];
+        return r
+    }
     static setDockData(data: any) {
 
         this.uiData["dockData"] = data;
@@ -48,6 +52,7 @@ export default class Local {
 
         let s = JSON.stringify(this.uiData);
         localStorage.setItem("uiData", s);
+
         this.isDirty = false;
     }
 
@@ -70,8 +75,12 @@ export default class Local {
     }
 
     static setSettings(settings: any) {
-        this.uiData =settings;
+
+        this.uiData = settings;
+        this.dockData = this.uiData["dockData"];
+        this.itemData = this.uiData["itemData"]
     }
+
 
 
 }

@@ -217,12 +217,14 @@ export default class DockManager {
     }
 
     private restoreLocalData() {
+
         if (!Local.dockData) return;
 
         if (Local.dockData.panelData) {
+
             for (let pd of Local.dockData.panelData) {
 
-                let lsData = Local.getItem(pd.id);
+                let lsData = Local.getAndDeletItem(pd.id)//remove old docked ids, new one will be saved;
                 if (pd.children.length == 0) continue;
                 let comp1 = UI_I.components.get(pd.children[0]) as Panel
                 let comp2 = UI_I.components.get(pd.children[1]) as Panel
@@ -242,7 +244,7 @@ export default class DockManager {
 
                 }
                 this.panelsByOldId.set(pd.id, dockingPanel)
-//TODO remove old ids
+
             }
 
         }

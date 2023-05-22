@@ -23,8 +23,8 @@ export default class LTexture extends LComponent
     }
     layoutRelative() {
         super.layoutRelative()
-        let textureWidth =Math.min(this.texture.width, this.size.x);
-        let textureHeight = Math.max(textureWidth*this.texture.getRatio(),20)
+        let textureWidth =Math.min(this.texture.width, this.size.x-this.settings.box.paddingLeft-this.settings.box.paddingRight);
+        let textureHeight = Math.max(textureWidth*this.texture.getRatio(),5)
 
         this.size.y =textureHeight;
     }
