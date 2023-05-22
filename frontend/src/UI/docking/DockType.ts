@@ -15,5 +15,6 @@ export enum DockType
 export enum DockSplit
 {
     Horizontal,
-    Vertical
+    Vertical,
+    Center
 }

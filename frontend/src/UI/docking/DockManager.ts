@@ -3,7 +3,7 @@ import Layer from "../components/Layer";
 import UI_I from "../UI_I";
 import {DockIndicatorSettings} from "../components/internal/DockIndicator";
 import DockNode from "./DockNode";
-import {DockType} from "./DockType";
+import {DockSplit, DockType} from "./DockType";
 import Local from "../local/Local";
 import UI_IC from "../UI_IC";
 import DockTabData from "./DockTabData";
@@ -37,7 +37,10 @@ export default class DockManager {
     public startDragging(panel: Panel) {
         let node = this.mainDockNode.getNodeWithPanel(panel);
         if (node) {
-            if (node.parent) {
+            if (node.splitType == DockSplit.Center) {
+                node.panel = null;
+
+            } else if (node.parent) {
 
 
                 let parent = node.parent;
@@ -234,9 +237,14 @@ export default class DockManager {
                     dockingPanel.addPanelChild(comp)
                 }
                 dockingPanel.selectIndex(pd.index);
-                this.panelsByOldId.set(pd.id, dockingPanel)
+                if (lsData.collapsed) {
+                    dockingPanel.collapsed = true
 
+                }
+                this.panelsByOldId.set(pd.id, dockingPanel)
+//TODO remove old ids
             }
+
         }
 
 
@@ -244,5 +252,7 @@ export default class DockManager {
         this.mainDockNode.setPanels();
         this.mainDockNode.resize(UI_I.screenSize, true)
         this.mainDockNode.updateLayout()
+
+        this.saveLocal()
     }
 }

@@ -22,6 +22,8 @@ export default class LListItem extends ButtonBase {
     onAdded() {
         super.onAdded();
         if(this.ro==this.renderOrder)return
+
+        this.ro=this.renderOrder;
         if(this.renderOrder%2==0){
             (this.settings as LListItemSettings).backColor.a=0.8;
         }else{

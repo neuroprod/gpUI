@@ -344,6 +344,7 @@ export default class DockNode {
     }
 
     set(panel: Panel) {
+        this.splitType=DockSplit.Center
         this.panel = panel;
     }
 

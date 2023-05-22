@@ -62,7 +62,7 @@ export default class Main {
 
 
         UI.setWebgl(this.glMain.gl, canvas,uiSettings);
-
+       // UI.setWebgl(this.glMain.gl, canvas);
 
         this.textTexture = new UITexture();
 

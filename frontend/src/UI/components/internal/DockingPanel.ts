@@ -18,7 +18,7 @@ export default class DockingPanel extends Panel {
         this.keepAlive = true;
 
 
-        UI_I.generateDrawBatch(id, panelMain.parent.id, panelMain.layoutRect.clone())
+        UI_I.generateDrawBatch(id, panelMain.parent.id, this.clippingRect)
 
 
         panelChild.parent.removeChild(panelChild)
@@ -45,7 +45,7 @@ export default class DockingPanel extends Panel {
 
 
         for (let i = 0; i < this.panels.length; i++) {
-            let p = this.panels[i]
+            let p:Panel = this.panels[i]
 
             let tb = UI_IC.tabButton(p.label)
             tb.setTabData(i, this.panels.length, this.selectedIndex == i, this.isDocked ? 0 : 20);
@@ -92,7 +92,7 @@ export default class DockingPanel extends Panel {
             } else {
                 if (i == this.selectedIndex) p.drawChildren = true;
             }
-            
+
         }
 
 

@@ -43,13 +43,13 @@ export default class UI_I {
     static overlayLayer: Component;
     static panelDockingDividingLayer: Layer;
     static focusComponent: Component | null = null;
+    static groupDepth: number = 0;
     private static mainDrawBatch: DrawBatch;
     private static mouseOverComponent: Component | null = null;
     private static mouseDownComponent: Component | null = null;
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
-    static groupDepth: number =0;
-    private static oldDrawBatchIDs: number[]=[];
+    private static oldDrawBatchIDs: number[] = [];
 
 
     constructor() {
@@ -112,8 +112,9 @@ export default class UI_I {
         const id = this.getID(localID);
         if (this.hasComponent(id)) {
             this.currentComponent = this.components.get(id);
-            //   console.log(this.currentComponent.renderOrder)
+
             if (this.currentComponent.parent) {
+
                 this.currentComponent.renderOrder = this.currentComponent.parent.renderOrderCount
                 this.currentComponent.useThisFrame = true;
                 this.currentComponent.parent.renderOrderCount++
@@ -175,12 +176,12 @@ export default class UI_I {
     }
 
 
-    public static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement,settings?:any) {
+    public static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement, settings?: any) {
         UI_I.renderType = "gl";
         UI_I.renderer = new RendererGL();
         UI_I.renderer.init(gl, canvas);
         TexturePool.init();
-        if(settings)Local.setSettings(settings)
+        if (settings) Local.setSettings(settings)
         UI_I.init(canvas);
 
     }
@@ -195,6 +196,7 @@ export default class UI_I {
         }
         let index = comp.parent.children.indexOf(comp);
         comp.parent.children.splice(index, 1);
+        comp.parent.setDirty()
         comp.parent = null;
         comp.destroy()
         if (comp.hasOwnDrawBatch) {
@@ -245,25 +247,24 @@ export default class UI_I {
             this.mainComp.updateMouseInt();
             this.mainComp.layoutRelativeInt();
             this.mainComp.layoutAbsoluteInt();
-            let drawBatchIds =new Array<number>()
-            this.mainComp.getActiveDrawBatchIds(drawBatchIds)
+            this.mainComp.prepDrawInt();
 
-            for(let old of this.oldDrawBatchIDs)
-            {
-                if(!drawBatchIds.includes(old))
-                {
-                    console.log("remove",old)
+            //remove old batches
+            let drawBatchIds = new Array<number>()
+            this.mainComp.getActiveDrawBatchIds(drawBatchIds, this.mainDrawBatch)
+            for (let old of this.oldDrawBatchIDs) {
+                if (!drawBatchIds.includes(old)) {
                     this.removeDrawBatch(old)
                 }
             }
-
-
             this.oldDrawBatchIDs = drawBatchIds;
-            this.mainComp.prepDrawInt();
+
+            //collect drawBatches
             let drawBatches: Array<DrawBatch> = []
             this.mainDrawBatch.collectBatches(drawBatches);
-            UI_I.renderer.setDrawBatches(drawBatches);
 
+
+            UI_I.renderer.setDrawBatches(drawBatches);
             this.mainComp.isDirty = false;
         }
 
@@ -315,7 +316,7 @@ export default class UI_I {
         if (this.mouseListener.isUpThisFrame) {
             if (this.mouseDownComponent) {
 
-                if ( this.mouseOverComponent === this.mouseDownComponent) {
+                if (this.mouseOverComponent === this.mouseDownComponent) {
                     this.mouseDownComponent.isClicked = true;
                     this.mouseDownComponent.onMouseClicked()
                 }
@@ -433,11 +434,10 @@ export default class UI_I {
     //draw batches
     static pushDrawBatch(id, clipRect, isDirty) {
 
-        let batch:DrawBatch;
+        let batch: DrawBatch;
         if (this.drawBatches.has(id)) {
             batch = this.drawBatches.get(id);
             batch.isDirty = isDirty;
-
             batch.clear()
         } else {
             batch = new DrawBatch(id, clipRect);
@@ -448,7 +448,7 @@ export default class UI_I {
 
         }
 
-        batch.useThisUpdate =true;
+        batch.useThisUpdate = true;
         this.currentDrawBatch = batch;
     }
 
@@ -463,27 +463,24 @@ export default class UI_I {
 
     }
 
-
-
-
-    private static checkWheel() {
-        if(this.mouseListener.wheelDelta==0)return;
-        if(!this.mouseOverComponent)return;
-
-        let delta =this.mouseListener.wheelDelta;
-
-        this.mouseListener.wheelDelta =0;
-        let sc =this.mouseOverComponent.getScrollComponent();
-        if(sc)sc.setScrollDelta(delta)
-    }
-
     static removeDrawBatch(id: number) {
         if (this.drawBatches.has(id)) {
             let batch = this.drawBatches.get(id);
-            if(batch.parent) batch.parent.removeChild(batch)
+            if (batch.parent) batch.parent.removeChild(batch)
 
             this.drawBatches.delete(id);
 
         }
+    }
+
+    private static checkWheel() {
+        if (this.mouseListener.wheelDelta == 0) return;
+        if (!this.mouseOverComponent) return;
+
+        let delta = this.mouseListener.wheelDelta;
+
+        this.mouseListener.wheelDelta = 0;
+        let sc = this.mouseOverComponent.getScrollComponent();
+        if (sc) sc.setScrollDelta(delta)
     }
 }

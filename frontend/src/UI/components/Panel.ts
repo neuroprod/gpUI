@@ -69,7 +69,7 @@ export default class Panel extends Component {
 
        // this.size.copy(settings.size)
 
-        this.hasOwnDrawBatch = true;
+        this.hasOwnDrawBatch =true;
         this.label = label;
 
         this.resizeRect = new Rect();
@@ -93,7 +93,10 @@ export default class Panel extends Component {
             this.prevSize.copy(this.size)
             this.size.y = 22;
         } else {
+            if(this.prevSize.y<50)
+                this.prevSize.y =300;
             this.size.y = this.prevSize.y
+
         }
         this.saveToLocal();
         this.setDirty();
@@ -211,6 +214,7 @@ export default class Panel extends Component {
 
         if (this.isDragging || this.isResizing) {
             this.saveToLocal();
+            console.log("saveToLocal")
         }
         if (this.isDragging) {
 
@@ -234,7 +238,7 @@ export default class Panel extends Component {
 
 
 
-    setDirty(first = true) {
+    /*setDirty(first = true) {
 
 
         this.isDirty = true;
@@ -242,7 +246,7 @@ export default class Panel extends Component {
         if (first) {
             this.setChildrenDirty()
         }
-    }
+    }*/
 
     updateOnMouseDown() {
 
@@ -287,22 +291,23 @@ export default class Panel extends Component {
         }
     }
 
-    layoutRelative() {
+   /* layoutRelative() {
         super.layoutRelative();
         if(this._isDockedInPanel) {
 
-           /* let settings = this.settings as PanelSettings
+           let settings = this.settings as PanelSettings
             if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
             if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginBottom;
-        */
+
 
         }
 
-    }
+    }*/
 
     layoutAbsolute() {
 
         super.layoutAbsolute();
+
         let settings = this.settings as PanelSettings
         this.topBarRect.copyPos(this.layoutRect.pos);
         this.topBarRect.setSize(this.layoutRect.size.x, settings.topBarHeight);

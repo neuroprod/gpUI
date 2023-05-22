@@ -104,8 +104,8 @@ export default class RendererGL {
             if (batch.needsClipping) {
                if( batch.clipRect.size.x<1 || batch.clipRect.size.y<1)continue;
 
-                this.gl.enable(this.gl.SCISSOR_TEST)
-                this.gl.scissor(batch.clipRect.pos.x * UI_I.pixelRatio, (UI_I.screenSize.y * UI_I.pixelRatio)- (batch.clipRect.pos.y + batch.clipRect.size.y) * UI_I.pixelRatio, batch.clipRect.size.x * UI_I.pixelRatio, batch.clipRect.size.y * UI_I.pixelRatio)
+               this.gl.enable(this.gl.SCISSOR_TEST)
+               this.gl.scissor(batch.clipRect.pos.x * UI_I.pixelRatio, (UI_I.screenSize.y * UI_I.pixelRatio)- (batch.clipRect.pos.y + batch.clipRect.size.y) * UI_I.pixelRatio, batch.clipRect.size.x * UI_I.pixelRatio, batch.clipRect.size.y * UI_I.pixelRatio)
             }
             if (batch.fillBatchGL) {
                 this.fillRenderer.draw(vpSize, batch.fillBatchGL)
