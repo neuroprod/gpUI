@@ -450,13 +450,7 @@ export default class UI_I {
     }
 
 
-    static setDrawBatchVisible(id: number, isVisible: boolean) {
-        if (this.drawBatches.has(id)) {
-            let batch = this.drawBatches.get(id);
-            batch.isVisible = isVisible
-            batch.isDirty = true;
-        }
-    }
+
 
     private static checkWheel() {
         if(this.mouseListener.wheelDelta==0)return;

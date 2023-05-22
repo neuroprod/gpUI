@@ -16,7 +16,7 @@ export default class DrawBatch
     public clipRect!: Rect|null;
     public needsClipping: boolean=false ;
 
-    private _isVisible: boolean =true;
+
 
     public useThisUpdate: boolean=true;
 
@@ -24,13 +24,7 @@ export default class DrawBatch
         this.id = id;
         this.clipRect = clipRect;
     }
-    get isVisible(): boolean {
-        return this._isVisible;
-    }
 
-    set isVisible(value: boolean) {
-        this._isVisible = value;
-    }
     removeFromParent()
     {
         this.parent.removeChild(this)
@@ -61,15 +55,7 @@ export default class DrawBatch
         this.children.push(drawBatch);
         this.isDirty =true
     }
-    addChildAt(drawBatch: DrawBatch,index) {
-        if(drawBatch.parent)
-        {
-            drawBatch.removeFromParent()
-        }
-        drawBatch.parent =this;
-        this.isDirty =true
-        this.children.splice(index, 0, drawBatch);
-    }
+
     clear()
     {
         if(this.isDirty) {
@@ -80,9 +66,7 @@ export default class DrawBatch
     }
     collectBatches(array:Array<DrawBatch>)
     {
-        if(!this.isVisible){
-            return;
-        };
+
        if(!this.useThisUpdate && this.parent ){
             return;
         };

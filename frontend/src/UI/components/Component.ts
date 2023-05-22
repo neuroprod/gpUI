@@ -77,9 +77,7 @@ export default class Component {
         if (this._drawChildren == value) return;
         this._drawChildren = value;
 
-        if ( this.hasOwnDrawBatch) {
-            UI_I.setDrawBatchVisible(this.id,value)
-        }
+       
 
         this.setDirty()
 
