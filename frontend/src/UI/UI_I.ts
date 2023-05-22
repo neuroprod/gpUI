@@ -273,10 +273,7 @@ export default class UI_I {
     ////input
     static checkMouse() {
         if (this.mouseListener.isDirty < 0) return
-
-        this.components.forEach((comp) => {
-            comp.isOverLayout = false;
-        })
+        
 
         let mousePos = this.mouseListener.mousePos;
 
