@@ -261,7 +261,7 @@ export default class UI_I {
                 comp.useThisFrame = false
             }
         });
-        Local.saveDockData();
+        Local.saveData();
 
     }
 
@@ -273,7 +273,7 @@ export default class UI_I {
     ////input
     static checkMouse() {
         if (this.mouseListener.isDirty < 0) return
-        
+
 
         let mousePos = this.mouseListener.mousePos;
 

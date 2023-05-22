@@ -204,11 +204,15 @@ export default class Main {
         UI.popWindow();
 
         UI.pushWindow("UI");
-        UI.setLLabelSize(130)
-        if (UI.LButton("Clear", "Local Data")) {
+        UI.setLLabelSize(120)
+        if (UI.LButton("Clear Local Data")) {
             UI.clearLocalData()
         }
-        UI.LText(UI_I.numDrawCalls + "", "UI DrawCalls")
+        if (UI.LButton("Save Layout")) {
+
+            UI.saveLocalData()
+        }
+        UI.LText(UI_I.numDrawCalls + "", "DrawCalls")
         UI.LTexture("atlas", this.textTexture)
         UI.setLLabelSize()
         UI.popWindow();

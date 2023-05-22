@@ -333,4 +333,7 @@ export default class UI {
     }
 
 
+    static saveLocalData() {
+        Local.saveToJson();
+    }
 }

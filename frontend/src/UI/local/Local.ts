@@ -1,61 +1,71 @@
-export default class Local
-{
-    static dockData:any =null;
-    static itemData ={};
+export default class Local {
+    static dockData: any = null;
+    static itemData = {};
+    static uiData = {};
     private static isDirty: boolean;
 
-    static  init(){
-        let data =localStorage.getItem("uiData");
-        if(data)
-        {
-            this.itemData = JSON.parse(data);
-        }else
-        {
+    static init() {
+        this.uiData["itemData"] = this.itemData
+        this.uiData["dockData"] = this.dockData
+        let data = localStorage.getItem("uiData");
+
+        if (data) {
+            this.uiData = JSON.parse(data);
+            this.itemData = this.uiData["itemData"];
+
+            this.dockData = this.uiData["dockData"];
+        } else {
 
         }
 
-        let dataDock =localStorage.getItem("uiDock");
-        if(dataDock)
-        {
-            this.dockData = JSON.parse(dataDock);
-        }else
-        {
 
-        }
     }
-    static setItem(id:number, data:any)
-    {
-        Local.itemData[id] =data;
-        this.isDirty =true;
+
+    static setItem(id: number, data: any) {
+        this.uiData["itemData"][id] = data;
+        this.isDirty = true;
 
 
     }
-    static getItem(id:number):any
-    {
-       return Local.itemData[id];
+
+    static getItem(id: number): any {
+        return this.uiData["itemData"][id];
     }
 
-    static setDockData(data:any) {
-        this.dockData =data;
+    static setDockData(data: any) {
 
-        this.isDirty =true;
+        this.uiData["dockData"] = data;
+        this.isDirty = true;
 
 
     }
-    static saveDockData(){
-        if(!this.isDirty)return;
 
-        let s =JSON.stringify(this.itemData);
+    static saveData() {
+        if (!this.isDirty) return;
+
+        let s = JSON.stringify(this.uiData);
         localStorage.setItem("uiData", s);
 
-        let sd =JSON.stringify(this.dockData);
-        localStorage.setItem("uiDock", sd);
 
-        this.isDirty =false;
+        this.isDirty = false;
     }
 
     static clearLocalData() {
         localStorage.removeItem("uiData")
-        localStorage.removeItem("uiDock")
+
     }
+
+    static saveToJson() {
+        let data = JSON.stringify(this.uiData);
+        this.download(data, 'uiSettings.json', 'text/plain');
+    }
+
+    static download(content, fileName, contentType) {
+        var a = document.createElement("a");
+        var file = new Blob([content], {type: contentType});
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
+    }
+
 }

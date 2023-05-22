@@ -1,5 +1,4 @@
 
-/* eslint-disable */
 
 import GL from "./GL";
 

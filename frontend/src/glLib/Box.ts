@@ -1,5 +1,5 @@
 import GL from "./GL";
-import {vec3} from "gl-matrix";
+
 import Program from "./Program";
 
 
