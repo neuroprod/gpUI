@@ -344,7 +344,6 @@ export default class UI_IC {
         UI_I.currentComponent = UI_I.popupLayer;
         let compPopup = new ViewportPopUp(UI_I.getID(comp.id + ""), comp,pos, settings);
         UI_I.addComponent(compPopup);
-        UI_I.hasPopup = true;
 
         UI_I.currentComponent = old;
     }
@@ -355,7 +354,6 @@ export default class UI_IC {
         UI_I.currentComponent = UI_I.popupLayer;
         let compPopup = new SliderPopUp(UI_I.getID(comp.id + ""), comp,pos, settings);
         UI_I.addComponent(compPopup);
-        UI_I.hasPopup = true;
 
         UI_I.currentComponent = old;
     }
@@ -365,7 +363,6 @@ export default class UI_IC {
         UI_I.currentComponent = UI_I.popupLayer;
         let compPopup = new DragPopUp(UI_I.getID(comp.id + ""), comp,pos,name, settings);
         UI_I.addComponent(compPopup);
-        UI_I.hasPopup = true;
 
         UI_I.currentComponent = old;
     }
@@ -376,7 +373,6 @@ export default class UI_IC {
         UI_I.currentComponent = UI_I.popupLayer;
         let compPopup = new ColorPickerPopUp(UI_I.getID(comp.id + ""), comp, settings);
         UI_I.addComponent(compPopup);
-        UI_I.hasPopup = true;
 
         UI_I.currentComponent = old;
     }
@@ -388,7 +384,6 @@ export default class UI_IC {
         UI_I.currentComponent = UI_I.popupLayer;
         let compPopup = new SelectPopUp(UI_I.getID("select"), callBack, pos, targetWidth, items, index, settings);
         UI_I.addComponent(compPopup);
-        UI_I.hasPopup = true;
 
         UI_I.currentComponent = old;
     }
