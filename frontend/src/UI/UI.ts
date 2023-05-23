@@ -153,15 +153,7 @@ export default class UI {
     }
 
     static LSelect(label: string, items: Array<SelectItem>, index = 0, settings?: LSelectSettings) {
-        if (!UI_I.setComponent(label)) {
-            if (!settings) settings = new LSelectSettings();
-            let comp = new LSelect(UI_I.getID(label), label, items, index, settings);
-            UI_I.addComponent(comp);
-        }
-        let result = UI_I.currentComponent.getReturnValue()
-        UI_I.popComponent();
-        return result;
-
+        return UI_IC.LSelect(label,items,index,settings)
     }
 
     static LButton(buttonText: string, label: string = "", settings?: LButtonSettings): boolean {

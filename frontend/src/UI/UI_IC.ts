@@ -43,6 +43,8 @@ import Viewport from "./components/Viewport";
 import ViewportPopUp, {ViewportPopUpSettings} from "./components/internal/popUps/ViewportPopUp";
 import LVector from "./components/LVector";
 import DragPopUp, {DragPopUpSettings} from "./components/internal/popUps/DragPopUp";
+
+import LSelect, {LSelectSettings} from "./components/LSelect";
 export default class UI_IC {
 
     static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
@@ -78,6 +80,19 @@ export default class UI_IC {
         }
         UI_I.popComponent();
     }
+
+    static LSelect(label: string, items: Array<SelectItem>, index = 0, settings?: LSelectSettings) {
+        if (!UI_I.setComponent(label)) {
+            if (!settings) settings = new LSelectSettings();
+            let comp = new LSelect(UI_I.getID(label), label, items, index, settings);
+            UI_I.addComponent(comp);
+        }
+        let result = UI_I.currentComponent.getReturnValue()
+        UI_I.popComponent();
+        return result;
+
+    }
+
     static pushComponent(id:string,settings:ComponentSettings)
     {
         if (!UI_I.setComponent(id)) {

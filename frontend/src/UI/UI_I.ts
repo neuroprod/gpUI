@@ -28,7 +28,7 @@ export default class UI_I {
     static renderer: RendererGL;
 
     static pixelRatio: number;
-    static hasPopup: boolean = false
+
     static renderType: string;
     static numDrawCalls: number = 0
     public static globalStyle: UI_Style;
@@ -283,7 +283,8 @@ export default class UI_I {
 
     static removePopup(p: Component) {
         p.keepAlive = false;
-        this.hasPopup = false;
+
+
     }
 
     ////input
@@ -293,11 +294,15 @@ export default class UI_I {
 
         let mousePos = this.mouseListener.mousePos;
 
-        if (this.hasPopup && this.mouseListener.isDownThisFrame) {
-            if (!this.popupLayer.children[0].checkMouseOverLayout(mousePos)) {
-                this.popupLayer.children[0].keepAlive = false;
-                this.hasPopup = false;
+        if (this.mouseListener.isDownThisFrame && this.popupLayer.children.length) {
+            for (let i = this.popupLayer.children.length - 1; i >= 0; i--) {
+                if (!this.popupLayer.children[i].checkMouseOverLayout(mousePos)) {
+                    this.popupLayer.children[i].keepAlive = false;
+                } else {
+                    break;
+                }
             }
+
         }
 
 

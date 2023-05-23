@@ -24,7 +24,8 @@ export class PanelSettings extends ComponentSettings {
     public outlineColor: Color = new Color().setHex("#575757", 1)
     public topBarHeight = 22;
     public minSize = new Vec2(156, 100);
-
+    public iconOpen =1
+    public iconClose =2
     constructor() {
         super();
         //this.position.add (PanelSettings.positionOffset)
@@ -159,13 +160,12 @@ export default class Panel extends Component {
 
     setSubComponents() {
 
-    if(!this.isDocked) {
-        if (UI_IC.toggleIcon("ib", this, "collapsed", 2, 1)) {
+        if(!this.isDocked) {
+            let settings =this.settings as PanelSettings;
+            if (UI_IC.toggleIcon("ib", this, "collapsed", settings.iconClose, settings.iconOpen)) {
 
-
+            }
         }
-    }
-
     }
 
     setFromLocal() {
@@ -227,26 +227,11 @@ export default class Panel extends Component {
     }
 
     setDockInPanel(panel: Panel) {
-
         this.tryDrag = false
         this.isDragging = false;
         this.isResizing = false;
-
-
-
     }
 
-
-
-    /*setDirty(first = true) {
-
-
-        this.isDirty = true;
-        if (this.parent) this.parent.setDirty(false);
-        if (first) {
-            this.setChildrenDirty()
-        }
-    }*/
 
     updateOnMouseDown() {
 
@@ -291,18 +276,6 @@ export default class Panel extends Component {
         }
     }
 
-   /* layoutRelative() {
-        super.layoutRelative();
-        if(this._isDockedInPanel) {
-
-           let settings = this.settings as PanelSettings
-            if (settings.box.size.x == -1) this.size.x = Utils.getMaxInnerWidth(this.parent) - settings.box.marginLeft - settings.box.marginRight;
-            if (settings.box.size.y == -1) this.size.y = Utils.getMaxInnerHeight(this.parent) - settings.box.marginTop - settings.box.marginBottom;
-
-
-        }
-
-    }*/
 
     layoutAbsolute() {
 

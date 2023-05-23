@@ -7,6 +7,9 @@ import {ButtonBaseSettings} from "../ButtonBase";
 import {HAlign} from "../../../UI_Enums";
 import PopUpWindow, {PopUpWindowSettings} from "./PopUpWindow";
 import Viewport from "../../Viewport";
+import LListItem from "../../LListItem";
+import SelectItem from "../../../math/SelectItem";
+import UI from "../../../UI";
 
 export class ViewportPopUpSettings extends PopUpWindowSettings {
     constructor() {
@@ -24,15 +27,23 @@ export default class ViewportPopUp extends PopUpWindow {
     private btnOkSettings: ButtonBaseSettings;
     private btnCancelSettings: ButtonBaseSettings;
     private hCompBtnSettings: ComponentSettings;
-
+    private oldRatio: Vec2;
+    private index =0;
 
     constructor(id: number, viewport:Viewport, pos: Vec2, settings: ViewportPopUpSettings) {
         super(id,"Viewport Settings", settings);
         this.posOffset.copy(pos);
         this.viewport =viewport;
 
-
-
+        this.oldRatio =this.viewport.currentRatio.clone()
+        for(let i=0; i< this.viewport.selectItems.length;i++)
+        {
+            if( this.oldRatio.equal(this.viewport.selectItems[i].value))
+            {
+                this.index =i;
+                break;
+            }
+        }
 
 
         this.hCompBtnSettings = new ComponentSettings()
@@ -54,27 +65,26 @@ export default class ViewportPopUp extends PopUpWindow {
         this.btnCancelSettings.box.marginBottom = 1.5;
 
 
-
     }
 
     setPopupContent()  {
 
         UI_IC.pushVerticalLayout("v");
 
-      //  UI_IC.pushComponent("min", this.hCompSettings)
 
-       UI_IC.LText("blalv","bla")
+
+        this.viewport.currentRatio =UI_IC.LSelect("ratio",this.viewport.selectItems,this.index)
 
         UI_IC.pushComponent("ok", this.hCompBtnSettings)
         if(UI_IC.buttonBase("Cancel", this.btnCancelSettings))
         {
-            // this.keepAlive =false;
+            this.viewport.currentRatio.copy(this.oldRatio)
             UI_I.removePopup(this);
         }
 
         if(UI_IC.buttonBase("OK", this.btnOkSettings))
         {
-           /// this.slider.setMinMax(this.min,this.max)
+            this.viewport.saveToLocal()
             UI_I.removePopup(this);
         }
         UI_I.popComponent();
