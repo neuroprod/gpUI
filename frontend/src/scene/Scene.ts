@@ -3,7 +3,6 @@ import PreLoader from "../glLib/PreLoader";
 import Camera from "../glLib/Camera";
 import Program from "../glLib/Program";
 import Box from "../glLib/Box";
-import {mat4} from "gl-matrix";
 import UI from "../UI/UI";
 import {Vector3} from "math.gl";
 import SceneCube from "./SceneCube";

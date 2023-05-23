@@ -1,25 +1,14 @@
 import UI_I from "./UI/UI_I";
-
-import Color from "./UI/math/Color";
 import GL from "./glLib/GL";
 import PreLoader from "./glLib/PreLoader";
-
 import UITexture from "./UI/draw/UITexture";
-import Texture from "./glLib/Texture";
 import Font from "./UI/draw/Font";
-
 import Scene from "./scene/Scene";
-import SelectItem from "./UI/math/SelectItem";
-
-import UIUtils from "./UI/UIUtils";
 import Vec2 from "./UI/math/Vec2";
-import {Vector2, Vector3, Vector4} from "math.gl";
-
-
 import UI from "./UI/UI";
-import {getUI_VEC2} from "./UI/UI_Types";
 import uiSettings from "./uiSettings.json"
-import ExampleUI from "../public/ExampleUI";
+import ExampleUI from "./ExampleUI";
+
 export enum TestEnum {
     Up,
     Down,

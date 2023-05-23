@@ -1,14 +1,13 @@
-import UI from "../src/UI/UI";
+import UI from "./UI/UI";
 import {Vector2, Vector3, Vector4} from "math.gl";
-import UIUtils from "../src/UI/UIUtils";
-import SelectItem from "../src/UI/math/SelectItem";
-import {TestEnum} from "../src/Main";
-import Color from "../src/UI/math/Color";
-import Texture from "../src/glLib/Texture";
-import UITexture from "../src/UI/draw/UITexture";
-import GL from "../src/glLib/GL";
-import UI_I from "../src/UI/UI_I";
-import Font from "../src/UI/draw/Font";
+import UIUtils from "./UI/UIUtils";
+import SelectItem from "./UI/math/SelectItem";
+import {TestEnum} from "./Main";
+import Color from "./UI/math/Color";
+import Texture from "./glLib/Texture";
+import UITexture from "./UI/draw/UITexture";
+import GL from "./glLib/GL";
+
 
 export default class ExampleUI
 {
