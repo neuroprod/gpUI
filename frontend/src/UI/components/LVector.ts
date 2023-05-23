@@ -10,6 +10,7 @@ import {DragBaseSettings} from "./internal/DragBase";
 import {ComponentSettings} from "./Component";
 import UI_Vars from "../UI_Vars";
 import {SettingsButtonSettings} from "./internal/SettingsButton";
+import Local from "../local/Local";
 
 
 export class LVectorSettings extends LComponentSettings {
@@ -53,6 +54,9 @@ export default class LVector extends LComponent {
         this.showSettings = settings.showSettings
         this.floatPrecision = UI_Vars.floatPrecision;
         this.step =this.floatPrecision;
+
+        this.setFromLocal()
+
         this.type = VectorType.VEC2;
         this.numBoxes = 2;
         this.needNormalize =normalized;
@@ -213,6 +217,25 @@ export default class LVector extends LComponent {
 
         this.posWSettings.floatPrecision =  this.floatPrecision;
         this.posWSettings.step=Math.pow(10,-this.step);
+        this.setDirty()
+        this.saveToLocal()
+    }
+    setFromLocal() {
+        let data = Local.getItem(this.id);
+        if (data) {
+
+            this.step = data.step;
+            this.floatPrecision = data.pres;
+        }
+
+    }
+
+    saveToLocal() {
+        let a = {
+            step: this.step,
+            pres: this.floatPrecision
+        };
+        Local.setItem(this.id, a)
     }
     getReturnValue(): UI_VEC2 | UI_VEC3 | UI_VEC4 {
         return this.value;

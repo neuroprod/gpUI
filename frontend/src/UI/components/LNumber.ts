@@ -7,6 +7,7 @@ import {DragBaseSettings} from "./internal/DragBase";
 import {NumberType} from "../UI_Enums";
 import UI_Vars from "../UI_Vars";
 import {SettingsButtonSettings} from "./internal/SettingsButton";
+import Local from "../local/Local";
 
 export class LNumberSettings extends LComponentSettings {
     showDirty: boolean = true;
@@ -49,7 +50,8 @@ export default class LNumber extends LComponent {
             this.floatPrecision = 0;
         }
         this.step =this.floatPrecision;
-
+        this.setFromLocal()
+        
         if (this.ref) {
             this.value = this.ref[this.stringRef]
         }
@@ -108,6 +110,25 @@ export default class LNumber extends LComponent {
         this.step =step
         this.dragSettings.floatPrecision =precision;
         this.dragSettings.step=Math.pow(10,-this.step);
+        this.saveToLocal()
+        this.setDirty()
+    }
+    setFromLocal() {
+        let data = Local.getItem(this.id);
+        if (data) {
+
+            this.step = data.step;
+            this.floatPrecision = data.pres;
+        }
+
+    }
+
+    saveToLocal() {
+        let a = {
+            step: this.step,
+            pres: this.floatPrecision
+        };
+        Local.setItem(this.id, a)
     }
     getReturnValue(): number {
         return this.value;
