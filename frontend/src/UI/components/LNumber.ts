@@ -51,7 +51,7 @@ export default class LNumber extends LComponent {
         }
         this.step =this.floatPrecision;
         this.setFromLocal()
-        
+
         if (this.ref) {
             this.value = this.ref[this.stringRef]
         }

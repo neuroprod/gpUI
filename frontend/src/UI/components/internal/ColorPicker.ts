@@ -79,6 +79,7 @@ export default class ColorPicker extends Component {
         // @ts-ignore
         this.alphaTexture.setHSL(this.hsl[0], this.hsl[1], this.hsl[2])
         this.changed = true;
+
         this.setDirty();
     }
 

@@ -6,6 +6,7 @@ import {ColorButtonSettings} from "./internal/ColorButton";
 import {ColorPickerPopupSettings} from "./internal/popUps/ColorPickerPopUp";
 import UI_I from "../UI_I";
 import DirtyButton from "./internal/DirtyButton";
+import {UI_COLOR} from "../UI_Types";
 
 
 export class LColorSettings extends LComponentSettings {
@@ -20,11 +21,13 @@ export default class LColor extends LComponent {
     public colorStart: Color = new Color()
     private colorButtonSettings: ColorButtonSettings;
     private popUpSettings: ColorPickerPopupSettings;
+    private colorUI: UI_COLOR;
 
-    constructor(id: number, label: string, color: Color, settings: LColorSettings) {
+    constructor(id: number, label: string, color: UI_COLOR, settings: LColorSettings) {
 
         super(id, label, settings);
-        this.color = color;
+        this.colorUI =color;
+        this.color = new Color(this.colorUI.r,this.colorUI.g,this.colorUI.b);
         this.colorStart.copy(this.color);
         this.colorButtonSettings = new ColorButtonSettings();
         this.colorButtonSettings.box.marginLeft = 4;
@@ -57,6 +60,7 @@ export default class LColor extends LComponent {
 
         if (UI_IC.dirtyButton("LSdb")) {
             this.color.copy(this.colorStart)
+            this.updateUIColor();
             this.setDirty()
             this.setValueDirty(false)
         }
@@ -65,12 +69,18 @@ export default class LColor extends LComponent {
         UI_I.popComponent();
     }
 
-    getReturnValue(): Color {
-        return this.color;
+    getReturnValue(): UI_COLOR {
+        return this.colorUI;
     }
 
     getClipboardValue(): string {
         return this.color.r.toFixed(2) + "," + this.color.g.toFixed(2)  + "," + this.color.b.toFixed(2)  + "," + this.color.a.toFixed(2) ;
     }
 
+     updateUIColor() {
+        this.colorUI.r =this.color.r
+        this.colorUI.g =this.color.g
+        this.colorUI.b =this.color.b
+        this.colorUI.a =this.color.a
+    }
 }

@@ -8,9 +8,9 @@ import Vec2 from "../../math/Vec2";
 import Rect from "../../math/Rect";
 
 export class EventSettings extends ComponentSettings {
-    public textColor: Color = new Color().setHex("#ffffff", 1);
+    public textColor: Color = new Color().setHex("#efefef", 1);
     public labelColor: Color = new Color().setHex("#d5d5d5", 1);
-    public bgColor: Color = new Color().setHex("#2f2f2f", 0.8);
+    public bgColor: Color = new Color().setHex("#696a62", 0.8);
     public bgColorRight: Color = new Color().setHex("#232323", 0.8);
     public bgErrorColor: Color = new Color().setHex("#ff436d", 1);
 

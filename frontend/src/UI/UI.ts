@@ -26,7 +26,7 @@ import Separator, { SeparatorSettings} from "./components/Separator";
 import {NumberType} from "./UI_Enums";
 import UI_Vars from "./UI_Vars";
 import UI_IC from "./UI_IC";
-import {UI_VEC2, UI_VEC3, UI_VEC4} from "./UI_Types";
+import {UI_COLOR, UI_VEC2, UI_VEC3, UI_VEC4} from "./UI_Types";
 import LVector, {LVectorSettings} from "./components/LVector";
 import LList, {LListSettings} from "./components/LList";
 import LListItem, {LListItemSettings} from "./components/LListItem";
@@ -176,7 +176,7 @@ export default class UI {
         return result;
     }
 
-    static LColor(label: string = "", color: Color, settings?: LColorSettings): Color {
+    static LColor(label: string = "", color:UI_COLOR, settings?: LColorSettings): Color {
 
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LColorSettings();
@@ -190,21 +190,11 @@ export default class UI {
 
     static LText(text: string, label: string = "", multiLine: boolean = false, settings?: LTextSettings) {
         return UI_IC.LText(text, label, multiLine , settings);
-        /*if (!UI_I.setComponent(text)) {
-            if (!settings) settings = new LTextSettings()
-            let comp = new LText(UI_I.getID(text), label, text, multiLine, settings);
-            UI_I.addComponent(comp);
-        }
-        UI_I.popComponent();*/
+
     }
     static separator( id: string = "",idAsLabel:boolean=true, settings?: SeparatorSettings) {
             UI_IC.separator(id,idAsLabel,settings)
-       /* if (!UI_I.setComponent(id)) {
-            if (!settings) settings = new SeparatorSettings()
-            let comp = new Separator(UI_I.getID(id), id, idAsLabel, settings);
-            UI_I.addComponent(comp);
-        }
-        UI_I.popComponent();*/
+
     }
     static LTexture(label: string, texture: UITexture, settings?: LTextureSettings) {
 

@@ -52,6 +52,7 @@ export default class ColorPickerPopUp extends PopUpWindow {
     setPopupContent() {
 
         if (UI_IC.colorPicker("cp", this.color)) {
+            this.comp.updateUIColor()
             this.comp.setValueDirty(true)
         }
 
@@ -60,6 +61,7 @@ export default class ColorPickerPopUp extends PopUpWindow {
 
         if (UI_IC.colorButton("prevCol", this.colorPrev, this.prevSet)) {
             this.color.copy(this.colorPrev)
+            this.comp.updateUIColor()
             this.comp.setValueDirty(false)
             this.setDirty()
         }
