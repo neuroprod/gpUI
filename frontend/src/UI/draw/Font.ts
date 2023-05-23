@@ -29,10 +29,10 @@ export default class Font
         for(let i=0;i<numChars;i++)
         {
             let c =new Char()
-            c.uv0 =new Vec2(uvXSize*fontPosX,uvYSize*fontPosY);
+            c.uv0 =new Vec2(uvXSize*fontPosX,1-uvYSize*fontPosY);
             c.uv1 =c.uv0.clone().add(new Vec2(uvXSize,0))
-            c.uv2 =c.uv0.clone().add(new Vec2(uvXSize,uvYSize))
-            c.uv3 =c.uv0.clone().add(new Vec2(0,uvYSize))
+            c.uv2 =c.uv0.clone().add(new Vec2(uvXSize,-uvYSize))
+            c.uv3 =c.uv0.clone().add(new Vec2(0,-uvYSize))
             this.chars.push(c);
             fontPosX++
             if(fontPosX>17)
@@ -49,10 +49,10 @@ export default class Font
         for(let i=0;i<numChars;i++)
         {
             let c =new Char()
-            c.uv0 =new Vec2(uvXSize*fontPosX,uvYSize*fontPosY);
+            c.uv0 =new Vec2(uvXSize*fontPosX,1-uvYSize*fontPosY);
             c.uv1 =c.uv0.clone().add(new Vec2(uvXSize,0))
-            c.uv2 =c.uv0.clone().add(new Vec2(uvXSize,uvYSize))
-            c.uv3 =c.uv0.clone().add(new Vec2(0,uvYSize))
+            c.uv2 =c.uv0.clone().add(new Vec2(uvXSize,-uvYSize))
+            c.uv3 =c.uv0.clone().add(new Vec2(0,-uvYSize))
             this.icons.push(c);
             fontPosX++
             if(fontPosX>7)

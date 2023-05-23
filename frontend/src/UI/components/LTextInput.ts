@@ -34,6 +34,7 @@ export default class LTextInput extends LComponent  {
 
         this.valueOld = this.value;
         this.inputSettings =new InputBaseSettings()
+        this.inputSettings.selectOnCreation =true;
         this.inputSettings.box.marginLeft =4;
     }
 

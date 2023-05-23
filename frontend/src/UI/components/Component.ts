@@ -58,10 +58,12 @@ export default class Component {
 
     public clippingRect = new Rect();
     protected hasScrollBar: boolean = false;
+    private idStack: Array<number>=[];
 
 
     constructor(id: number, settings: ComponentSettings) {
         this.id = id;
+        this.idStack.push(id);
         this.settings = settings;
         this.size.copy(this.settings.box.size)
         this.hasOwnDrawBatch = settings.hasOwnDrawBatch;
@@ -405,5 +407,14 @@ export default class Component {
 
     public setScrollDelta(delta: number) {
 
+    }
+
+    pushID(newID: number) {
+        this.idStack.push(newID);
+        this.id =newID;
+    }
+    popID() {
+        this.idStack.splice(this.idStack.length-1,1)
+        this.id =  this.idStack[this.idStack.length-1];
     }
 }

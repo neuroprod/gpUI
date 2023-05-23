@@ -219,14 +219,17 @@ export default class LVector extends LComponent {
     }
 
     getClipboardValue(): string {
-
-        let ret = this.value.x.toFixed( this.floatPrecision ) + ",";
-        ret += this.y.toFixed( this.floatPrecision );
+        let f = this.floatPrecision;
+if(this.needNormalize){
+    f=6;
+}
+        let ret = this.value.x.toFixed( f ) + ",";
+        ret += this.value.y.toFixed( f );
         if (this.type > VectorType.VEC2) { // @ts-ignore
-            ret += "," + this.z.toFixed( this.floatPrecision );
+            ret += "," + this.value.z.toFixed( f );
         }
         if (this.type > VectorType.VEC3) { // @ts-ignore
-            ret += "," + this.w.toFixed( this.floatPrecision );
+            ret += "," + this.value.w.toFixed( f );
         }
         return ret;
     }

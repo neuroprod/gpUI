@@ -91,6 +91,7 @@ export default class TextRenderer
             "gl_Position.y *=-1.0;\n" +
             "vUV =aVertex;\n" +
             "vUV =vUV*uScaleUV+uOffsetUV;\n" +
+            "vUV.y =1.0-vUV.y;\n" +
             "}";
 
         let fragment = "precision lowp float;\n" +

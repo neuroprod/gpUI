@@ -45,6 +45,7 @@ import LVector from "./components/LVector";
 import DragPopUp, {DragPopUpSettings} from "./components/internal/popUps/DragPopUp";
 
 import LSelect, {LSelectSettings} from "./components/LSelect";
+import Event, {EventSettings} from "./components/internal/Event";
 export default class UI_IC {
 
     static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
@@ -159,6 +160,20 @@ export default class UI_IC {
         let result = UI_I.currentComponent.getReturnValue()
         UI_I.popComponent();
         return result;
+    }
+    static logEvent(label:string,text:string,isError:boolean=false)
+    {
+        let prevComp=UI_I.currentComponent
+        UI_I.currentComponent =UI_I.eventLayer;
+        if (!UI_I.setComponent(label)) {
+
+            let comp = new Event(UI_I.getID(label), label,text,isError,new EventSettings());
+            UI_I.addComponent(comp);
+        }else{
+            (UI_I.currentComponent as Event).updateText(text);
+        }
+
+        UI_I.currentComponent =prevComp
     }
     static sliderBase( ref: any, objName: string,settings?: SliderBaseSettings): SliderBase {
         if (!UI_I.setComponent(objName)) {

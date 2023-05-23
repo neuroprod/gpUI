@@ -67,4 +67,8 @@ export default class Color {
         this.b =b;
         this.a =a;
     }
+
+    getArray() {
+        return [this.r,this.g,this.b,this.a]
+    }
 }

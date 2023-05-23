@@ -4,6 +4,8 @@ import Color from "../math/Color";
 import Font from "../draw/Font";
 import Vec2 from "../math/Vec2";
 import Utils from "../math/Utils";
+import UI from "../UI";
+import UI_IC from "../UI_IC";
 
 
 export class LComponentSettings extends ComponentSettings {
@@ -66,10 +68,14 @@ export default class LComponent extends Component {
     onMouseClicked() {
 
         if ((this.settings as LComponentSettings).canCopyToClipBoard) {
-            navigator.clipboard.writeText(this.getClipboardValue()).then(function () {
+            navigator.clipboard.writeText(this.getClipboardValue()).then( ()=> {
+                UI_IC.logEvent('Copy',this.getClipboardValue())
+
             }, function (err) {
-                console.error('Async: Could not copy to clipboard: ', err);
+                UI_IC.logEvent('Copy',"Async: Could not copy to clipboard:"+ err,true)
+
             });
+
         }
 
     }

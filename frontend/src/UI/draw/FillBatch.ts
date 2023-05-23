@@ -20,10 +20,10 @@ export default class FillBatch {
     private indicesPos: number = 0
     private shadowRect=new Rect()
     private shadowSizeRect =new Rect()
-    private shadowColorIn =new Color(0,0,0,0.20)
+    private shadowColorIn =new Color(0,0,0,0.1)
     private shadowColorOut =new Color(0,0,0,0)
-    private shadowOffset =2;
-    private shadowSize =6;
+    private shadowOffset =1;
+    private shadowSize =3;
     constructor() {
 
 

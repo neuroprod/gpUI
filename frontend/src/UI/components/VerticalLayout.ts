@@ -3,6 +3,7 @@ import UI_I from "../UI_I";
 import Rect from "../math/Rect";
 import Color from "../math/Color";
 import Utils from "../math/Utils";
+import {settings} from "cluster";
 
 
 export class VerticalLayoutSettings extends ComponentSettings {
@@ -46,12 +47,15 @@ export default class VerticalLayout extends Component {
 
     needsResize(): boolean {
 
+        if (this.size.y < this.placeCursor.y) {
+            this.size.y =Math.min(this.placeCursor.y,Utils.getMaxInnerHeight(this.parent))-this.settings.box.marginBottom-this.settings.box.marginTop
 
+        }
         if (this.size.y < this.placeCursor.y) {
 
             if(this.needScrollBar) {
 
-              ///   if(this.settings.box.size.y<0) this.size.y =-this.settings.box.size.y*(  Utils.getMaxInnerHeight(this.parent) )-this.settings.box.marginTop-this.settings.box.marginBottom;
+
                 this.hasScrollBar = true;
                 this.childrenHeight = this.placeCursor.y
                 let settings = this.settings as VerticalLayoutSettings;

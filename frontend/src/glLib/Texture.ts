@@ -69,7 +69,7 @@ export default class Texture {
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
 
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flip);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, this.type, this.type, gl.UNSIGNED_BYTE, this.image);
         if(!this.mipmap)
         {

@@ -10,10 +10,6 @@ import Rect from "../../math/Rect";
 
 export class InputBaseSettings extends ComponentSettings {
 
-    static floatFilter =(val:string)=>{
-        val  = val.replace(/[^\d.-]/g, '');
-        return val
-    };
     public colorBack: Color = new Color().setHex("#2d2d2d", 1);
     public colorOutline: Color = new Color().setHex("#8b826d", 0.2);
     public colorText: Color = new Color().setHex("#cbcbcb", 1);
@@ -21,12 +17,22 @@ export class InputBaseSettings extends ComponentSettings {
     public colorOutlineFocus: Color = new Color().setHex("#ff6363", 0.5);
     public colorTextFocus: Color = new Color().setHex("#FFFFFF", 1);
     public colorCursor: Color = new Color().setHex("#c7c7c7", 1);
-    public autoFocus =false
-    public filter:(val:string)=>string =(val:string)=>{return val};
+    public autoFocus = false
+
+
     constructor() {
         super();
 
     }
+
+    static floatFilter = (val: string) => {
+        val = val.replace(/[^\d.-]/g, '');
+        return val
+    };
+
+    public filter: (val: string) => string = (val: string) => {
+        return val
+    };
 }
 
 export default class InputBase extends Component {
@@ -40,32 +46,35 @@ export default class InputBase extends Component {
     private dragPos: number = 0;
     private isSelecting: boolean = false;
     private selectRect: Rect = new Rect()
-    private _textIsDirty: boolean =false
+    private _textIsDirty: boolean = false
     private ref: any;
     private prop: string;
-    private filter:(val:string)=>string;
+    private filter: (val: string) => string;
     private prevFocusComponent: Component | null = null;
+
     constructor(id: number, ref: any, prop: string, settings: InputBaseSettings) {
         super(id, settings);
-        this.filter =settings.filter;
-        this.ref =ref;
-        this.prop =prop;
+        this.filter = settings.filter;
+        this.ref = ref;
+        this.prop = prop;
         this.size.copy(settings.box.size);
         this.text = this.filter(ref[prop]);
         this.charWidth = Font.charSize.x;
         this.cursorPos = this.text.length;
-        if(settings.autoFocus){
-            this.prevFocusComponent =UI_I.focusComponent;
+        if (settings.autoFocus) {
+            this.prevFocusComponent = UI_I.focusComponent;
             UI_I.setFocusComponent(this)
+
+            this.cursorPos =this.text.length
+            this.dragPos =0
+            this.isSelecting = true;
         }
+
     }
-    /*filter(s:string){
-         s  = s.replace(/[^\d.-]/g, '');
-        return s;
-    }*/
+
+
     onAdded() {
-        if( this.text != this.ref[this.prop])
-        {
+        if (this.text != this.ref[this.prop]) {
             this.text = this.ref[this.prop];
             this.setDirty()
         }
@@ -134,17 +143,19 @@ export default class InputBase extends Component {
             }
 
             this.text = [this.text.slice(0, this.cursorPos), buffer, this.text.slice(this.cursorPos)].join('');
-            this.text =this.filter( this.text)
+            this.text = this.filter(this.text)
             this.cursorPos = this.limitMouseCursor(this.cursorPos + buffer.length)
             this.setDirty()
             this.setTextDirty()
         }
 
     }
-    setTextDirty(){
-        this.ref[this.prop] =this.text;
-        this._textIsDirty =true;
+
+    setTextDirty() {
+        this.ref[this.prop] = this.text;
+        this._textIsDirty = true;
     }
+
     removeSelection() {
 
         let lPos = this.cursorPos;
@@ -159,16 +170,22 @@ export default class InputBase extends Component {
         this.isSelecting = false;
     }
 
-    updateMouse() {
 
-        if (this.isDown) {
-            if (this.isDownThisFrame) {
-                this.cursorPos = this.getMouseCursorPos();
-                this.isDragging = true;
-            }
-        } else {
-            this.isDragging = false;
+    onMouseDown() {
+        if(this.isFocus) {
+            this.cursorPos = this.getMouseCursorPos();
+            this.isDragging = true;
         }
+        else{
+            this.dragPos =0
+            this.isSelecting = true;
+            this.cursorPos =this.text.length
+            this.setDirty()
+        }
+    }
+
+    onMouseUp() {
+        this.isDragging = false;
     }
 
     updateOnMouseDown() {
@@ -257,7 +274,7 @@ export default class InputBase extends Component {
 
     getReturnValue() {
         let r = this._textIsDirty
-        this._textIsDirty =false;
+        this._textIsDirty = false;
         return r;
     }
 

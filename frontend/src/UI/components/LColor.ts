@@ -70,7 +70,7 @@ export default class LColor extends LComponent {
     }
 
     getClipboardValue(): string {
-        return this.color.r + "," + this.color.g + "," + this.color.b + "," + this.color.a;
+        return this.color.r.toFixed(2) + "," + this.color.g.toFixed(2)  + "," + this.color.b.toFixed(2)  + "," + this.color.a.toFixed(2) ;
     }
 
 }

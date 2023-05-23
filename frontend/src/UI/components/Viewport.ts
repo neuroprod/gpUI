@@ -106,8 +106,8 @@ export default class Viewport extends Panel {
             sY =this.layoutRect.size.x*ratio
         }
 
-        this.renderSize.set(sX, sY)
-        if (this.texture.setSize(sX,sY)) this.setDirty();
+        this.renderSize.set(sX*2, sY*2)
+        if (this.texture.setSize(sX*2,sY*2)) this.setDirty();
         this.texture.bind()
     }
 

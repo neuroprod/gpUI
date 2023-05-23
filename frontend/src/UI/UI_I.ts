@@ -15,6 +15,8 @@ import Local from "./local/Local";
 import TexturePool from "./draw/TexturePool";
 import UI_Style from "./UI_Style";
 import KeyboardListener from "./input/KeyboardListener";
+import EventCenter, {EventCenterSettings} from "./components/internal/EventCenter";
+import Event, {EventSettings} from "./components/internal/Event";
 
 
 export default class UI_I {
@@ -50,6 +52,7 @@ export default class UI_I {
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
     private static oldDrawBatchIDs: number[] = [];
+    static eventLayer: EventCenter;
 
 
     constructor() {
@@ -98,6 +101,10 @@ export default class UI_I {
 
         UI_I.overlayLayer = new Layer(UI_I.getID("dockingOverLayer"), layerSettings);
         UI_I.addComponent(UI_I.overlayLayer);
+        this.popComponent();
+
+        UI_I.eventLayer = new EventCenter(UI_I.getID("eventLayer"), new EventCenterSettings());
+        UI_I.addComponent(  UI_I.eventLayer);
         this.popComponent();
 
         UI_I.dockManager = new DockManager(UI_I.panelDockingLayer, UI_I.overlayLayer)

@@ -30,6 +30,7 @@ import {UI_VEC2, UI_VEC3, UI_VEC4} from "./UI_Types";
 import LVector, {LVectorSettings} from "./components/LVector";
 import LList, {LListSettings} from "./components/LList";
 import LListItem, {LListItemSettings} from "./components/LListItem";
+import Event,{EventSettings} from "./components/internal/Event";
 
 
 
@@ -127,6 +128,13 @@ export default class UI {
         }
 
     }
+
+    static logEvent(label:string,text:string,isError:boolean=false)
+    {
+        UI_IC.logEvent(label,text,isError);
+
+    }
+
    static LListItem(label: string,selected:boolean=false)
    {
        if (!UI_I.setComponent(label)) {
@@ -140,7 +148,6 @@ export default class UI {
    }
     static popList() {
         UI_I.popComponent();
-
         UI_I.popComponent();
     }
     static setIndent(value: number) {
@@ -327,5 +334,14 @@ export default class UI {
 
     static saveLocalData() {
         Local.saveToJson();
+    }
+
+    static pushID(s: string) {
+        let newID = UI_I.getID(s);
+        UI_I.currentComponent.pushID(newID)
+    }
+
+    static popID() {
+        UI_I.currentComponent.popID()
     }
 }
