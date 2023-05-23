@@ -12,7 +12,7 @@ import GL from "./glLib/GL";
 export default class ExampleUI
 {
     private color1: Color = new Color(0.12,0.63,0.86,1.00);
-    private color2: Color = new Color(0.98,0.36,0.57,0.58);
+    private color2: Color = new Color(0.98,0.36,0.57,0.68);
 
     private myFloat = 0.5;
     private myFloat2 = 0.5;

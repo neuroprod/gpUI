@@ -27,7 +27,7 @@ export default class LColor extends LComponent {
 
         super(id, label, settings);
         this.colorUI =color;
-        this.color = new Color(this.colorUI.r,this.colorUI.g,this.colorUI.b);
+        this.color = new Color(this.colorUI.r,this.colorUI.g,this.colorUI.b,this.colorUI.a);
         this.colorStart.copy(this.color);
         this.colorButtonSettings = new ColorButtonSettings();
         this.colorButtonSettings.box.marginLeft = 4;
