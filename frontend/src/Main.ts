@@ -61,9 +61,9 @@ private example:ExampleUI
         });
         this.update();
         this.viewPort.set(0,0,this.glMain.viewportWidth,this.glMain.viewportHeight)
-        //this.viewPort= UI.pushViewport("viewport",this.viewPort);
+        this.viewPort= UI.pushViewport("viewport",this.viewPort);
         this.draw();
-       // UI.popViewport();
+        UI.popViewport();
         UI.draw();
 
     }
@@ -102,7 +102,7 @@ private example:ExampleUI
         gl.viewport(this.viewPort.x, this.viewPort.y, this.viewPort.z, this.viewPort.w)
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        this.scene.camera.update(this.viewPort.w / this.viewPort.z)
+        this.scene.camera.update(this.viewPort.z / this.viewPort.w)
 
         this.scene.draw();
 
