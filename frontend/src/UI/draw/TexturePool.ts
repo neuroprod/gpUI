@@ -14,7 +14,6 @@ export default class TexturePool
         }
     }
     //don't destroy
-
     public static getStatic(key:string):UITexture
     {
         return TexturePool.textures.get(key)

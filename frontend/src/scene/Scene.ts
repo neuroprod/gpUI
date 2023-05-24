@@ -47,7 +47,7 @@ export default class Scene {
         UI.LColor("ClearColor",this.clearColor)
         this.gl.clearColor(this.clearColor.r,this.clearColor.g,this.clearColor.b,this.clearColor.a)
         if (UI.LBool("Animate Camera", true)) {
-            this.angle += 0.002
+            this.angle += 0.01
             this.camera.eye[0] = Math.sin(this.angle) * 10;
             this.camera.eye[2] = Math.cos(this.angle) * 10;
         }

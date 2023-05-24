@@ -8,6 +8,7 @@ import Vec2 from "./UI/math/Vec2";
 import UI from "./UI/UI";
 import uiSettings from "./uiSettings.json"
 import ExampleUI from "./ExampleUI";
+import {Vector4} from "math.gl";
 
 export enum TestEnum {
     Up,
@@ -26,7 +27,7 @@ export default class Main {
 private example:ExampleUI
 
     private scene: Scene;
-    private viewPortSize: Vec2;
+    private viewPort: Vector4=new Vector4();
     private textTexture: UITexture;
 
     constructor(canvas: HTMLCanvasElement) {
@@ -50,7 +51,7 @@ private example:ExampleUI
 
     init() {
         this.example.init()
-        this.textTexture.setTextureGL(UI_I.renderer.textRenderer.texture.texture, Font.textureSize.x, Font.textureSize.y);
+       if(UI.initialized) this.textTexture.setTextureGL(UI_I.renderer.textRenderer.texture.texture, Font.textureSize.x, Font.textureSize.y);
         this.step();
     }
 
@@ -59,10 +60,10 @@ private example:ExampleUI
             this.step();
         });
         this.update();
-
-        this.viewPortSize = UI.pushViewport("viewport");
+        this.viewPort.set(0,0,this.glMain.viewportWidth,this.glMain.viewportHeight)
+        //this.viewPort= UI.pushViewport("viewport",this.viewPort);
         this.draw();
-        UI.popViewport();
+       // UI.popViewport();
         UI.draw();
 
     }
@@ -96,11 +97,12 @@ private example:ExampleUI
     }
 
     draw() {
+
         let gl = this.glMain.gl;
-        gl.viewport(0, 0, this.viewPortSize.x, this.viewPortSize.y)
+        gl.viewport(this.viewPort.x, this.viewPort.y, this.viewPort.z, this.viewPort.w)
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        this.scene.camera.update(this.viewPortSize.x / this.viewPortSize.y)
+        this.scene.camera.update(this.viewPort.w / this.viewPort.z)
 
         this.scene.draw();
 

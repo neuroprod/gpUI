@@ -1,3 +1,5 @@
+import UI_I from "../UI_I";
+
 export default class Local {
     static dockData: any = null;
     static itemData = {};
@@ -49,7 +51,7 @@ export default class Local {
 
     static saveData() {
         if (!this.isDirty) return;
-
+        if(UI_I.crashed)return;
         let s = JSON.stringify(this.uiData);
         localStorage.setItem("uiData", s);
 

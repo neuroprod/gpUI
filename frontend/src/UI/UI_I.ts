@@ -53,6 +53,7 @@ export default class UI_I {
     private static keyboardListener: KeyboardListener;
     private static oldDrawBatchIDs: number[] = [];
     static eventLayer: EventCenter;
+    static crashed: boolean=false;
 
 
     constructor() {
@@ -167,7 +168,6 @@ export default class UI_I {
     }
 
     static getID(seed: string) {
-
         return this.getHash(UI_I.currentComponent.id + seed + " ");
     }
 
@@ -198,7 +198,6 @@ export default class UI_I {
         this.components.delete(comp.id);
         comp.setDirty();
         for (let child of comp.children) {
-            //child.lockedToParent =false;
             child.useThisFrame = false;
         }
         let index = comp.parent.children.indexOf(comp);
@@ -434,7 +433,7 @@ export default class UI_I {
             this.focusComponent.isFocus = false;
             this.focusComponent.setDirty();
         }
-        this.focusComponent = comp;//this.mouseOverComponent;
+        this.focusComponent = comp;
 
         if (this.focusComponent) {
             this.focusComponent.isFocus = true;
