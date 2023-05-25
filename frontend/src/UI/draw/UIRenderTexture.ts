@@ -11,8 +11,8 @@ export default class UIRenderTexture extends UITexture
     constructor() {
         super();
         this.gl =UI_I.renderer.gl;
-        this.fbo =new FBO(UI_I.renderer.gl,100,100)
-        this.setTextureGL( this.fbo.texture,100,100)
+        this.fbo =new FBO(UI_I.renderer.gl,1,1,false)
+        this.setTextureGL( this.fbo.texture,1,1)
     }
     setSize(w:number,h:number){
         if(w==this.width && h==this.height)return false;

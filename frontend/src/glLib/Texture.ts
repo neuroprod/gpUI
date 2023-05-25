@@ -13,7 +13,7 @@ export default class Texture {
     public texture!: WebGLTexture;
 
 
-    constructor(glMain:GL,useMipMap =true,transparent =false,linear =true) {
+    constructor(glMain:GL,useMipMap =false,transparent =false,linear =true) {
         this.glMain = glMain;
         this.gl = glMain.gl;
 

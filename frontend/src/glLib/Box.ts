@@ -151,10 +151,10 @@ export default class Box
             let gl = this.gl;
             gl.bindBuffer(gl.ARRAY_BUFFER, this.planeVertexBuffer);
             gl.vertexAttribPointer(program.vertexAttribute, 3, gl.FLOAT, false, 0, 0);
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.planeNormalBuffer);
-            gl.vertexAttribPointer(program.normalAttribute, 3, gl.FLOAT, false, 0, 0);
-
+            if(program.normalAttribute !=-1) {
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.planeNormalBuffer);
+                gl.vertexAttribPointer(program.normalAttribute, 3, gl.FLOAT, false, 0, 0);
+            }
           //  gl.bindBuffer(gl.ARRAY_BUFFER, this.planeUVBuffer);
           //  gl.vertexAttribPointer(program.uvAttribute0, 2, gl.FLOAT, false, 0, 0);
 

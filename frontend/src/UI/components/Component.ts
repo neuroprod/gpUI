@@ -356,7 +356,7 @@ export default class Component {
         //extend
     }
 
-    getReturnValue() {
+    getReturnValue():any{
         //extend
         return null;
     }

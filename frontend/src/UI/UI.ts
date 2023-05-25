@@ -192,7 +192,7 @@ export default class UI {
         return result;
     }
 
-    static LColor(label: string = "", color: UI_COLOR, settings?: LColorSettings): Color {
+    static LColor(label: string = "", color: UI_COLOR, settings?: LColorSettings): UI_COLOR {
         if (!UI.initialized) return color;
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LColorSettings();

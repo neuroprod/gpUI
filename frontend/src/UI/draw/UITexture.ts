@@ -7,7 +7,7 @@ export default class UITexture{
     public width: number =1;
     public height: number=1;
     public size =new Vec2()
-    public transparant=false;
+
     constructor() {
     }
     setTextureGL(texture:WebGLTexture,width:number,height:number)

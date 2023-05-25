@@ -8,8 +8,8 @@ export default class ColorPickerTextureGL extends ShaderTextureGL {
     private br = [0, 0, 0, 0];
     private gridsize: number;
 
-    constructor(width: number, height: number,gridSize:number,tl: Array<number>= [0, 0, 0, 0], tr: Array<number>= [0, 0, 0, 0], bl: Array<number>= [0, 0, 0, 0], br: Array<number>= [0, 0, 0, 0]) {
-        super(width, height);
+    constructor(width: number, height: number,repeat:boolean,gridSize:number,tl: Array<number>= [0, 0, 0, 0], tr: Array<number>= [0, 0, 0, 0], bl: Array<number>= [0, 0, 0, 0], br: Array<number>= [0, 0, 0, 0]) {
+        super(width, height,repeat);
         this.gridsize =gridSize;
         this.tl =tl;
         this.tr =tr;

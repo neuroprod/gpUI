@@ -70,8 +70,7 @@ private example:ExampleUI
 
     update() {
 
-        this.scene.update();
-        this.example.update()
+
 
         UI.pushWindow("UI");
         UI.setLLabelSize(120)
@@ -94,6 +93,10 @@ private example:ExampleUI
         UI.pushWindow("Window 2");
         UI.LText( "hello 2","Test Window")
         UI.popWindow();
+        this.scene.camera.update(this.viewPort.z / this.viewPort.w)
+
+        this.scene.update();
+        this.example.update()
     }
 
     draw() {
@@ -102,7 +105,7 @@ private example:ExampleUI
         gl.viewport(this.viewPort.x, this.viewPort.y, this.viewPort.z, this.viewPort.w)
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        this.scene.camera.update(this.viewPort.z / this.viewPort.w)
+
 
         this.scene.draw();
 

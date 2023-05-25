@@ -19,7 +19,7 @@ export default class GL {
         this.assetPath  = assetsPath;
         this.preLoader =preLoader;
         this.canvas = canvas;
-        this.gl = canvas.getContext("webgl2",{antialias: true}) as WebGL2RenderingContext;
+        this.gl = canvas.getContext("webgl",{antialias: true}) as WebGL2RenderingContext;
 
         this.pixelRatio =window.devicePixelRatio
         this.resizeFunctions=[];

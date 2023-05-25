@@ -1,35 +1,24 @@
-import GL from "./GL";
-
 export default class Program {
-    private glMain: GL;
-    private path: string;
-    private gl: WebGL2RenderingContext;
+    private gl: WebGL2RenderingContext | WebGLRenderingContext;
+
+
     private vertex: string;
     private fragment: string;
 
     private defines: string;
     private map: Map<string, WebGLUniformLocation>;
 
-    program: WebGLProgram;
+    private program: WebGLProgram;
     private vertexShader: WebGLShader;
     private fragmentShader: WebGLShader;
 
-    vertexAttribute: GLint;
-    normalAttribute: GLint;
-
-    uvAttribute0: GLint;
-    uvAttribute1: GLint;
-    uvAttribute2: GLint;
-    uvAttribute3: GLint;
-    uvAttribute4: GLint;
-    instPosAttribute: GLint;
-    instDataAttribute: GLint;
+    private vertexAttribute: GLint;
+    private uvAttribute0: GLint;
 
 
-    constructor(glMain:GL) {
-        this.glMain = glMain;
-        this.path = glMain.assetPath;
-        this.gl = glMain.gl;
+    constructor(gl: WebGL2RenderingContext | WebGLRenderingContext) {
+        this.gl = gl;
+
         this.vertex = "";
         this.fragment = "";
         this.program = null;
@@ -127,20 +116,6 @@ export default class Program {
 
         }
     }
-    uniform2f(name, valueX,valueY) {
-        if (this.program) {
-            if (this.map.has(name)) {
-
-                this.gl.uniform2f(this.map.get(name),valueX,valueY)
-            } else {
-                var loc = this.gl.getUniformLocation(this.program, name);
-                this.map.set(name, loc);
-                this.gl.uniform2f(loc,valueX,valueY);
-
-            }
-
-        }
-    }
     uniform2fv(name, value) {
         if (this.program) {
             if (this.map.has(name)) {
@@ -156,117 +131,46 @@ export default class Program {
         }
     }
 
-    addDefine(defstring:string) {
-        this.defines += "#define " + defstring + "/n";
-
-    }
-
-    load(shader:string) {
-
-        this.loadShader("vertex", this.path + "shaders/" + shader + "/" + shader + ".vs.glsl");
-        this.loadShader("fragment", this.path + "shaders/" + shader + "/" + shader + ".fs.glsl");
-
-    }
 
     bind() {
         if (this.program) {
             const gl = this.gl;
             gl.useProgram(this.program);
-          if (this.vertexAttribute != -1) {
-            gl.enableVertexAttribArray(this.vertexAttribute);
-          }
-
-            if (this.normalAttribute != -1) {
-                gl.enableVertexAttribArray(this.normalAttribute);
+            if (this.vertexAttribute != -1) {
+                gl.enableVertexAttribArray(this.vertexAttribute);
             }
+
 
             if (this.uvAttribute0 != -1) {
                 gl.enableVertexAttribArray(this.uvAttribute0);
 
             }
-            if (this.uvAttribute1 != -1) {
-                gl.enableVertexAttribArray(this.uvAttribute1);
-            }
-            if (this.uvAttribute2 != -1) {
-                gl.enableVertexAttribArray(this.uvAttribute2);
-            }
-            if (this.uvAttribute3 != -1) {
-                gl.enableVertexAttribArray(this.uvAttribute3);
-            }
-            if (this.uvAttribute4 != -1) {
-                gl.enableVertexAttribArray(this.uvAttribute4);
-            }
-            if ( this.instPosAttribute != -1) {
-                gl.enableVertexAttribArray( this.instPosAttribute);
-            }
-            if ( this.instDataAttribute != -1) {
-                gl.enableVertexAttribArray( this.instDataAttribute);
-            }
+
         }
     }
-    unBind()
-    {
+
+    unBind() {
         const gl = this.gl;
         if (this.vertexAttribute != -1) {
             gl.disableVertexAttribArray(this.vertexAttribute);
         }
 
-        if (this.normalAttribute != -1) {
-            gl.disableVertexAttribArray(this.normalAttribute);
-        }
 
         if (this.uvAttribute0 != -1) {
             gl.disableVertexAttribArray(this.uvAttribute0);
 
         }
-        if (this.uvAttribute1 != -1) {
-            gl.disableVertexAttribArray(this.uvAttribute1);
-        }
-        if (this.uvAttribute2 != -1) {
-            gl.disableVertexAttribArray(this.uvAttribute2);
-        }
-        if (this.uvAttribute3 != -1) {
-            gl.disableVertexAttribArray(this.uvAttribute3);
-        }
-        if (this.uvAttribute4 != -1) {
-            gl.disableVertexAttribArray(this.uvAttribute4);
-        }
-        if ( this.instPosAttribute != -1) {
-            gl.disableVertexAttribArray( this.instPosAttribute);
-        }
-        if ( this.instDataAttribute != -1) {
-            gl.disableVertexAttribArray( this.instDataAttribute);
-        }
+
     }
-    loadShader(type, name) {
 
-        this.glMain.preLoader.startLoad();
-        var client = new XMLHttpRequest();
-        client.open('GET', name);
-        client.onreadystatechange = () => {
-            if (client.readyState == 4) {
-
-                if (type == "fragment") {
-                    this.fragment = client.responseText;
-                }
-                if (type == "vertex") {
-                    this.vertex = client.responseText;
-                }
-                this.glMain.preLoader.stopLoad();
-                this.compileProgram();
-
-            }
-        }
-        client.send();
-    }
-    setShaders(vert:string,frag:string,defines="")
-    {
-        this.vertex =defines +vert;
-        this.fragment =defines +frag;
+    setShaders(vert: string, frag: string) {
+        this.vertex = vert;
+        this.fragment = frag;
         this.compileProgram();
     }
+
     compileProgram() {
-        if (this.vertex == "" || this.fragment === "") return;
+
 
         const gl = this.gl;
 
@@ -275,31 +179,26 @@ export default class Program {
 
 
         this.program = gl.createProgram();
+
         gl.attachShader(this.program, this.vertexShader);
         gl.attachShader(this.program, this.fragmentShader);
-
 
         gl.linkProgram(this.program);
         if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
             console.log("Could not initialise shaders ");
+            console.log(this.vertex)
+            console.log(this.fragment)
         }
         gl.useProgram(this.program);
+
+
         this.vertexAttribute = gl.getAttribLocation(this.program, "aVertex");
-        this.normalAttribute = gl.getAttribLocation(this.program, "aNormal");
-
         this.uvAttribute0 = gl.getAttribLocation(this.program, "aUV0");
-        this.uvAttribute1 = gl.getAttribLocation(this.program, "aUV1");
-        this.uvAttribute2 = gl.getAttribLocation(this.program, "aUV2");
-        this.uvAttribute3 = gl.getAttribLocation(this.program, "aUV3");
-        this.uvAttribute4 = gl.getAttribLocation(this.program, "aUV4");
-        this.instPosAttribute = gl.getAttribLocation(this.program, "aInstPosition");
-        this.instDataAttribute = gl.getAttribLocation(this.program, "aInstData");
-
 
 
     }
 
-    compileShader(text, type):WebGLShader {
+    compileShader(text, type): WebGLShader {
         const gl = this.gl;
 
 
