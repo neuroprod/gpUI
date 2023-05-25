@@ -93,9 +93,9 @@ private example:ExampleUI
         UI.pushWindow("Window 2");
         UI.LText( "hello 2","Test Window")
         UI.popWindow();
-        this.scene.camera.update(this.viewPort.z / this.viewPort.w)
 
-        this.scene.update();
+
+        this.scene.update(this.viewPort);
         this.example.update()
     }
 

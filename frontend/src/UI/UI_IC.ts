@@ -48,7 +48,7 @@ import LSelect, {LSelectSettings} from "./components/LSelect";
 import Event, {EventSettings} from "./components/internal/Event";
 export default class UI_IC {
 
-    static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
+    static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings):number {
         let label;
         let ref = null;
         let value = null;
@@ -82,7 +82,7 @@ export default class UI_IC {
         UI_I.popComponent();
     }
 
-    static LSelect(label: string, items: Array<SelectItem>, index = 0, settings?: LSelectSettings) {
+    static LSelect(label: string, items: Array<SelectItem>, index = 0, settings?: LSelectSettings):SelectItem {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LSelectSettings();
             let comp = new LSelect(UI_I.getID(label), label, items, index, settings);
@@ -137,9 +137,9 @@ export default class UI_IC {
             UI_I.addComponent(comp);
         }
     }
-    static LIntSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings)
-    static LIntSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings)
-    static LIntSlider(ref_or_label: any, property_or_value: any, min?: number, max?: number, settings?: LSliderSettings) {
+    static LIntSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings):number
+    static LIntSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings):number
+    static LIntSlider(ref_or_label: any, property_or_value: any, min?: number, max?: number, settings?: LSliderSettings):number {
         let label;
         let ref = null;
         let value = null;

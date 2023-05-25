@@ -5,8 +5,6 @@ import LSlider, {LSliderSettings} from "./components/LSlider";
 import LButton, {LButtonSettings} from "./components/LButton";
 import {LTextSettings} from "./components/LText";
 import LColor, {LColorSettings} from "./components/LColor";
-
-import Color from "./math/Color";
 import LBoolean, {LBooleanSettings} from "./components/LBoolean";
 import Group, {GroupSettings} from "./components/Group";
 import UITexture from "./draw/UITexture";
@@ -19,7 +17,6 @@ import SelectItem from "./math/SelectItem";
 import {LSelectSettings} from "./components/LSelect";
 import {LNumberSettings} from "./components/LNumber";
 import DockingPanel, {DockingPanelSettings} from "./components/internal/DockingPanel";
-import Vec2 from "./math/Vec2";
 import {SeparatorSettings} from "./components/Separator";
 import {NumberType} from "./UI_Enums";
 import UI_Vars from "./UI_Vars";
@@ -226,8 +223,8 @@ export default class UI {
         UI_I.popComponent();
     }
 
-    static LTextInput(label: string, value: string, empty?: string, settings?: LTextInputSettings)
-    static LTextInput(label: string, ref: any, property: string, settings?: LTextInputSettings)
+    static LTextInput(label: string, value: string, empty?: string, settings?: LTextInputSettings):string
+    static LTextInput(label: string, ref: any, property: string, settings?: LTextInputSettings):string
     static LTextInput(label: string, ref_or_value: any, property: string, settings?: LTextInputSettings) {
 
         if (!UI.initialized) {
@@ -250,8 +247,8 @@ export default class UI {
 
     }
 
-    static LBool(label: string, value: boolean, settings?: LBooleanSettings)
-    static LBool(ref: any, property: string, settings?: LBooleanSettings)
+    static LBool(label: string, value: boolean, settings?: LBooleanSettings):boolean
+    static LBool(ref: any, property: string, settings?: LBooleanSettings):boolean
     static LBool(ref_or_label: any, property_or_value: any, settings?: LBooleanSettings) {
         if (!UI.initialized) {
             if (typeof property_or_value === 'string') {
@@ -302,8 +299,8 @@ export default class UI {
     }
 
 
-    static LFloatSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings)
-    static LFloatSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings)
+    static LFloatSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings):number
+    static LFloatSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings):number
     static LFloatSlider(ref_or_label: any, property_or_value: any, min?: number, max?: number, settings?: LSliderSettings) {
         if (!UI.initialized) {
             if (typeof property_or_value === 'string') {
@@ -337,8 +334,8 @@ export default class UI {
         return result
     }
 
-    static LFloat(label: string, value: number, settings?: LNumberSettings)
-    static LFloat(ref: any, property: string, settings?: LNumberSettings)
+    static LFloat(label: string, value: number, settings?: LNumberSettings):number
+    static LFloat(ref: any, property: string, settings?: LNumberSettings):number
     static LFloat(ref_or_label: any, property_or_value: any, settings?: LNumberSettings) {
         if (!UI.initialized) {
             if (typeof property_or_value === 'string') {
@@ -351,8 +348,8 @@ export default class UI {
     }
 
 
-    static LIntSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings)
-    static LIntSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings)
+    static LIntSlider(label: string, value: number, min?: number, max?: number, settings?: LSliderSettings):number
+    static LIntSlider(ref: any, property: string, min?: number, max?: number, settings?: LSliderSettings):number
     static LIntSlider(ref_or_label: any, property_or_value: any, min?: number, max?: number, settings?: LSliderSettings) {
         if (typeof property_or_value === 'string') {
             return ref_or_label[property_or_value];
