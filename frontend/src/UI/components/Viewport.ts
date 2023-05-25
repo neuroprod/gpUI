@@ -7,6 +7,7 @@ import UI_I from "../UI_I";
 import Vec2 from "../math/Vec2";
 import SelectItem from "../math/SelectItem";
 import Local from "../local/Local";
+import Utils from "../math/Utils";
 
 
 export class ViewportSettings extends PanelSettings {
@@ -33,7 +34,7 @@ export default class Viewport extends Panel {
         super(id, label, settings);
         this.texture = new UIRenderTexture()
         this.textureSettings = new TextureSettings()
-        this.textureSettings.box.marginTop = 0;
+        this.textureSettings.box.marginTop = 22;
         this.textureSettings.setSizeToHeight = false;
         this.renderSize = this.size.clone()
 
@@ -82,6 +83,7 @@ export default class Viewport extends Panel {
             pos.y+=this.layoutRect.size.y/2-100;
             UI_IC.viewportPopUp(this,pos)
         }
+        if(!this.isDocked && !this.collapsed)
         UI_IC.texture("t", this.texture, this.textureSettings)
 
     }
@@ -97,8 +99,9 @@ export default class Viewport extends Panel {
     }
 
     startRender() {
+        if(this.isDocked)return;
         let sX = this.layoutRect.size.x;
-        let sY =this.layoutRect.size.y;
+        let sY =this.layoutRect.size.y-22;
         if(this.currentRatio.x !=-1){
 
             let ratio =this.currentRatio.y/this.currentRatio.x;
@@ -110,8 +113,30 @@ export default class Viewport extends Panel {
         if (this.texture.setSize(sX,sY)) this.setDirty();
         this.texture.bind()
     }
+    prepDraw() {
+        if(this._isDockedInPanel)return;
 
+        let settings = this.settings as PanelSettings
+
+        if(!this.isDocked) {
+            UI_I.currentDrawBatch.fillBatch.addShadow(this.layoutRect)
+        }
+       // Utils.drawOutlineRect(this.layoutRect, settings.outlineColor)
+
+        //UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.backgroundColor);
+
+      //  UI_I.currentDrawBatch.fillBatch.addRect(this.layoutRect, settings.backgroundColor);
+        UI_I.currentDrawBatch.fillBatch.addRect(this.topBarRect, settings.topBarColor);
+
+        if (!this.isDocked && !this.collapsed)
+            UI_I.currentDrawBatch.fillBatch.addTriangle(this.resizeRect.getTopRight(), this.resizeRect.getBottomRight(), this.resizeRect.getBottomLeft(), settings.resizeColor)
+
+
+        UI_I.currentDrawBatch.textBatch.addLine(this.labelPos, this.label, this.maxLabelSize, settings.labelColor);
+
+    }
     stopRender() {
+        if(this.isDocked)return;
         this.texture.unBind()
         let gl = UI_I.renderer.gl;
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

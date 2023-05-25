@@ -89,8 +89,17 @@ export default class UI {
         UI_I.popComponent();
 
 
-        if (vp.collapsed) {
+        if (vp.collapsed ) {
             UI.viewPort = null
+            return view;
+        }
+        if ( vp.isDocked) {
+            UI.viewPort = null
+
+            view.x=vp.layoutRect.pos.x*UI_I.pixelRatio
+            view.y=(UI_I.screenSize.y-vp.layoutRect.pos.y -vp.layoutRect.size.y)*UI_I.pixelRatio;
+            view.z=vp.layoutRect.size.x*UI_I.pixelRatio
+            view.w=vp.layoutRect.size.y*UI_I.pixelRatio
             return view;
         }
         UI.viewPort = vp;

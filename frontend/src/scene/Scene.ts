@@ -189,7 +189,7 @@ if(this.disableScene)return
 
         this.programEdge.bind()
         this.selectFBO.bindtexture(this.gl.TEXTURE0);
-        let lSize = 0.5
+        let lSize = 1
         let lSizeK = 1
         this.programEdge.uniform2fv("screen",[this.viewPort.z*lSize,this.viewPort.w*lSize]);
         this.programEdge.uniform3fv("kernel",[lSizeK,lSizeK,0.5,-lSizeK,-lSizeK,0.5, -lSizeK,lSizeK,0.5,lSizeK,-lSizeK,0.5,1.0,0.0,1.0,-1.0,0.0,1.0,0.0,1.0,1.0,0.0,-1.0,1.0]);

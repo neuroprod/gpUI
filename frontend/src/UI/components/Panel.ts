@@ -53,7 +53,7 @@ export default class Panel extends Component {
     private tryDragMouse = new Vec2();
     private dockSize: Vec2 = new Vec2();
     protected prevSize: Vec2 = new Vec2()
-    private _isDockedInPanel: boolean =false;
+    protected _isDockedInPanel: boolean =false;
     private saveBox: Box;
 
 
