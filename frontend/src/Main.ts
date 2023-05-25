@@ -4,7 +4,6 @@ import PreLoader from "./glLib/PreLoader";
 import UITexture from "./UI/draw/UITexture";
 import Font from "./UI/draw/Font";
 import Scene from "./scene/Scene";
-import Vec2 from "./UI/math/Vec2";
 import UI from "./UI/UI";
 import uiSettings from "./uiSettings.json"
 import ExampleUI from "./ExampleUI";

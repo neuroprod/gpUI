@@ -82,7 +82,7 @@ export default class UI_IC {
         UI_I.popComponent();
     }
 
-    static LSelect(label: string, items: Array<SelectItem>, index = 0, settings?: LSelectSettings):SelectItem {
+    static LSelect(label: string, items: Array<SelectItem>, index = 0, settings?: LSelectSettings):any {
         if (!UI_I.setComponent(label)) {
             if (!settings) settings = new LSelectSettings();
             let comp = new LSelect(UI_I.getID(label), label, items, index, settings);
