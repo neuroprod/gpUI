@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@math.gl/types": "^3.6.3",
-    "@webgpu/types": "^0.1.32",
     "gl-matrix": "^3.4.3",
     "math.gl": "^3.6.3",
     "next": "latest",
