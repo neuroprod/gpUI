@@ -5,9 +5,9 @@ export default class Material
     vertexShader:GPUShaderModule;
     fragmentShader:GPUShaderModule;
     uniformBuffer:any
-    pipeLine:any;
+    pipeLine:GPURenderPipeline;
     uniformBindGroup:any
-    constructor(device:GPUDevice,presentationFormat:any) {
+    constructor(device:GPUDevice,presentationFormat: GPUTextureFormat) {
 
     let frag =
         'struct Uniforms {'+
@@ -39,7 +39,7 @@ export default class Material
         code: frag,
     });
 
-     this.pipeline = device.createRenderPipeline({
+     this.pipeLine = device.createRenderPipeline({
             layout: 'auto',
             vertex: {
                 module: this.vertexShader,
@@ -78,7 +78,7 @@ export default class Material
         });
 
         this.uniformBindGroup = device.createBindGroup({
-            layout: this.pipeline.getBindGroupLayout(0),
+            layout: this.pipeLine.getBindGroupLayout(0),
             entries: [
                 {
                     binding: 0,

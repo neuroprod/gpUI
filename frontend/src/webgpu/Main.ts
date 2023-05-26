@@ -9,7 +9,7 @@ export default class Main{
     private mesh: Mesh;
     private mesh2: Mesh2;
     private material: Material;
-    private presentationFormat: bgra8unorm;
+    private presentationFormat:  GPUTextureFormat;
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
         this.setup();
@@ -26,9 +26,7 @@ export default class Main{
         this.presentationFormat = navigator.gpu.getPreferredCanvasFormat();
 
 
-        this.context.configure({
-           device,
-            format: this.presentationFormat,
+        this.context.configure({device, format: this.presentationFormat,
             alphaMode: 'premultiplied',
         });
 
@@ -55,7 +53,7 @@ export default class Main{
 
         const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
 
-        passEncoder.setPipeline(this.material.pipeline);
+        passEncoder.setPipeline(this.material.pipeLine);
         passEncoder.setBindGroup(0, this.material.uniformBindGroup);
         passEncoder.setVertexBuffer(0, this.mesh.verticesBuffer);
 

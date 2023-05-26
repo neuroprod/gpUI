@@ -1,6 +1,6 @@
 export default class Mesh
 {
-    private verticesBuffer: GPUBuffer;
+    public verticesBuffer: GPUBuffer;
 
     constructor(device:GPUDevice) {
 

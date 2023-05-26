@@ -7,7 +7,6 @@ const nextConfig = {
     // trailingSlash: true,
     // Optional: Change the output directory `out` -> `dist`
     distDir: 'dist',
-    ignoreBuildErrors: true,
 };
 
 module.exports = nextConfig;
