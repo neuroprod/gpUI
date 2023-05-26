@@ -12,11 +12,10 @@ import Vec2 from "./math/Vec2";
 import Local from "./local/Local";
 
 
-import TexturePool from "./draw/TexturePool";
+
 import UI_Style from "./UI_Style";
 import KeyboardListener from "./input/KeyboardListener";
 import EventCenter, {EventCenterSettings} from "./components/internal/EventCenter";
-import Event, {EventSettings} from "./components/internal/Event";
 
 
 export default class UI_I {
@@ -187,7 +186,7 @@ export default class UI_I {
         UI_I.renderType = "gl";
         UI_I.renderer = new RendererGL();
         UI_I.renderer.init(gl, canvas);
-        TexturePool.init();
+
         if (settings) Local.setSettings(settings)
         UI_I.init(canvas);
 

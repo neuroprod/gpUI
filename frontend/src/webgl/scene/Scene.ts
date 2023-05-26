@@ -3,11 +3,11 @@ import PreLoader from "../glLib/PreLoader";
 import Camera from "../glLib/Camera";
 import Program from "../glLib/Program";
 import Box from "../glLib/Box";
-import UI from "../UI/UI";
+import UI from "../../UI/UI";
 import {Vector3, Vector4} from "math.gl";
 import SceneCube from "./SceneCube";
-import Color from "../UI/math/Color";
-import UI_IC from "../UI/UI_IC";
+import Color from "../../UI/math/Color";
+import UI_IC from "../../UI/UI_IC";
 import FBO from "../glLib/FBO";
 import Quad from "../glLib/Quad";
 
@@ -77,6 +77,7 @@ export default class Scene {
         this.disableScene =!UI.LBool("Enable Scene", true)
         UI.separator("Settings", true);
         UI.LColor("ClearColor",this.clearColor)
+        UI.logEvent("color",this.clearColor+"")
         UI.LColor("Outline",this.outlineColor)
         UI.LColor("Select",this.selectColor)
         if (UI.LBool("Animate Camera", true)) {

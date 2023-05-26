@@ -6,6 +6,7 @@ export default class Color {
     public a: number;
     static white: Color =new Color(1,1,1,1);
     static black: Color =new Color(0,0,0,1);
+    static zero: Color =new Color(0,0,0,0);
     constructor(r = 1, g = 1, b = 1, a = 1) {
         this.r = r;
         this.g = g;

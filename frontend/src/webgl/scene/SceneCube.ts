@@ -1,6 +1,6 @@
-import Color from "../UI/math/Color";
+import Color from "../../UI/math/Color";
 import {Matrix4, Vector3} from "math.gl";
-import UI from "../UI/UI";
+import UI from "../../UI/UI";
 
 
 export default class SceneCube {

@@ -1,11 +1,11 @@
-import UI from "./UI/UI";
+import UI from "../UI/UI";
 import {Vector2, Vector3, Vector4} from "math.gl";
-import UIUtils from "./UI/UIUtils";
-import SelectItem from "./UI/math/SelectItem";
+import UIUtils from "../UI/UIUtils";
+import SelectItem from "../UI/math/SelectItem";
 import {TestEnum} from "./Main";
-import Color from "./UI/math/Color";
+import Color from "../UI/math/Color";
 import Texture from "./glLib/Texture";
-import UITexture from "./UI/draw/UITexture";
+import UITexture from "../UI/draw/UITexture";
 import GL from "./glLib/GL";
 
 

@@ -383,7 +383,9 @@ export default class UI {
         UI_I.popComponent();
         return comp;
     }
+    static needsMouse(){
 
+    }
     static clearLocalData() {
         if (!UI.initialized) return
         Local.clearLocalData();

@@ -1,24 +1,21 @@
 import React from 'react'
 
 import Head from 'next/head'
-import Main from "../src/Main";
+import Main from "../src/webgpu/Main";
 
 
-
-export default class Layout extends React.Component {
+export default class WebGPU extends React.Component {
     private main: Main;
+
     componentDidMount() {
 
-        let canvas=document.getElementById("webgl") as HTMLCanvasElement;
-
-        this.main =new Main(canvas)
-
-
+        let canvas = document.getElementById("webgpu") as HTMLCanvasElement;
+        this.main = new Main(canvas);
 
     }
 
     render() {
-      return(  <div>
+        return (<div>
             <Head>
                 <title>gpUI example</title>
                 <meta charSet="utf-8"/>
@@ -26,7 +23,7 @@ export default class Layout extends React.Component {
             </Head>
 
 
-            <canvas id="webgl"></canvas>
+            <canvas id="webgpu"></canvas>
 
         </div>)
     }

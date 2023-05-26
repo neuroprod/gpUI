@@ -1,9 +1,9 @@
 
-import Layout from "../components/Layout";
+import Webgl from "../components/Webgl";
 
 function Home() {
 
-    return (<Layout></Layout>)
+    return (<Webgl></Webgl>)
 
 
 }

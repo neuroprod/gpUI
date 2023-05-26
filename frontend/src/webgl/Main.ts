@@ -1,11 +1,11 @@
-import UI_I from "./UI/UI_I";
+import UI_I from "../UI/UI_I";
 import GL from "./glLib/GL";
 import PreLoader from "./glLib/PreLoader";
-import UITexture from "./UI/draw/UITexture";
-import Font from "./UI/draw/Font";
+import UITexture from "../UI/draw/UITexture";
+import Font from "../UI/draw/Font";
 import Scene from "./scene/Scene";
-import UI from "./UI/UI";
-import uiSettings from "./uiSettings.json"
+import UI from "../UI/UI";
+import uiSettings from "../uiSettings.json"
 import ExampleUI from "./ExampleUI";
 import {Vector4} from "math.gl";
 

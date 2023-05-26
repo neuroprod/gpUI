@@ -1,9 +1,7 @@
 import Component, {ComponentSettings} from "../Component";
-import UITexture from "../../draw/UITexture";
 import Rect from "../../math/Rect";
 import Vec2 from "../../math/Vec2";
 import Color from "../../math/Color";
-import TexturePool from "../../draw/TexturePool";
 import UI_I from "../../UI_I";
 import Utils from "../../math/Utils";
 import Font from "../../draw/Font";
@@ -18,14 +16,14 @@ export class ColorPickerSettings extends ComponentSettings {
 }
 
 export default class ColorPicker extends Component {
-    private pickTexture: UITexture;
+
     private pickRect: Rect = new Rect();
     private picCirclePos: Vec2 = new Vec2()
 
-    private hueTexture: UITexture;
+
     private heuRect: Rect = new Rect();
 
-    private alphaTexture: UITexture;
+
     private alphaRect: Rect = new Rect();
     private vBarWidth: number = 20;
     private vBarSpacing: number = 7;
@@ -33,6 +31,7 @@ export default class ColorPicker extends Component {
 
     private hsl: Array<number>
     private color: Color
+    private colorHue: Color =new Color()
     private colorStart = new Color()
 
     private huePosLeft: Vec2 = new Vec2()
@@ -52,32 +51,21 @@ export default class ColorPicker extends Component {
 
 
         this.hsl = this.color.getHSVArray()
-        this.pickTexture = TexturePool.getStatic("pickRect");
+        this.colorHue.setHSV(this.hsl[0],1,1);
+
         this.pickRect.setSize(256, 256)
-        //TODO: make interface??
-        // @ts-ignore
-        this.pickTexture.setHue(this.hsl[0])
-
-        this.hueTexture = TexturePool.getStatic("heuBar");
         this.heuRect.setSize(20, 256)
-
-        this.alphaTexture = TexturePool.getStatic("alphaBar");
-        //TODO: make interface??
-        // @ts-ignore
-        this.alphaTexture.setHSL(this.hsl[0], this.hsl[1], this.hsl[2])
         this.alphaRect.setSize(20, 256)
 
 
     }
 
     updateColor() {
+        this.colorHue.setHSV(this.hsl[0],1,1);
 
         this.color.setHSV(this.hsl[0], this.hsl[1], this.hsl[2])
         this.colorStart.copy(this.color)
-        // @ts-ignore
-        this.pickTexture.setHue(this.hsl[0])
-        // @ts-ignore
-        this.alphaTexture.setHSL(this.hsl[0], this.hsl[1], this.hsl[2])
+
         this.changed = true;
 
         this.setDirty();
@@ -188,10 +176,18 @@ export default class ColorPicker extends Component {
     prepDraw() {
         super.prepDraw()
 
+        UI_I.currentDrawBatch.fillBatch.addRectHGradient(this.pickRect,Color.white,this.colorHue)
+        UI_I.currentDrawBatch.fillBatch.addRectVGradient(this.pickRect,Color.zero,Color.black)
 
-        UI_I.currentDrawBatch.textureBatch.addTexture(this.pickRect, this.pickTexture);
-        UI_I.currentDrawBatch.textureBatch.addTexture(this.heuRect, this.hueTexture);
-        UI_I.currentDrawBatch.textureBatch.addTexture(this.alphaRect, this.alphaTexture,);
+        UI_I.currentDrawBatch.fillBatch.makeHueRect(this.heuRect)
+
+        UI_I.currentDrawBatch.fillBatch.makeAlphaGrid(this.alphaRect)
+        let aTColor =this.color.clone()
+        aTColor.a =1;
+        let aBColor =this.color.clone()
+        aBColor.a=0;
+        UI_I.currentDrawBatch.fillBatch.addRectVGradient(this.alphaRect,aTColor,aBColor)
+
 
         if (this.hsl[2] < 0.5 || this.hsl[1] > 0.5) {
             UI_I.currentDrawBatch.textBatch.addIcon(this.picCirclePos, 5, Color.white)
@@ -216,4 +212,6 @@ export default class ColorPicker extends Component {
         posRight.y += value * fitRect.size.y - Font.iconSize.y / 2;
         posLeft.y = posRight.y;
     }
+
+
 }
