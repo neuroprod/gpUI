@@ -19,7 +19,7 @@ export default class Camera extends UniformData {
         this.name = name;
         this.view = new Matrix4()
         this.view.lookAt({eye: this.cameraWorld, center: this.cameraLookAt, up: this.cameraUp})
-        this.projection.perspective({fovy: 1, aspect: 1, near: 0.1, far: 3})
+        this.projection.perspective({fovy: 1, aspect: 1, near: 0.1, far: 5})
 
         this.viewProjection.multiplyRight(this.projection)
         this.viewProjection.multiplyRight(this.view)

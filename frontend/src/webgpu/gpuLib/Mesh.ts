@@ -23,8 +23,12 @@ export default class Mesh
             usage:GPUBufferUsage.VERTEX,
             mappedAtCreation: true,
         });
-        const dst = new data.constructor(buffer.getMappedRange());
+       //const dst = new data.constructor(buffer.getMappedRange());
+        const dst = new Float32Array(buffer.getMappedRange());
+       // const dst:Float32Array = buffer.getMappedRange() as Float32Array;
+
         dst.set(data);
+
         buffer.unmap();
         buffer.label ="vertexBuffer_"+name;
         return buffer;
