@@ -1,19 +1,36 @@
 export default class Mesh
 {
     public verticesBuffer: GPUBuffer;
+    public numVertices: GPUSize32;
+    public vertexSize =3;
 
-    constructor(device:GPUDevice) {
+    private device: GPUDevice;
+    private name: string;
 
-        let vertices = new Float32Array([0.5,0.5,0.2,0.2,0,0.8]);
-        this.verticesBuffer = device.createBuffer({
-            size: vertices.byteLength,
-            usage: GPUBufferUsage.VERTEX,
+    constructor(device:GPUDevice,name:string) {
+        this.device =device;
+        this.name =name
+
+    }
+    setVertices(vertices:Float32Array)
+    {
+        this.numVertices =vertices.length/this.vertexSize
+        this.verticesBuffer =this.createBuffer(vertices,this.name+"_vertices" )
+    }
+    createBuffer( data:Float32Array, name:string) {
+        const buffer = this.device.createBuffer({
+            size: data.byteLength,
+            usage:GPUBufferUsage.VERTEX,
             mappedAtCreation: true,
         });
-        new Float32Array(this.verticesBuffer.getMappedRange()).set(vertices );
-
-        this.verticesBuffer.unmap();
-        console.log(this.verticesBuffer)
-
+        const dst = new data.constructor(buffer.getMappedRange());
+        dst.set(data);
+        buffer.unmap();
+        buffer.label ="vertexBuffer_"+name;
+        return buffer;
+    }
+    destroy()
+    {
+        if(this.verticesBuffer)this.verticesBuffer.destroy()
     }
 }

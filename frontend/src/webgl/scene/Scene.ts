@@ -1,5 +1,5 @@
 import GL from "../glLib/GL";
-import PreLoader from "../glLib/PreLoader";
+import PreLoader from "../../shared/PreLoader";
 import Camera from "../glLib/Camera";
 import Program from "../glLib/Program";
 import Box from "../glLib/Box";
@@ -77,7 +77,7 @@ export default class Scene {
         this.disableScene =!UI.LBool("Enable Scene", true)
         UI.separator("Settings", true);
         UI.LColor("ClearColor",this.clearColor)
-        UI.logEvent("color",this.clearColor+"")
+
         UI.LColor("Outline",this.outlineColor)
         UI.LColor("Select",this.selectColor)
         if (UI.LBool("Animate Camera", true)) {

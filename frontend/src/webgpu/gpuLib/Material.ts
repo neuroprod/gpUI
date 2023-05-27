@@ -1,69 +1,69 @@
-import {pipeline} from "stream";
 
-export default class Material
-{
-    vertexShader:GPUShaderModule;
-    fragmentShader:GPUShaderModule;
-    uniformBuffer:any
-    pipeLine:GPURenderPipeline;
-    uniformBindGroup:any
-    constructor(device:GPUDevice,presentationFormat: GPUTextureFormat) {
+import Shader from "./Shader";
+import UniformData from "./UniformData";
+import UniqueObject from "./UniqueObject";
 
-    let frag =
-        'struct Uniforms {'+
-        '   color : vec4<f32>,'+
-        '}'+
-        '@binding(0) @group(0) var<uniform> uniforms : Uniforms;'+
 
-        '@fragment\n'+
-        'fn main() -> @location(0) vec4<f32> {\n'+
-        'return uniforms.color;\n'+
-        '}';
+export default class Material extends UniqueObject{
 
-    let vert = 'struct VertexOutput {\n'+
-    '@builtin(position) position : vec4<f32>\n'+
-    '}\n'+
-    '@vertex\n'+
-    'fn main(\n'+
-      '  @location(0) position : vec2<f32>\n'+
-       ' ) -> VertexOutput {\n'+
-      '  var output : VertexOutput;\n'+
-     '   output.position = vec4( position,0.0,1.0);\n'+
 
-    '    return output;\n'+
-    '}\n';
-    this.vertexShader =device.createShaderModule({
-        code: vert,
-    });
-    this.fragmentShader =device.createShaderModule({
-        code: frag,
-    });
+    pipeLine: GPURenderPipeline;
+    private device: GPUDevice;
+    private shader: Shader;
+    private bindGroupsLayouts:Array<GPUBindGroupLayout>=[]// @group(0),group(1)
+    public uniformData:Array<UniformData>=[]
+    private name: string;
+    private presentationFormat: GPUTextureFormat
+    constructor( device: GPUDevice,name:string,shader:Shader, presentationFormat: GPUTextureFormat) {
+        super();
+        this.device =device;
+        this.presentationFormat =presentationFormat;
+        this.shader =shader;
+        this.name =name;
 
-     this.pipeLine = device.createRenderPipeline({
-            layout: 'auto',
+
+
+
+    }
+    addUniformData(data:UniformData)
+    {
+        for(let udata of this.uniformData){
+            if(udata.typeID ==data.typeID)return;
+        }
+
+        this.uniformData.push(data);
+
+    }
+    makePipeLine()
+    {
+        //sort first and plug in shader
+        for(let data of this.uniformData){
+            this.bindGroupsLayouts.push(data.bindGroupLayout)
+
+        }
+
+
+
+        const pipelineLayout = this.device.createPipelineLayout({
+            bindGroupLayouts:
+                this.bindGroupsLayouts
+            ,
+        });
+
+        this.pipeLine = this.device.createRenderPipeline({
+            layout: pipelineLayout,
             vertex: {
-                module: this.vertexShader,
-                entryPoint: 'main',
-                buffers: [
-                    {
-                        arrayStride: 2*4,
-                        attributes: [
-                            {
-                                // position
-                                shaderLocation: 0,
-                                offset:0,
-                                format: 'float32x2',
-                            },
-                        ],
-                    },
-                ],
+                module: this.shader.shader,
+                entryPoint: 'mainVertex',
+                buffers:this.shader.buffers
+                ,
             },
             fragment: {
-                module: this.fragmentShader,
-                entryPoint: 'main',
+                module: this.shader.shader,
+                entryPoint: 'mainFragment',
                 targets: [
                     {
-                        format: presentationFormat,
+                        format: this.presentationFormat,
                     },
                 ],
             },
@@ -71,34 +71,7 @@ export default class Material
                 topology: 'triangle-list',
             },
         });
-        const uniformBufferSize = 4 * 4;
-        this.uniformBuffer = device.createBuffer({
-            size: uniformBufferSize,
-            usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-        });
-
-        this.uniformBindGroup = device.createBindGroup({
-            layout: this.pipeLine.getBindGroupLayout(0),
-            entries: [
-                {
-                    binding: 0,
-                    resource: {
-                        buffer: this.uniformBuffer,
-                    },
-                },
-            ],
-        });
-        let f =new Float32Array([1.0,0.6,0.0,1.0]);
-
-        device.queue.writeBuffer(
-            this.uniformBuffer,
-            0,
-            f.buffer,
-            f.byteOffset,
-            f.byteLength
-        );
-}
-
+    }
 
 
 

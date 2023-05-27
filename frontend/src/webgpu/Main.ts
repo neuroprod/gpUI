@@ -1,69 +1,106 @@
 import Mesh from "./gpuLib/Mesh";
-import Mesh2 from "./gpuLib/Mesh2";
+
 import Material from "./gpuLib/Material";
+import Shader from "./gpuLib/Shader";
+import PreLoader from "../shared/PreLoader";
+import RenderPass from "./gpuLib/RenderPass";
+import {Model} from "./gpuLib/Model";
+import TestMesh1 from "./test/TestMesh1";
+import TestMesh2 from "./test/TestMesh2";
+import Camera from "./gpuLib/Camera";
+import {Vector3} from "math.gl";
+import MyShader from "./shaders/MyShader";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
     private context: GPUCanvasContext;
     private device:GPUDevice;
-    private mesh: Mesh;
-    private mesh2: Mesh2;
-    private material: Material;
+    private mesh1: Mesh;
+    private mesh2: Mesh;
+    private material2: Material;
+    private material1: Material;
     private presentationFormat:  GPUTextureFormat;
+
+    private preloader: PreLoader;
+
+    private model1: Model;
+    private model2: Model;
+    private mainRenderPass: RenderPass;
+    private camera: Camera;
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
         this.setup();
     }
     async setup()
     {
-        const adapter = await navigator.gpu.requestAdapter();
 
-        const device = await adapter.requestDevice();
-        this.device =device;
+        const adapter = await navigator.gpu.requestAdapter();
+        this.device =await adapter.requestDevice();
+
         this.canvas.width=window.innerWidth;
         this.canvas.height=window.innerHeight;
+
+
         this.context = this.canvas.getContext('webgpu') as GPUCanvasContext;
         this.presentationFormat = navigator.gpu.getPreferredCanvasFormat();
-
-
-        this.context.configure({device, format: this.presentationFormat,
+        this.context.configure({device:this.device, format: this.presentationFormat,
             alphaMode: 'premultiplied',
         });
 
-        this.mesh =new Mesh(this.device)
-        this.mesh2 =new Mesh2(this.device)
-        this.material=new Material(this.device,this.presentationFormat);
-        requestAnimationFrame(this.draw.bind(this))
+
+    //    this.preloader =new PreLoader(()=>{},this.init.bind(this));
+this.init()
+
+
+    }
+    init()
+    {
+        this.camera =new Camera(this.device)
+        let myShader =new MyShader(this.device);
+        this.mesh1 =new TestMesh1(this.device);
+        this.material1=new Material(this.device,"material1",myShader,this.presentationFormat);
+        this.material1.addUniformData(this.camera)
+        this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1);//model adds transform data
+        this.material1.makePipeLine();
+
+        this.mesh2 =new TestMesh2(this.device);
+        this.material2=new Material(this.device,"material2",myShader,this.presentationFormat);
+        this.material2.addUniformData(this.camera)
+        this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2);
+        this.material2.makePipeLine();
+
+        this.mainRenderPass =new RenderPass(this.context.getCurrentTexture())
+
+        this.mainRenderPass.add(this.model1);
+        this.mainRenderPass.add(this.model2);
+
+        requestAnimationFrame(this.step.bind(this))
+    }
+    step()
+    {
+        this.update();
+        this.prepDraw();
+        this.draw()
+        requestAnimationFrame(this.step.bind(this))
+    }
+    update()
+    {
+        let angle =(Date.now()/1000)
+        this.model1.transform.setPosition(new Vector3(Math.sin(angle),0,Math.cos(angle)));
+        this.camera.update();
+    }
+    prepDraw()
+    {
+        this.mainRenderPass.updateTexture(this.context.getCurrentTexture())
     }
     draw()
     {
+
         const commandEncoder = this.device.createCommandEncoder();
-        const textureView = this.context.getCurrentTexture().createView();
 
-        const renderPassDescriptor: GPURenderPassDescriptor = {
-            colorAttachments: [
-                {
-                    view: textureView,
-                    clearValue: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 },
-                    loadOp: 'clear',
-                    storeOp: 'store',
-                },
-            ],
-        };
-
-        const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
-
-        passEncoder.setPipeline(this.material.pipeLine);
-        passEncoder.setBindGroup(0, this.material.uniformBindGroup);
-        passEncoder.setVertexBuffer(0, this.mesh.verticesBuffer);
-
-        passEncoder.draw(3, 1, 0, 0);
-
-        passEncoder.setVertexBuffer(0, this.mesh2.verticesBuffer);
-        passEncoder.draw(3, 1, 0, 0);
-        passEncoder.end();
+        this.mainRenderPass.draw(commandEncoder);
 
         this.device.queue.submit([commandEncoder.finish()]);
-        requestAnimationFrame(this.draw.bind(this))
+
     }
 }

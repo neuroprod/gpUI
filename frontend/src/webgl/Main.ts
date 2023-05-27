@@ -1,6 +1,6 @@
 import UI_I from "../UI/UI_I";
 import GL from "./glLib/GL";
-import PreLoader from "./glLib/PreLoader";
+import PreLoader from "../shared/PreLoader";
 import UITexture from "../UI/draw/UITexture";
 import Font from "../UI/draw/Font";
 import Scene from "./scene/Scene";

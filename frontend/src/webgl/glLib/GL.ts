@@ -1,6 +1,6 @@
 
 import {vec2} from "gl-matrix";
-import PreLoader from "./PreLoader";
+import PreLoader from "../../shared/PreLoader";
 
 export default class GL {
     assetPath: string;
