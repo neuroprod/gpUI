@@ -33,6 +33,7 @@ export default class Transform extends UniformGroup
 
         this.worldMatrix.identity()
         this.worldMatrix.translate(position);
+        this.worldMatrix.rotateY(Math.random()*100)
         this.updateData()
     }
     updateData()

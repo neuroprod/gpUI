@@ -10,6 +10,7 @@ import TestMesh2 from "./test/TestMesh2";
 import Camera from "./gpuLib/Camera";
 import {Vector3,Vector4} from "math.gl";
 import MyShader from "./shaders/MyShader";
+import Box from "./gpuLib/Box";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -77,12 +78,12 @@ export default class Main{
 
         let myShader =new MyShader(this.device);
 
-        this.mesh1 =new TestMesh1(this.device);
+        this.mesh1 =new Box(this.device);
         this.material1=new Material(this.device,"material1",myShader,this.presentationFormat);
         this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
       
 
-        this.mesh2 =new TestMesh2(this.device);
+        this.mesh2 =new Box(this.device);
 
         this.material2=new Material(this.device,"material2",myShader,this.presentationFormat);
         this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2,this.camera);
@@ -105,7 +106,7 @@ export default class Main{
     {
         let angle =(Date.now()/1000)
         this.model1.transform.setPosition(new Vector3(Math.sin(angle),0,Math.cos(angle)));
-        this.camera.update();
+        this.camera.update(this.canvas.width/this.canvas.height);
     }
     prepDraw()
     {

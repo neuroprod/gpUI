@@ -20,7 +20,7 @@ export default class RenderPass {
 
     public updateTexture(width: number, height: number, context: GPUCanvasContext) {
 
-        console.log(width,this.width)
+       
         if (width != this.width || height != this.height) {
             this.width = width;
             this.height = height;
@@ -97,8 +97,13 @@ export default class RenderPass {
             passEncoder.setVertexBuffer(0, model.mesh.verticesBuffer);
 
 
-            //  passEncoder.setVertexBuffer(0, model.mesh.verticesBuffer);
-            passEncoder.draw(model.mesh.numVertices, 1, 0, 0);
+            if(model.mesh.hasIndices){
+                passEncoder.setIndexBuffer( model.mesh.indexBuffer, 'uint16');
+                passEncoder.drawIndexed(model.mesh.numIndices,1,0,0);
+            }else{
+                passEncoder.draw(model.mesh.numVertices, 1, 0, 0);
+            }
+           
 
         }
         passEncoder.end();
