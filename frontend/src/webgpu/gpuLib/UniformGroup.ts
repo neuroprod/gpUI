@@ -1,7 +1,9 @@
+
+import Uniform from "./Uniform";
 import UniqueObject from "./UniqueObject";
 
 
-export default class UniformData extends UniqueObject{
+export default class UniformGroup extends UniqueObject{
     public device: GPUDevice;
     public buffer: GPUBuffer;
     public dataSize: number;
@@ -10,10 +12,39 @@ export default class UniformData extends UniqueObject{
     public bindGroup: GPUBindGroup;
     public typeID =0
     public getAtModel =false;
-    constructor(device:GPUDevice) {
+    public label:string;
+    public uniforms:Array<Uniform> =[]
+ 
+    constructor(device:GPUDevice,label:string) {
         super();
         this.device = device;
+        this.label =label;
 
+    }
+    addUniform(uniform:Uniform)
+    {
+        this.uniforms.push(uniform)
+    }
+
+    resolveUniforms(visibility: GPUShaderStageFlags)
+    {
+        let size =0
+        for(let u of this.uniforms)
+        {
+            u.offset =size;
+            size+=u.size;
+        }
+        let f=new Float32Array(size);
+        for(let u of this.uniforms)
+        {
+            if(typeof u.defaultValue =="number"){
+                f[u.offset] =u.defaultValue;
+            }else{
+                f.set(u.defaultValue, u.offset);
+            }
+        }
+
+        this.makeBuffers(visibility,size,f);
     }
 
     /**
@@ -22,7 +53,7 @@ export default class UniformData extends UniqueObject{
      * visibility: GPUShaderStage.FRAGMENT GPUShaderStage.VERTEX GPUShaderStage.COMPUTE
      *
      */
-    makeBuffers(label:string,visibility: GPUShaderStageFlags,dataSize:number,defaultValue?:Float32Array)
+    makeBuffers(visibility: GPUShaderStageFlags,dataSize:number,defaultValue?:Float32Array)
     {
         this.dataSize = dataSize;
         const uniformBufferSize = dataSize * 4;//floats only???
@@ -30,7 +61,7 @@ export default class UniformData extends UniqueObject{
             size: uniformBufferSize,
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         });
-        this.buffer.label ="uniformBuffer_"+label
+        this.buffer.label ="uniformBuffer_"+this.label
         if(defaultValue){
             this.bufferData =defaultValue;
         }else
@@ -53,7 +84,7 @@ export default class UniformData extends UniqueObject{
                 buffer: {},
             }]
         });
-        this.bindGroupLayout.label = "BindGroupLayout_"+label;
+        this.bindGroupLayout.label = "BindGroupLayout_"+this.label;
 
         this.bindGroup = this.device.createBindGroup({
             layout: this.bindGroupLayout,
@@ -66,7 +97,7 @@ export default class UniformData extends UniqueObject{
                 },
             ],
         });
-        this.bindGroup.label = "BindGroup_"+label;
+        this.bindGroup.label = "BindGroup_"+this.label;
     }
     updateBuffer()
     {

@@ -1,14 +1,14 @@
 import Mesh from "./gpuLib/Mesh";
 
 import Material from "./gpuLib/Material";
-import Shader from "./gpuLib/Shader";
+
 import PreLoader from "../shared/PreLoader";
 import RenderPass from "./gpuLib/RenderPass";
 import {Model} from "./gpuLib/Model";
 import TestMesh1 from "./test/TestMesh1";
 import TestMesh2 from "./test/TestMesh2";
 import Camera from "./gpuLib/Camera";
-import {Vector3} from "math.gl";
+import {Vector3,Vector4} from "math.gl";
 import MyShader from "./shaders/MyShader";
 
 export default class Main{
@@ -49,26 +49,28 @@ export default class Main{
 
 
     //    this.preloader =new PreLoader(()=>{},this.init.bind(this));
-this.init()
+        this.init()
 
 
     }
     init()
     {
-        this.camera =new Camera(this.device)
+        this.camera =new Camera(this.device);
+
+
         let myShader =new MyShader(this.device);
+
         this.mesh1 =new TestMesh1(this.device);
         this.material1=new Material(this.device,"material1",myShader,this.presentationFormat);
-        this.material1.addUniformData(this.camera)
-        this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1);//model adds transform data
+        this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
         this.material1.makePipeLine();
 
         this.mesh2 =new TestMesh2(this.device);
-        this.material2=new Material(this.device,"material2",myShader,this.presentationFormat);
-        this.material2.addUniformData(this.camera)
-        this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2);
-        this.material2.makePipeLine();
 
+        this.material2=new Material(this.device,"material2",myShader,this.presentationFormat);
+        this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2,this.camera);
+        this.material2.makePipeLine();
+        this.material2.setUniform("color",new Vector4(1,0,0,1))
         this.mainRenderPass =new RenderPass(this.context.getCurrentTexture())
 
         this.mainRenderPass.add(this.model1);

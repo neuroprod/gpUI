@@ -1,8 +1,8 @@
 import {Matrix4, Vector3} from "math.gl";
-import UniformData from "./UniformData";
+import UniformGroup from "./UniformGroup";
 
 
-export default class Camera extends UniformData {
+export default class Camera extends UniformGroup {
 
     public view: Matrix4 = new Matrix4()
     public projection: Matrix4 = new Matrix4()
@@ -14,7 +14,7 @@ export default class Camera extends UniformData {
 
     constructor(device: GPUDevice, name: string = "Camera") {
 
-        super(device)
+        super(device,name)
         this.typeID = -1;
         this.name = name;
         this.view = new Matrix4()
@@ -25,7 +25,7 @@ export default class Camera extends UniformData {
         this.viewProjection.multiplyRight(this.view)
 
         //16 for viewProjection+ 4 forCameraWorld
-        this.makeBuffers(this.name, GPUShaderStage.VERTEX, 16 + 4)
+        this.makeBuffers( GPUShaderStage.VERTEX, 16 + 4)
 
 
         this.updateData()
@@ -33,13 +33,15 @@ export default class Camera extends UniformData {
     }
 
     static getShaderData(id: number) {
-        let data = `        
+        let data = /* wgsl */`        
+////////////////////////////////////////////////////////////////////////
 struct Camera
 {
     viewProjection : mat4x4 <f32>,
     cameraWorld : vec3<f32>,
 }
 @group( ${id} ) @binding(0)  var<uniform> camera : Camera;
+////////////////////////////////////////////////////////////////////////
 `
         return data;
     }

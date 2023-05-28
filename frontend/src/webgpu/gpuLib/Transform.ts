@@ -1,7 +1,7 @@
-import UniformData from "./UniformData";
+import UniformGroup from "./UniformGroup";
 import {Matrix4, Vector3} from "math.gl";
 
-export default class Transform extends UniformData
+export default class Transform extends UniformGroup
 {
     private name: String;
     private worldMatrix: Matrix4;
@@ -9,20 +9,22 @@ export default class Transform extends UniformData
 
 
 
-    constructor(device:GPUDevice,name:String) {
-        super(device);
+    constructor(device:GPUDevice,name:string) {
+        super(device,name);
         this.name= name;
         this.getAtModel =true;
         this.typeID =-2;
         this.worldMatrix =new Matrix4();
         //16 for matrix
-        this.makeBuffers("transform+"+this.name,GPUShaderStage.VERTEX,16)
+        this.makeBuffers(GPUShaderStage.VERTEX,16)
         this.updateData();
     }
 
     static getShaderData(id: number) {
-        let data = `
+        let data = /* wgsl */`
+////////////////////////////////////////////////////////////////////       
 @group( ${id} ) @binding(0) var<uniform> worldMatrix  : mat4x4 <f32>;
+////////////////////////////////////////////////////////////////////    
 `
         return data;
     }
