@@ -16,7 +16,7 @@ export class Model{
         this.material.addUniformGroup(camera)
         this.material.addUniformGroup(this.transform)
 
-      
+        this.material.makePipeLine();
      
       
     }

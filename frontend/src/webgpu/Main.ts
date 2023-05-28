@@ -27,6 +27,7 @@ export default class Main{
     private model2: Model;
     private mainRenderPass: RenderPass;
     private camera: Camera;
+    private _resizeTimeOut: NodeJS.Timeout;
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
         this.setup();
@@ -46,11 +47,27 @@ export default class Main{
         this.context.configure({device:this.device, format: this.presentationFormat,
             alphaMode: 'premultiplied',
         });
-
+      
 
     //    this.preloader =new PreLoader(()=>{},this.init.bind(this));
         this.init()
+        window.onresize =this.delayedResize.bind(this);
 
+    }
+    resize()
+    {
+        this.canvas.style.width = window.innerWidth + 'px';
+        this.canvas.style.height =window.innerHeight+ 'px';
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      
+
+    }
+    delayedResize()
+    {
+        clearTimeout(this._resizeTimeOut);
+        
+       this._resizeTimeOut = setTimeout (this.resize.bind(this), 100);
 
     }
     init()
@@ -63,15 +80,14 @@ export default class Main{
         this.mesh1 =new TestMesh1(this.device);
         this.material1=new Material(this.device,"material1",myShader,this.presentationFormat);
         this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
-        this.material1.makePipeLine();
+      
 
         this.mesh2 =new TestMesh2(this.device);
 
         this.material2=new Material(this.device,"material2",myShader,this.presentationFormat);
         this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2,this.camera);
-        this.material2.makePipeLine();
         this.material2.setUniform("color",new Vector4(1,0,0,1))
-        this.mainRenderPass =new RenderPass(this.context.getCurrentTexture())
+        this.mainRenderPass =new RenderPass(this.device,this.presentationFormat)
 
         this.mainRenderPass.add(this.model1);
         this.mainRenderPass.add(this.model2);
@@ -93,7 +109,7 @@ export default class Main{
     }
     prepDraw()
     {
-        this.mainRenderPass.updateTexture(this.context.getCurrentTexture())
+        this.mainRenderPass.updateTexture(this.canvas.width,this.canvas.height,this.context)
     }
     draw()
     {

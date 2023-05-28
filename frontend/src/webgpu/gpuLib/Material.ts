@@ -38,7 +38,7 @@ export default class Material extends UniqueObject{
                 }else if (typeof value !="number"){
                     this.shaderUniforms.bufferData.set(value,f.offset)
                 }
-               
+
                 break;
             }
         }
@@ -55,6 +55,7 @@ export default class Material extends UniqueObject{
     }
     makePipeLine()
     {
+        if(this.pipeLine)return;
         //sort first and plug in shader
         for(let data of this.uniformGroups){
             this.bindGroupsLayouts.push(data.bindGroupLayout)
@@ -83,11 +84,21 @@ export default class Material extends UniqueObject{
                 targets: [
                     {
                         format: this.presentationFormat,
+
                     },
                 ],
             },
             primitive: {
                 topology: 'triangle-list',
+            },
+            depthStencil: {
+                depthWriteEnabled: true,
+                depthCompare: 'less',
+
+                format: 'depth24plus',
+              },
+            multisample: {
+                count: 4,
             },
         });
         this.pipeLine.label ="Material_"+this.name;
