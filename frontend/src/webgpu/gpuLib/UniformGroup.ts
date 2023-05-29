@@ -7,13 +7,11 @@ import {BindGroup} from "./BindGroup";
 export default class UniformGroup extends BindGroup{
 
     private static allGroups:Array<UniformGroup>=[]
- 
+
     public buffer: GPUBuffer;
     public dataSize: number;
     public bufferData: Float32Array;
-
     public getAtModel =false;
-    public label:string;
     public uniforms:Array<Uniform> =[]
     public isDirty:boolean=false;
 
