@@ -4,6 +4,8 @@ import UniqueObject from "./UniqueObject";
 
 
 export default class UniformGroup extends UniqueObject{
+
+    private static allGroups:Array<UniformGroup>=[]
     public device: GPUDevice;
     public buffer: GPUBuffer;
     public dataSize: number;
@@ -14,12 +16,26 @@ export default class UniformGroup extends UniqueObject{
     public getAtModel =false;
     public label:string;
     public uniforms:Array<Uniform> =[]
- 
+    public isDirty:boolean=false;
     constructor(device:GPUDevice,label:string) {
         super();
         this.device = device;
         this.label =label;
-
+        UniformGroup.allGroups.push(this);
+    }
+    static updateGroups()
+    {
+        let dirtyCount =0
+        for(let group of this.allGroups)
+        {
+            if(group.isDirty){
+                group.updateData()
+                group.updateBuffer()
+                group.isDirty =false;
+                dirtyCount++;
+            }
+        }
+        //console.log("updatedBuffers "+dirtyCount+"/"+this.allGroups.length )
     }
     addUniform(uniform:Uniform)
     {
@@ -98,6 +114,9 @@ export default class UniformGroup extends UniqueObject{
             ],
         });
         this.bindGroup.label = "BindGroup_"+this.label;
+    }
+    updateData(){
+
     }
     updateBuffer()
     {

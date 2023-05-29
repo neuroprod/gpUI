@@ -2,16 +2,20 @@
 import UniformGroup from "./UniformGroup";
 import Uniform,{UniformType} from "./Uniform";
 import MathArray from "@math.gl/core/dist/classes/base/math-array";
+import Attribute from "./Attribute";
 
 
 export default class Shader {
     device: GPUDevice;
     shader: GPUShaderModule;
 
-    buffers: any;
+
     uniforms:Array<Uniform>=[]
+    attributes:Array<Attribute>=[]
     private uniformText: string;
     private name: string;
+
+
 
     constructor(device: GPUDevice, name: string) {
         this.device = device;
@@ -20,6 +24,24 @@ export default class Shader {
 
     addUniform(name: string, value:   MathArray| number) {
         this.uniforms.push(new Uniform(name,value))
+    }
+
+    public addAttribute(name:string,length:number)
+    {
+        let at =new Attribute(name,length)
+        at.slot =this.attributes.length;
+
+        this.attributes.push(at);
+    }
+
+    public getShaderAttributes()
+    {
+        let a=""
+        for(let atr of this.attributes)
+        {
+            a+=atr.getShaderText()
+        }
+        return a;
     }
 
     protected getShader(): string {
@@ -45,6 +67,7 @@ export default class Shader {
     }
     getUniformGroup()
     {
+        if(this.uniforms.length==0)return null;
         let uniformGroup =new UniformGroup(this.device,"shader_"+this.name);
         for(let u of this.uniforms)
         {
@@ -55,7 +78,8 @@ export default class Shader {
         return uniformGroup;
     }
 
-    public getShaderData(id:number)
+
+    public getShaderUniforms(id:number)
     {
         if(this.uniforms.length==0) return"";
         return /* wgsl */`
@@ -70,24 +94,21 @@ struct Uniforms
     }
     protected makeShaders() {
 
-        this.processUniforms()
+        this.processUniforms();
         this.shader = this.device.createShaderModule({
             code: this.getShader(),
         });
         this.shader.label="shader_"+this.name;
-        this.buffers = [{
-            arrayStride: 3 * 4,
-            attributes: [
-                {
-                    // position
-                    shaderLocation: 0,
-                    offset: 0,
-                    format: 'float32x3',
-                },
-            ],
-        }]
+
     }
 
 
+    getVertexBufferLayout() {
 
+        let bufferLayout=[]
+        for(let atr of this.attributes) {
+            bufferLayout.push({arrayStride: atr.length * 4, attributes: [{shaderLocation: atr.slot, offset: 0, format: atr.format}]})
+        }
+        return  bufferLayout;
+    }
 }

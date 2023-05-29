@@ -3,11 +3,16 @@ import Camera from "../gpuLib/Camera";
 import Transform from "../gpuLib/Transform";
 import { Vector4 } from "math.gl";
 
-export default class MyShader extends Shader
+export default class ColorShader3D extends Shader
 {
+
     constructor(device: GPUDevice) {
-        super(device,'myShader');
-        this.addUniform("color",new Vector4(1,0,1,1));
+        super(device,'ColorShader3D');
+
+        this.addAttribute("position",3);
+
+
+        this.addUniform("color",new Vector4(1,0,0,1));
         this.makeShaders();
     }
 
@@ -16,25 +21,25 @@ export default class MyShader extends Shader
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
-    @builtin(position) position : vec4<f32>
+    @builtin(position) position : vec4f
 }
 
-${this.getShaderData(0)}
-${Camera.getShaderData(1)}
-${Transform.getShaderData(2)}
+${this.getShaderUniforms(0)}
+${Camera.getShaderUniforms(1)}
+${Transform.getShaderUniforms(2)}
 
 
 @vertex
-fn mainVertex( @location(0) position : vec3<f32> ) -> VertexOutput
+fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 {
     var output : VertexOutput;
-    output.position =camera.viewProjection*worldMatrix* vec4( position,1.0);
+    output.position =camera.viewProjection*transform.worldMatrix* vec4( position,1.0);
     return output;
 }
 
 
 @fragment
-fn mainFragment() -> @location(0) vec4<f32>
+fn mainFragment() -> @location(0) vec4f
 {
      return uniforms.color;
 }

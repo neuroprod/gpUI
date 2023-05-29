@@ -5,12 +5,13 @@ import Material from "./gpuLib/Material";
 import PreLoader from "../shared/PreLoader";
 import RenderPass from "./gpuLib/RenderPass";
 import {Model} from "./gpuLib/Model";
-import TestMesh1 from "./test/TestMesh1";
-import TestMesh2 from "./test/TestMesh2";
+
 import Camera from "./gpuLib/Camera";
 import {Vector3,Vector4} from "math.gl";
-import MyShader from "./shaders/MyShader";
-import Box from "./gpuLib/Box";
+import ColorShader3D from "./shaders/ColorShader3D";
+import Box from "./meshes/Box";
+import UniformGroup from "./gpuLib/UniformGroup";
+import NormalShader3D from "./shaders/NormalShader3D";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -28,9 +29,10 @@ export default class Main{
     private model2: Model;
     private mainRenderPass: RenderPass;
     private camera: Camera;
-    private _resizeTimeOut: NodeJS.Timeout;
+    private _resizeTimeOut: number;
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
+
         this.setup();
     }
     async setup()
@@ -48,7 +50,7 @@ export default class Main{
         this.context.configure({device:this.device, format: this.presentationFormat,
             alphaMode: 'premultiplied',
         });
-      
+
 
     //    this.preloader =new PreLoader(()=>{},this.init.bind(this));
         this.init()
@@ -61,13 +63,13 @@ export default class Main{
         this.canvas.style.height =window.innerHeight+ 'px';
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
-      
+
 
     }
     delayedResize()
     {
         clearTimeout(this._resizeTimeOut);
-        
+
        this._resizeTimeOut = setTimeout (this.resize.bind(this), 100);
 
     }
@@ -76,20 +78,21 @@ export default class Main{
         this.camera =new Camera(this.device);
 
 
-        let myShader =new MyShader(this.device);
+        let colorShader =new ColorShader3D(this.device);
+        let normalShader =new NormalShader3D(this.device);
 
         this.mesh1 =new Box(this.device);
-        this.material1=new Material(this.device,"material1",myShader,this.presentationFormat);
+        this.material1=new Material(this.device,"material1",normalShader,this.presentationFormat);
         this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
-      
+        this.model1.transform.position =new Vector3(2,0,0);
 
         this.mesh2 =new Box(this.device);
-
-        this.material2=new Material(this.device,"material2",myShader,this.presentationFormat);
+        this.material2=new Material(this.device,"material2",colorShader,this.presentationFormat);
         this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2,this.camera);
-        this.material2.setUniform("color",new Vector4(1,0,0,1))
-        this.mainRenderPass =new RenderPass(this.device,this.presentationFormat)
+        this.model2.transform.scale =new Vector3(0.3,1,0.3)
+        this.material2.setUniform("color",new Vector4(0,1,0,1))
 
+        this.mainRenderPass =new RenderPass(this.device,this.presentationFormat)
         this.mainRenderPass.add(this.model1);
         this.mainRenderPass.add(this.model2);
 
@@ -105,11 +108,13 @@ export default class Main{
     update()
     {
         let angle =(Date.now()/1000)
-        this.model1.transform.setPosition(new Vector3(Math.sin(angle),0,Math.cos(angle)));
-        this.camera.update(this.canvas.width/this.canvas.height);
+       // this.model1.transform.position =new Vector3(Math.sin(angle),0,Math.cos(angle));
+       this.model1.transform.rotation=new Vector3(0,-angle,0);
+        this.camera.ratio =this.canvas.width/this.canvas.height;
     }
     prepDraw()
     {
+        UniformGroup.updateGroups();
         this.mainRenderPass.updateTexture(this.canvas.width,this.canvas.height,this.context)
     }
     draw()

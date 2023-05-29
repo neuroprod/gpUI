@@ -1,4 +1,4 @@
-import Mesh from "./Mesh";
+import Mesh from "../gpuLib/Mesh";
 class Vector {
     x =0;
     y=0;
@@ -111,6 +111,8 @@ export default class Box extends Mesh{
 
         this.setIndices(new Uint16Array(indices));
         this.setVertices(new Float32Array(vertices));
+        this.setNormals(new Float32Array(normals));
+        this.setUV0(new Float32Array(uvs));
     }
 
 }

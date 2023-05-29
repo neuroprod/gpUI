@@ -1,7 +1,6 @@
 export default class Mesh {
     public verticesBuffer: GPUBuffer;
     public numVertices: GPUSize32;
-    public vertexSize = 3;
 
 
     public indexBuffer: GPUBuffer;
@@ -11,38 +10,51 @@ export default class Mesh {
 
     private device: GPUDevice;
     private name: string;
-  
+
+
+    private buffers:Array<GPUBuffer>=[];
+    private bufferMap:Map<string,GPUBuffer> =new Map<string,GPUBuffer>();
 
     constructor(device: GPUDevice, name: string) {
         this.device = device;
         this.name = name
+    }
 
-    }
     setVertices(vertices: Float32Array) {
-        this.numVertices = vertices.length / this.vertexSize
-        this.verticesBuffer = this.createBuffer(vertices, this.name + "_vertices")
+        this.numVertices = vertices.length;
+        this.createBuffer(vertices, "position");
     }
+
+    setNormals(normals: Float32Array) {
+        this.createBuffer(normals, "normal");
+    }
+
+    setUV0(uv0: Float32Array) {
+        this.createBuffer(uv0, "uv0");
+    }
+
+
     createBuffer(data: Float32Array, name: string) {
+
         const buffer = this.device.createBuffer({
             size: data.byteLength,
             usage: GPUBufferUsage.VERTEX,
             mappedAtCreation: true,
         });
-        //const dst = new data.constructor(buffer.getMappedRange());
         const dst = new Float32Array(buffer.getMappedRange());
-        // const dst:Float32Array = buffer.getMappedRange() as Float32Array;
-
         dst.set(data);
 
         buffer.unmap();
-        buffer.label = "vertexBuffer_" + name;
-        return buffer;
+        buffer.label = "vertexBuffer_" + this.name + "_" + name;
+
+        this.buffers.push(buffer);
+        this.bufferMap.set(name, buffer);
+
     }
 
     setIndices(indices: Uint16Array) {
         this.hasIndices = true;
         this.numIndices = indices.length
-
 
         this.indexBuffer = this.device.createBuffer({
             size: indices.byteLength,
@@ -60,6 +72,10 @@ export default class Mesh {
 
 
     destroy() {
-        if (this.verticesBuffer) this.verticesBuffer.destroy()
+        if (this.indexBuffer) this.indexBuffer.destroy()
+    }
+
+    getBufferByName(name: string) {
+        return this.bufferMap.get(name);
     }
 }

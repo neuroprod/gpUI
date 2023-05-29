@@ -20,11 +20,11 @@ export default class RenderPass {
 
     public updateTexture(width: number, height: number, context: GPUCanvasContext) {
 
-       
+
         if (width != this.width || height != this.height) {
             this.width = width;
             this.height = height;
-        
+
             if (this.depthTexture) this.depthTexture.destroy()
             this.depthTexture = this.device.createTexture({
                 size: [width, height],
@@ -93,8 +93,11 @@ export default class RenderPass {
 
                 count++;
             }
+            for(let attribute of model.material.shader.attributes)
+            {
+                passEncoder.setVertexBuffer(attribute.slot, model.mesh.getBufferByName(attribute.name))
+            }
 
-            passEncoder.setVertexBuffer(0, model.mesh.verticesBuffer);
 
 
             if(model.mesh.hasIndices){
@@ -103,7 +106,7 @@ export default class RenderPass {
             }else{
                 passEncoder.draw(model.mesh.numVertices, 1, 0, 0);
             }
-           
+
 
         }
         passEncoder.end();

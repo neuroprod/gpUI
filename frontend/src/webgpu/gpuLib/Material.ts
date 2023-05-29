@@ -10,7 +10,7 @@ export default class Material extends UniqueObject{
 
     pipeLine: GPURenderPipeline;
     private device: GPUDevice;
-    private shader: Shader;
+    shader: Shader;
     private bindGroupsLayouts:Array<GPUBindGroupLayout>=[]// @group(0),group(1)
     public uniformGroups:Array<UniformGroup>=[]
     private name: string;
@@ -24,7 +24,7 @@ export default class Material extends UniqueObject{
         this.shader =shader;
         this.name =name;
         this.shaderUniforms = this.shader.getUniformGroup();
-        this.addUniformGroup( this.shaderUniforms )
+        if(this.shaderUniforms) this.addUniformGroup( this.shaderUniforms )
     }
 
     setUniform(name:string, value :MathArray| number)
@@ -42,7 +42,8 @@ export default class Material extends UniqueObject{
                 break;
             }
         }
-        this.shaderUniforms.updateBuffer()
+        this.shaderUniforms.isDirty =true;
+
     }
 
     addUniformGroup(data:UniformGroup)
@@ -71,11 +72,12 @@ export default class Material extends UniqueObject{
         });
         pipelineLayout.label ="Material_"+this.name;
         this.pipeLine = this.device.createRenderPipeline({
+            label :"Material_"+this.name,
             layout: pipelineLayout,
             vertex: {
                 module: this.shader.shader,
                 entryPoint: 'mainVertex',
-                buffers:this.shader.buffers
+                buffers:this.shader.getVertexBufferLayout()
                 ,
             },
             fragment: {
@@ -101,7 +103,7 @@ export default class Material extends UniqueObject{
                 count: 4,
             },
         });
-        this.pipeLine.label ="Material_"+this.name;
+
     }
 
 
