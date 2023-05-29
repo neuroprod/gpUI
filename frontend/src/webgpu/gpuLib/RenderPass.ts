@@ -75,18 +75,19 @@ export default class RenderPass {
 
             if (model.material.uID !== pipelineID) {
                 pipelineID = model.material.uID
-                bufferArray = new Array(model.material.uniformGroups.length).fill(-1);
+                bufferArray = new Array(model.material.bindGroups.length).fill(-1);
                 passEncoder.setPipeline(model.material.pipeLine);
 
 
             }
-            let count = 0;
-            for (let uniforms of model.material.uniformGroups) {
+       let count =0
+            for (let uniforms of model.material.bindGroups) {
                 if (uniforms.getAtModel) {
                     uniforms = model.transform
                 }
                 if (bufferArray[count] != uniforms.uID) {
                     bufferArray[count] = uniforms.uID
+
                     passEncoder.setBindGroup(count, uniforms.bindGroup);
 
                 }

@@ -1,27 +1,25 @@
 
 import Uniform from "./Uniform";
-import UniqueObject from "./UniqueObject";
+
+import {BindGroup} from "./BindGroup";
 
 
-export default class UniformGroup extends UniqueObject{
+export default class UniformGroup extends BindGroup{
 
     private static allGroups:Array<UniformGroup>=[]
     public device: GPUDevice;
     public buffer: GPUBuffer;
     public dataSize: number;
     public bufferData: Float32Array;
-    public bindGroupLayout: GPUBindGroupLayout;
-    public bindGroup: GPUBindGroup;
-    public typeID =0
+
     public getAtModel =false;
     public label:string;
     public uniforms:Array<Uniform> =[]
     public isDirty:boolean=false;
-    public slot: number;
+
     constructor(device:GPUDevice,label:string) {
-        super();
-        this.device = device;
-        this.label =label;
+        super(device,label);
+
         UniformGroup.allGroups.push(this);
     }
     static updateGroups()
@@ -38,6 +36,9 @@ export default class UniformGroup extends UniqueObject{
         }
         //console.log("updatedBuffers "+dirtyCount+"/"+this.allGroups.length )
     }
+
+
+
     addUniform(uniform:Uniform)
     {
         this.uniforms.push(uniform)
@@ -65,7 +66,7 @@ export default class UniformGroup extends UniqueObject{
     }
 
     /**
-     * dataSize should be multiple of 4, ->  16 bit align
+     * dataSize should be multiple of 16
      *
      * visibility: GPUShaderStage.FRAGMENT GPUShaderStage.VERTEX GPUShaderStage.COMPUTE
      *

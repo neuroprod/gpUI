@@ -13,6 +13,7 @@ import Box from "./meshes/Box";
 import UniformGroup from "./gpuLib/UniformGroup";
 import NormalShader3D from "./shaders/NormalShader3D";
 import UVShader3D from "./shaders/UVShader3D";
+import TextureShader3D from "./shaders/TextureShader3D";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -23,6 +24,7 @@ export default class Main{
     private material1: Material;
     private material2: Material;
     private material3: Material;
+    private material4: Material;
     private presentationFormat:  GPUTextureFormat;
 
     private preloader: PreLoader;
@@ -30,9 +32,15 @@ export default class Main{
     private model1: Model;
     private model2: Model;
     private model3: Model;
+    private model4: Model;
+
     private mainRenderPass: RenderPass;
     private camera: Camera;
     private _resizeTimeOut:  ReturnType<typeof setTimeout>;
+
+    private myTexture:GPUTexture;
+    private sampler: GPUSampler;
+
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
 
@@ -55,11 +63,36 @@ export default class Main{
         });
 
 
+//set in preloader
+        {
+            const response = await fetch(
+                'test.png'
+            );
+            const imageBitmap = await createImageBitmap(await response.blob());
+
+            this.myTexture = this.device.createTexture({
+                size: [imageBitmap.width, imageBitmap.height, 1],
+                format: 'rgba8unorm',
+                usage:
+                    GPUTextureUsage.TEXTURE_BINDING |
+                    GPUTextureUsage.COPY_DST |
+                    GPUTextureUsage.RENDER_ATTACHMENT,
+            });
+            this.device.queue.copyExternalImageToTexture(
+                { source: imageBitmap },
+                { texture: this.myTexture },
+                [imageBitmap.width, imageBitmap.height]
+            );
+        }
+        this.myTexture.label ='test.png';
     //    this.preloader =new PreLoader(()=>{},this.init.bind(this));
         this.init()
-        window.onresize =this.delayedResize.bind(this);
+
 
     }
+
+
+
     resize()
     {
         this.canvas.style.width = window.innerWidth + 'px';
@@ -78,34 +111,53 @@ export default class Main{
     }
     init()
     {
-        this.camera =new Camera(this.device);
+        window.onresize =this.delayedResize.bind(this);
 
+
+        this.camera =new Camera(this.device);
+        this.sampler =this.device.createSampler({
+            magFilter: 'linear',
+            minFilter: 'linear',
+        });
 
         let colorShader =new ColorShader3D(this.device);
         let normalShader =new NormalShader3D(this.device);
         let uvShader =new UVShader3D(this.device);
+        let textureShader =new TextureShader3D(this.device);
+
 
         this.mesh1 =new Box(this.device);
+        this.mesh2 =new Box(this.device);
+
         this.material1=new Material(this.device,"material1",normalShader,this.presentationFormat);
         this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
-        this.model1.transform.position =new Vector3(1.2,0,0);
+        this.model1.transform.position =new Vector3(2.4,0,0);
 
-        this.mesh2 =new Box(this.device);
+
         this.material2=new Material(this.device,"material2",colorShader,this.presentationFormat);
         this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2,this.camera);
-        this.model2.transform.scale =new Vector3(0.5,1,1)
+        this.model2.transform.position =new Vector3(0.8,0,0);
         this.material2.setUniform("color",new Vector4(0.3,0.6,1.0,1))
 
 
         this.material3 =new Material(this.device,"material3",uvShader,this.presentationFormat);
         this.model3 =new Model(this.device,"Model3",this.mesh2,this.material3,this.camera);
-        this.model3.transform.position =new Vector3(-1.2,0,0);
+        this.model3.transform.position =new Vector3(-0.8,0,0);
+
+
+        this.material4 =new Material(this.device,"material4",textureShader,this.presentationFormat);
+        this.material4.setTexture("texture1",this.myTexture);
+        this.material4.setSampler("sampler",this.sampler);
+        this.material4.test();
+        this.model4 =new Model(this.device,"Model4",this.mesh2,this.material4,this.camera);
+        this.model4.transform.position =new Vector3(-2.4,0,0);
 
 
         this.mainRenderPass =new RenderPass(this.device,this.presentationFormat)
         this.mainRenderPass.add(this.model1);
         this.mainRenderPass.add(this.model2);
         this.mainRenderPass.add(this.model3);
+        this.mainRenderPass.add(this.model4);
         requestAnimationFrame(this.step.bind(this))
     }
     step()

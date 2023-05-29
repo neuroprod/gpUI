@@ -7,7 +7,7 @@ export default class Camera extends UniformGroup {
     public view: Matrix4 = new Matrix4()
     public projection: Matrix4 = new Matrix4()
     public viewProjection: Matrix4 = new Matrix4()
-    public cameraWorld: Vector3 = new Vector3(2, 8, 8);
+    public cameraWorld: Vector3 = new Vector3(1, 5, 5);
     public cameraLookAt: Vector3 = new Vector3(0, 0, 0);
     public cameraUp: Vector3 = new Vector3(0, 1, 0);
     private name: string;

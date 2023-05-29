@@ -77,7 +77,13 @@ export default class Shader {
         uniformGroup.resolveUniforms(GPUShaderStage.FRAGMENT)
         return uniformGroup;
     }
+    protected addTexture(texture: string) {
 
+    }
+
+    protected addSampler(sampler: string) {
+
+    }
 
     public getShaderUniforms(id:number)
     {
