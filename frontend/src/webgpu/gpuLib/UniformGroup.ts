@@ -17,6 +17,7 @@ export default class UniformGroup extends UniqueObject{
     public label:string;
     public uniforms:Array<Uniform> =[]
     public isDirty:boolean=false;
+    public slot: number;
     constructor(device:GPUDevice,label:string) {
         super();
         this.device = device;

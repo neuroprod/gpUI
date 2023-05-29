@@ -90,15 +90,12 @@ export default class RenderPass {
                     passEncoder.setBindGroup(count, uniforms.bindGroup);
 
                 }
-
                 count++;
             }
             for(let attribute of model.material.shader.attributes)
             {
                 passEncoder.setVertexBuffer(attribute.slot, model.mesh.getBufferByName(attribute.name))
             }
-
-
 
             if(model.mesh.hasIndices){
                 passEncoder.setIndexBuffer( model.mesh.indexBuffer, 'uint16');

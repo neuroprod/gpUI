@@ -58,9 +58,11 @@ export default class Material extends UniqueObject{
     {
         if(this.pipeLine)return;
         //sort first and plug in shader
+        let slot =0;
         for(let data of this.uniformGroups){
             this.bindGroupsLayouts.push(data.bindGroupLayout)
-
+            data.slot =slot;
+            slot++
         }
 
 

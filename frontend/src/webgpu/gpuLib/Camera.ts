@@ -7,7 +7,7 @@ export default class Camera extends UniformGroup {
     public view: Matrix4 = new Matrix4()
     public projection: Matrix4 = new Matrix4()
     public viewProjection: Matrix4 = new Matrix4()
-    public cameraWorld: Vector3 = new Vector3(0, 3, -5);
+    public cameraWorld: Vector3 = new Vector3(2, 8, 8);
     public cameraLookAt: Vector3 = new Vector3(0, 0, 0);
     public cameraUp: Vector3 = new Vector3(0, 1, 0);
     private name: string;
@@ -55,7 +55,7 @@ struct Camera
 
     updateData() {
 
-        this.projection.perspective({fovy: 1, aspect: this._ratio, near: 0.1, far: 10})
+        this.projection.perspective({fovy: 1, aspect: this._ratio, near: 0.1, far: 50})
 
         this.view.lookAt({eye: this.cameraWorld, center: this.cameraLookAt, up: this.cameraUp})
         this.viewProjection.identity()

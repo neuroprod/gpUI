@@ -12,6 +12,7 @@ import ColorShader3D from "./shaders/ColorShader3D";
 import Box from "./meshes/Box";
 import UniformGroup from "./gpuLib/UniformGroup";
 import NormalShader3D from "./shaders/NormalShader3D";
+import UVShader3D from "./shaders/UVShader3D";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -19,17 +20,19 @@ export default class Main{
     private device:GPUDevice;
     private mesh1: Mesh;
     private mesh2: Mesh;
-    private material2: Material;
     private material1: Material;
+    private material2: Material;
+    private material3: Material;
     private presentationFormat:  GPUTextureFormat;
 
     private preloader: PreLoader;
 
     private model1: Model;
     private model2: Model;
+    private model3: Model;
     private mainRenderPass: RenderPass;
     private camera: Camera;
-    private _resizeTimeOut: number;
+    private _resizeTimeOut:  ReturnType<typeof setTimeout>;
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
 
@@ -80,22 +83,29 @@ export default class Main{
 
         let colorShader =new ColorShader3D(this.device);
         let normalShader =new NormalShader3D(this.device);
+        let uvShader =new UVShader3D(this.device);
 
         this.mesh1 =new Box(this.device);
         this.material1=new Material(this.device,"material1",normalShader,this.presentationFormat);
         this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
-        this.model1.transform.position =new Vector3(2,0,0);
+        this.model1.transform.position =new Vector3(1.2,0,0);
 
         this.mesh2 =new Box(this.device);
         this.material2=new Material(this.device,"material2",colorShader,this.presentationFormat);
         this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2,this.camera);
-        this.model2.transform.scale =new Vector3(0.3,1,0.3)
-        this.material2.setUniform("color",new Vector4(0,1,0,1))
+        this.model2.transform.scale =new Vector3(0.5,1,1)
+        this.material2.setUniform("color",new Vector4(0.3,0.6,1.0,1))
+
+
+        this.material3 =new Material(this.device,"material3",uvShader,this.presentationFormat);
+        this.model3 =new Model(this.device,"Model3",this.mesh2,this.material3,this.camera);
+        this.model3.transform.position =new Vector3(-1.2,0,0);
+
 
         this.mainRenderPass =new RenderPass(this.device,this.presentationFormat)
         this.mainRenderPass.add(this.model1);
         this.mainRenderPass.add(this.model2);
-
+        this.mainRenderPass.add(this.model3);
         requestAnimationFrame(this.step.bind(this))
     }
     step()
