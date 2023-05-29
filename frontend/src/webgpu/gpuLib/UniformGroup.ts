@@ -7,7 +7,7 @@ import {BindGroup} from "./BindGroup";
 export default class UniformGroup extends BindGroup{
 
     private static allGroups:Array<UniformGroup>=[]
-    public device: GPUDevice;
+ 
     public buffer: GPUBuffer;
     public dataSize: number;
     public bufferData: Float32Array;
