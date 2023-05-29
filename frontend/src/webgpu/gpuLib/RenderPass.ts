@@ -80,11 +80,9 @@ export default class RenderPass {
 
 
             }
-       let count =0
+            let count =0
             for (let uniforms of model.material.bindGroups) {
-                if (uniforms.getAtModel) {
-                    uniforms = model.transform
-                }
+
                 if (bufferArray[count] != uniforms.uID) {
                     bufferArray[count] = uniforms.uID
 

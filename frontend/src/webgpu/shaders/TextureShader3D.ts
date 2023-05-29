@@ -14,9 +14,10 @@ export default class TextureShader3D extends Shader
         this.addAttribute("position",3);
         this.addAttribute("uv0",2);
         //set needed uniforms
-        this.addUniform("color",new Vector4(1,0,0,1));
-        this.addTexture("texture1");
+      //  this.addUniform("color",new Vector4(1,0,0,1));
         this.addSampler("sampler");
+        this.addTexture("texture1");
+
 
         this.makeShaders();
     }
@@ -31,9 +32,9 @@ struct VertexOutput
   
 }
 
-${this.getShaderUniforms(1)}
-${Camera.getShaderUniforms(2)}
-${Transform.getShaderUniforms(3)}
+
+${Camera.getShaderUniforms(1)}
+${Transform.getShaderUniforms(2)}
 
 @group(0) @binding(0) var mySampler: sampler;
 @group(0) @binding(1) var myTexture: texture_2d<f32>;
