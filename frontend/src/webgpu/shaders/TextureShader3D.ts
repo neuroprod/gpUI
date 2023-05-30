@@ -15,8 +15,8 @@ export default class TextureShader3D extends Shader
         this.addAttribute("uv0",2);
         //set needed uniforms
       //  this.addUniform("color",new Vector4(1,0,0,1));
-        this.addSampler("sampler");
-        this.addTexture("texture1");
+        this.addSampler("sampler1");
+        this.addTexture("texture1");//implement texture types
 
 
         this.makeShaders();
@@ -32,12 +32,11 @@ struct VertexOutput
   
 }
 
-
+${ this.getShaderTexturesSamplers(0)}
 ${Camera.getShaderUniforms(1)}
 ${Transform.getShaderUniforms(2)}
 
-@group(0) @binding(0) var mySampler: sampler;
-@group(0) @binding(1) var myTexture: texture_2d<f32>;
+
 
 @vertex
 fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
@@ -52,7 +51,7 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 @fragment
 fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
-     return textureSample(myTexture, mySampler, uv);
+     return textureSample(texture1, sampler1, uv);
 }
 ///////////////////////////////////////////////////////////
 `;

@@ -274,7 +274,7 @@ export default class UI_I {
         }
 
 
-        UI_I.renderer.draw();
+
 
         this.components.forEach((comp) => {
             comp.renderOrderCount = 0;
@@ -283,7 +283,7 @@ export default class UI_I {
             }
         });
         Local.saveData();
-
+        UI_I.renderer.draw();
     }
 
     static removePopup(p: Component) {

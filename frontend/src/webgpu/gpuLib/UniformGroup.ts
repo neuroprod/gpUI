@@ -6,35 +6,27 @@ import {BindGroup} from "./BindGroup";
 
 export default class UniformGroup extends BindGroup{
 
-    private static allGroups:Array<UniformGroup>=[]
+
 
     public buffer: GPUBuffer;
     public dataSize: number;
     public bufferData: Float32Array;
     public getAtModel =false;
     public uniforms:Array<Uniform> =[]
-    public isDirty:boolean=false;
+
 
     constructor(device:GPUDevice,label:string) {
         super(device,label);
 
-        UniformGroup.allGroups.push(this);
-    }
-    static updateGroups()
-    {
-        let dirtyCount =0
-        for(let group of this.allGroups)
-        {
-            if(group.isDirty){
-                group.updateData()
-                group.updateBuffer()
-                group.isDirty =false;
-                dirtyCount++;
-            }
-        }
-        //console.log("updatedBuffers "+dirtyCount+"/"+this.allGroups.length )
+
     }
 
+    update()
+    {
+        this.updateData()
+        this.updateBuffer()
+
+    }
 
 
     addUniform(uniform:Uniform)

@@ -14,6 +14,7 @@ import UniformGroup from "./gpuLib/UniformGroup";
 import NormalShader3D from "./shaders/NormalShader3D";
 import UVShader3D from "./shaders/UVShader3D";
 import TextureShader3D from "./shaders/TextureShader3D";
+import {BindGroup} from "./gpuLib/BindGroup";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -112,7 +113,7 @@ export default class Main{
     init()
     {
         window.onresize =this.delayedResize.bind(this);
-
+//UI.setWebGPU(canvas,device)
 
         this.camera =new Camera(this.device);
         this.sampler =this.device.createSampler({
@@ -147,8 +148,8 @@ export default class Main{
 
         this.material4 =new Material(this.device,"material4",textureShader,this.presentationFormat);
         this.material4.setTexture("texture1",this.myTexture);
-        this.material4.setSampler("sampler",this.sampler);
-        this.material4.test();
+        this.material4.setSampler("sampler1",this.sampler);
+
         this.model4 =new Model(this.device,"Model4",this.mesh2,this.material4,this.camera);
         this.model4.transform.position =new Vector3(-2.4,0,0);
 
@@ -173,10 +174,11 @@ export default class Main{
        // this.model1.transform.position =new Vector3(Math.sin(angle),0,Math.cos(angle));
        this.model1.transform.rotation=new Vector3(0,-angle,0);
         this.camera.ratio =this.canvas.width/this.canvas.height;
+        //UI.UpdateGPU
     }
     prepDraw()
     {
-        UniformGroup.updateGroups();
+        BindGroup.updateGroups();
         this.mainRenderPass.updateTexture(this.canvas.width,this.canvas.height,this.context)
     }
     draw()

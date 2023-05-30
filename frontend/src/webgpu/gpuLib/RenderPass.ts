@@ -105,6 +105,9 @@ export default class RenderPass {
 
 
         }
+//
+       // passEncoder.setScissorRect()
+        //UI.drawGPU(passEncoder)
         passEncoder.end();
     }
 

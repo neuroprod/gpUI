@@ -3,6 +3,7 @@ import Shader from "./Shader";
 import UniformGroup from "./UniformGroup";
 import UniqueObject from "./UniqueObject";
 import {BindGroup} from "./BindGroup";
+import {TextureGroup} from "./TextureGroup";
 
 
 export default class Material extends UniqueObject {
@@ -11,14 +12,15 @@ export default class Material extends UniqueObject {
     pipeLine: GPURenderPipeline;
     shader: Shader;
     public bindGroups: Array<BindGroup> = []
-    texture: GPUTexture;
+
     private device: GPUDevice;
     private bindGroupsLayouts: Array<GPUBindGroupLayout> = []// @group(0),group(1)
     private name: string;
     private presentationFormat: GPUTextureFormat
     private shaderUniforms: UniformGroup;
-    private sampler: GPUSampler;
-    private textureBG: BindGroup;
+    private shaderTextures: TextureGroup;
+
+
 
 
     constructor(device: GPUDevice, name: string, shader: Shader, presentationFormat: GPUTextureFormat) {
@@ -28,47 +30,12 @@ export default class Material extends UniqueObject {
         this.shader = shader;
         this.name = name;
 
-
+        this.shaderTextures =this.shader.getTextureGroup()
         this.shaderUniforms = this.shader.getUniformGroup();
 
     }
 
-    test() {
-        if (this.texture) {
 
-            this.textureBG = new BindGroup(this.device, this.name + "TextureBindGroup")
-
-            this.textureBG.bindGroupLayout = this.device.createBindGroupLayout({
-                label: "testTextureLayout",
-                entries: [{
-                    binding: 0,
-                    visibility: GPUShaderStage.FRAGMENT,
-                    sampler: {}
-                },
-                    {
-                        binding: 1,
-                        visibility: GPUShaderStage.FRAGMENT,
-                        texture: {}
-                    }]
-            });
-
-            this.textureBG.bindGroup = this.device.createBindGroup({
-                label: "testTextureBindgroup",
-                layout:   this.textureBG.bindGroupLayout,
-                entries: [
-                    {
-                        binding: 0,
-                        resource: this.sampler,
-                    },
-                    {
-                        binding: 1,
-                        resource: this.texture.createView(),
-                    },
-                ],
-            });
-
-        }
-    }
 
     setUniform(name: string, value: MathArray | number) {
         for (let f of this.shaderUniforms.uniforms) {
@@ -97,9 +64,8 @@ export default class Material extends UniqueObject {
     makePipeLine() {
         if (this.pipeLine) return;
         if (this.shaderUniforms) this.bindGroups.unshift(this.shaderUniforms)
-        if(this.textureBG)this.bindGroups.unshift(  this.textureBG);
+        if(this.shaderTextures)this.bindGroups.unshift( this.shaderTextures);
         let slot = 0;
-        if (this.texture) slot = 1;
         for (let data of this.bindGroups) {
             this.bindGroupsLayouts.push(data.bindGroupLayout)
             data.slot = slot;
@@ -151,10 +117,12 @@ console.log(this.bindGroups)
 
 
     setTexture(name: string, texture: GPUTexture) {
-        this.texture = texture;
+
+        this.shaderTextures.setTexture(texture,name)
     }
 
     setSampler(name: string, sampler: GPUSampler) {
-        this.sampler = sampler;
+
+        this.shaderTextures.setSampler(sampler,name)
     }
 }
