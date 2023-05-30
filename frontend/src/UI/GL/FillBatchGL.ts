@@ -27,11 +27,7 @@ export default class FillBatchGL {
     setRenderData(fillBatch:FillBatch) {
 
         const gl = this.gl;
-        let newVertexSize = fillBatch.vertexData.length * 12;
-        if (newVertexSize > this.vertexSize) {
-            this.firstV = true;
-        }
-        this.vertexSize = newVertexSize;
+
         if (fillBatch.indices.length > this.numIndices) {
             this.firstI = true;
         }
@@ -40,25 +36,16 @@ export default class FillBatchGL {
         let buffer = new ArrayBuffer(this.vertexSize);
         let dv = new DataView(buffer);
 
-        for (let i = 0; i < fillBatch.vertexData.length; i++) {
-            let data = fillBatch.vertexData[i];
-            let index = i * 12;
-            dv.setFloat32(index, data.vert.x, true);
-            dv.setFloat32(index + 4, data.vert.y, true);
-            dv.setInt8(index + 8,  Math.round(data.color.r * 0xFF));
-            dv.setInt8(index + 9,  Math.round(data.color.g * 0xFF));
-            dv.setInt8(index + 10,  Math.round(data.color.b * 0xFF));
-            dv.setInt8(index + 11, Math.round(data.color.a * 0xFF));
 
-        }
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        if (this.firstV) {
-            gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array( fillBatch.vertices), gl.DYNAMIC_DRAW);
+        /*if (this.firstV) {
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array( fillBatch.vertices), gl.DYNAMIC_DRAW);
         } else {
 
-            gl.bufferSubData(gl.ARRAY_BUFFER, 0, buffer);
-        }
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0,new Float32Array( fillBatch.vertices));
+        }*/
 
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);

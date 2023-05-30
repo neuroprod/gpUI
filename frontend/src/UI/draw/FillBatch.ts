@@ -2,21 +2,11 @@ import Vec2 from "../math/Vec2";
 import Color from "../math/Color";
 import Rect from "../math/Rect";
 
-export class VertexDataFill {
-    public vert: Vec2;
-    public color: Color;
-
-    constructor(vert: Vec2, color: Color) {
-        this.vert = vert;
-        this.color = color;
-    }
-
-}
 
 export default class FillBatch {
-    public vertexData: Array<VertexDataFill> = []
-    public indices: Array<number> = []
 
+    public indices: Array<number> = []
+    public vertices: Array<number> = []
     private indicesPos: number = 0
     private shadowRect = new Rect()
     private shadowSizeRect = new Rect()
@@ -32,7 +22,8 @@ export default class FillBatch {
 
     addTriangle(p1: Vec2, p2: Vec2, p3: Vec2, color: Color) {
 
-        this.vertexData.push(new VertexDataFill(p1, color), new VertexDataFill(p2, color), new VertexDataFill(p3, color));
+
+        this.vertices =this.vertices.concat(p1.getArray(),color.getArray(),p2.getArray(),color.getArray(),p3.getArray(),color.getArray())
         this.indices.push(this.indicesPos, this.indicesPos + 1, this.indicesPos + 2);
         this.indicesPos += 3;
 
@@ -40,14 +31,16 @@ export default class FillBatch {
 
     addRect(rect: Rect, color: Color) {
         if (rect.size.x < 0) return;
-        rect.round()
-        this.vertexData.push(new VertexDataFill(rect.getTopLeft(), color), new VertexDataFill(rect.getTopRight(), color), new VertexDataFill(rect.getBottomRight(), color), new VertexDataFill(rect.getBottomLeft(), color));
+        //rect.round()
+
+        this.vertices =this.vertices.concat(rect.getTopLeft().getArray(),color.getArray(),rect.getTopRight().getArray(),color.getArray(),rect.getBottomRight().getArray(),color.getArray(),rect.getBottomLeft().getArray(),color.getArray())
         this.indices.push(this.indicesPos, this.indicesPos + 1, this.indicesPos + 2);
         this.indices.push(this.indicesPos, this.indicesPos + 2, this.indicesPos + 3);
         this.indicesPos += 4;
     }
 
     addShadow(rect: Rect) {
+        return;
         this.shadowRect.copy(rect)
         this.shadowRect.pos.x += this.shadowOffset;
         this.shadowRect.pos.y += this.shadowOffset;
@@ -56,8 +49,8 @@ export default class FillBatch {
         this.shadowSizeRect.pos.y -= this.shadowSize;
         this.shadowSizeRect.size.x += this.shadowSize * 2;
         this.shadowSizeRect.size.y += this.shadowSize * 2;
-        this.vertexData.push(new VertexDataFill(this.shadowRect.getTopLeft(), this.shadowColorIn), new VertexDataFill(this.shadowRect.getTopRight(), this.shadowColorIn), new VertexDataFill(this.shadowRect.getBottomRight(), this.shadowColorIn), new VertexDataFill(this.shadowRect.getBottomLeft(), this.shadowColorIn));
-        this.vertexData.push(new VertexDataFill(this.shadowSizeRect.getTopLeft(), this.shadowColorOut), new VertexDataFill(this.shadowSizeRect.getTopRight(), this.shadowColorOut), new VertexDataFill(this.shadowSizeRect.getBottomRight(), this.shadowColorOut), new VertexDataFill(this.shadowSizeRect.getBottomLeft(), this.shadowColorOut));
+       // this.vertexData.push(new VertexDataFill(this.shadowRect.getTopLeft(), this.shadowColorIn), new VertexDataFill(this.shadowRect.getTopRight(), this.shadowColorIn), new VertexDataFill(this.shadowRect.getBottomRight(), this.shadowColorIn), new VertexDataFill(this.shadowRect.getBottomLeft(), this.shadowColorIn));
+        //this.vertexData.push(new VertexDataFill(this.shadowSizeRect.getTopLeft(), this.shadowColorOut), new VertexDataFill(this.shadowSizeRect.getTopRight(), this.shadowColorOut), new VertexDataFill(this.shadowSizeRect.getBottomRight(), this.shadowColorOut), new VertexDataFill(this.shadowSizeRect.getBottomLeft(), this.shadowColorOut));
 
 
         const index = this.indicesPos;
@@ -82,30 +75,38 @@ export default class FillBatch {
     }
 
     clear() {
-        this.vertexData = [];
+
+        this.vertices =[];
         this.indices = [];
         this.indicesPos = 0;
     }
 
     addRectHGradient(rect: Rect, colorL: Color, colorR: Color) {
+
         if (rect.size.x < 0) return;
         // rect.round()
-        this.vertexData.push(new VertexDataFill(rect.getTopLeft(), colorL), new VertexDataFill(rect.getTopRight(), colorR), new VertexDataFill(rect.getBottomRight(), colorR), new VertexDataFill(rect.getBottomLeft(), colorL));
+
+        this.vertices =this.vertices.concat(rect.getTopLeft().getArray(), colorL.getArray(), rect.getTopRight().getArray(), colorR.getArray(),rect.getBottomRight().getArray(), colorR.getArray(), rect.getBottomLeft().getArray(), colorL.getArray());
+
+
         this.indices.push(this.indicesPos, this.indicesPos + 1, this.indicesPos + 2);
         this.indices.push(this.indicesPos, this.indicesPos + 2, this.indicesPos + 3);
         this.indicesPos += 4;
     }
 
     addRectVGradient(rect: Rect, colorT: Color, colorB: Color) {
+
         if (rect.size.x < 0) return;
         // rect.round()
-        this.vertexData.push(new VertexDataFill(rect.getTopLeft(), colorT), new VertexDataFill(rect.getTopRight(), colorT), new VertexDataFill(rect.getBottomRight(), colorB), new VertexDataFill(rect.getBottomLeft(), colorB));
+        this.vertices =this.vertices.concat(rect.getTopLeft().getArray(), colorT.getArray(), rect.getTopRight().getArray(), colorT.getArray(),rect.getBottomRight().getArray(), colorB.getArray(), rect.getBottomLeft().getArray(), colorB.getArray());
+
         this.indices.push(this.indicesPos, this.indicesPos + 1, this.indicesPos + 2);
         this.indices.push(this.indicesPos, this.indicesPos + 2, this.indicesPos + 3);
         this.indicesPos += 4;
     }
 
     makeHueRect(hueRect: Rect) {
+
         let ryRect = hueRect.clone();
         ryRect.size.y /= 6;
         let offset = ryRect.size.y;

@@ -3,7 +3,6 @@ import Camera from "../gpuLib/Camera";
 import Transform from "../gpuLib/Transform";
 import {Vector4} from "math.gl";
 
-
 export default class TextureShader3D extends Shader
 {
 
@@ -32,11 +31,9 @@ struct VertexOutput
   
 }
 
-${ this.getShaderTexturesSamplers(0)}
+${this.getShaderTexturesSamplers(0)}
 ${Camera.getShaderUniforms(1)}
 ${Transform.getShaderUniforms(2)}
-
-
 
 @vertex
 fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
@@ -47,7 +44,6 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
     return output;
 }
 
-
 @fragment
 fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
@@ -56,5 +52,4 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 ///////////////////////////////////////////////////////////
 `;
     }
-
 }

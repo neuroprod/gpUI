@@ -77,8 +77,6 @@ export default class RenderPass {
                 pipelineID = model.material.uID
                 bufferArray = new Array(model.material.bindGroups.length).fill(-1);
                 passEncoder.setPipeline(model.material.pipeLine);
-
-
             }
             let count =0
             for (let uniforms of model.material.bindGroups) {

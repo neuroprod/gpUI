@@ -22,6 +22,7 @@ export default class TextRenderer
     draw(viewportSize,fillBatch)
     {
         if(fillBatch.numIndices==0)return;
+
         const gl =this.gl;
         gl.useProgram(this.program);
         gl.uniform2fv(this.viewportSizeUniformLoc ,[ 1/viewportSize.x*2, 1/viewportSize.y*2]);
@@ -36,9 +37,9 @@ export default class TextRenderer
         gl.enableVertexAttribArray(this.uvAttributeLoc);
         gl.enableVertexAttribArray(this.colorAttributeLoc);
         gl.bindBuffer(gl.ARRAY_BUFFER, fillBatch.vertexBuffer);
-        gl.vertexAttribPointer(this.vertexAttributeLoc,2, gl.FLOAT, false, 20, 0);
-        gl.vertexAttribPointer(this.uvAttributeLoc, 2,  gl.FLOAT, false, 20, 8);
-        gl.vertexAttribPointer(this.colorAttributeLoc, 4,  gl.UNSIGNED_BYTE, true, 20, 16);
+        gl.vertexAttribPointer(this.vertexAttributeLoc,2, gl.FLOAT, false, 32, 0);
+        gl.vertexAttribPointer(this.uvAttributeLoc, 2,  gl.FLOAT, false, 32, 8);
+        gl.vertexAttribPointer(this.colorAttributeLoc, 4,   gl.FLOAT, false, 32, 16);
 
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,fillBatch.indexBuffer);

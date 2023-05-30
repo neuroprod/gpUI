@@ -43,8 +43,7 @@ export default class Rect {
     }
 
     getTopLeft() {
-        let p = this.pos.clone();
-        return p
+        return this.pos
     }
 
     getTopRight() {

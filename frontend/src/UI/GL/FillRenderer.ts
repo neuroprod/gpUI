@@ -25,6 +25,8 @@ export default class FillRenderer {
     {
         if(fillBatch.numIndices==0)return;
         const gl =this.gl;
+
+
         gl.useProgram(this.program);
         gl.uniform2fv(this.viewportSizeUniformLoc ,[ 1/viewportSize.x*2, 1/viewportSize.y*2]);
 
@@ -33,8 +35,8 @@ export default class FillRenderer {
         gl.enableVertexAttribArray(this.colorAttributeLoc);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, fillBatch.vertexBuffer);
-        gl.vertexAttribPointer(this.vertexAttributeLoc,2, gl.FLOAT, false, 12, 0);
-        gl.vertexAttribPointer(this.colorAttributeLoc, 4,  gl.UNSIGNED_BYTE, true, 12, 8);
+        gl.vertexAttribPointer(this.vertexAttributeLoc,2, gl.FLOAT, false, 24, 0);
+        gl.vertexAttribPointer(this.colorAttributeLoc, 4,  gl.FLOAT, false, 24, 8);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,fillBatch.indexBuffer);
         gl.drawElements(gl.TRIANGLES, fillBatch.numIndices, gl.UNSIGNED_SHORT, 0);

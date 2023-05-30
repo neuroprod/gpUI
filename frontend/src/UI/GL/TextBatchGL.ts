@@ -25,11 +25,8 @@ export default class TextBatchGL {
     }
     setRenderData(textBatch:TextBatch) {
         const gl = this.gl;
-        let newVertexSize = textBatch.vertexData.length * 20;
-        if (newVertexSize > this.vertexSize) {
-            this.firstV = true;
-        }
-        this.vertexSize = newVertexSize;
+
+
         if (textBatch.indices.length > this.numIndices) {
             this.firstI = true;
         }
@@ -38,29 +35,16 @@ export default class TextBatchGL {
         let buffer = new ArrayBuffer(this.vertexSize);
         let dv = new DataView(buffer);
 
-        for (let i = 0; i < textBatch.vertexData.length; i++) {
-            let data = textBatch.vertexData[i];
-            let index =i*20;
-
-
-            dv.setFloat32(index, data.vert.x, true);
-            dv.setFloat32(index + 4, data.vert.y, true);
-            dv.setFloat32(index+8, data.uv.x, true);
-            dv.setFloat32(index + 12, data.uv.y, true);
-            dv.setInt8(index + 16, data.color.r * 0xFF);
-            dv.setInt8(index + 17, data.color.g * 0xFF);
-            dv.setInt8(index + 18, data.color.b * 0xFF);
-            dv.setInt8(index + 19, data.color.a * 0xFF);
-
-        }
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        if (this.firstV) {
+
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array( textBatch.vertices), gl.DYNAMIC_DRAW);
+        /*if (this.firstV) {
             gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
         } else {
 
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, buffer);
-        }
+        }*/
 
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);

@@ -4,24 +4,12 @@ import Rect from "../math/Rect";
 import Font, {Char} from "./Font";
 
 
-export class VertexDataText
-{
-    public  vert:Vec2;
-    public  color:Color;
-    public uv: Vec2;
-    constructor(vert:Vec2,uv:Vec2,color:Color)
-    {
-        this.vert =vert;
-        this.uv =uv;
-        this.color =color;
-    }
 
-}
 export default class TextBatch
 {
-    public vertexData: Array<VertexDataText> = []
-    public indices: Array<number> = []
 
+    public indices: Array<number> = []
+    public vertices: Array<number> = []
     private indicesPos: number = 0
     constructor() {
 
@@ -71,12 +59,9 @@ export default class TextBatch
 
     addChar(rect:Rect, char:Char, color) {
 
-        let vertData1 = new VertexDataText( rect.getTopLeft(),char.uv0,color)
-        let vertData2 =  new VertexDataText( rect.getTopRight(),char.uv1,color)
-        let vertData3 =  new VertexDataText(  rect.getBottomRight(),char.uv2,color)
-        let vertData4 =  new VertexDataText( rect.getBottomLeft(),char.uv3,color)
 
-        this.vertexData.push(vertData1, vertData2, vertData3, vertData4);
+        this.vertices = this.vertices.concat(rect.getTopLeft().getArray(),char.uv0.getArray(),color.getArray(),rect.getTopRight().getArray(),char.uv1.getArray(),color.getArray(), rect.getBottomRight().getArray(),char.uv2.getArray(),color.getArray(),rect.getBottomLeft().getArray(),char.uv3.getArray(),color.getArray())
+
         this.indices.push(this.indicesPos, this.indicesPos + 1, this.indicesPos + 2);
         this.indices.push(this.indicesPos, this.indicesPos + 2, this.indicesPos + 3);
         this.indicesPos += 4;
@@ -84,8 +69,9 @@ export default class TextBatch
 
     }
     clear() {
-        this.vertexData = [];
+
         this.indices = [];
+        this.vertices = [];
         this.indicesPos = 0;
     }
 }
