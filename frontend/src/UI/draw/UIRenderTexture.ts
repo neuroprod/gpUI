@@ -1,5 +1,4 @@
 import UITexture from "./UITexture";
-import Vec2 from "../math/Vec2";
 import FBO from "../GL/FBO";
 import UI_I from "../UI_I";
 
@@ -10,8 +9,8 @@ export default class UIRenderTexture extends UITexture
     private gl: WebGL2RenderingContext | WebGLRenderingContext;
     constructor() {
         super();
-        this.gl =UI_I.renderer.gl;
-        this.fbo =new FBO(UI_I.renderer.gl,1,1,false)
+        this.gl =UI_I.rendererGL.gl;
+        this.fbo =new FBO(UI_I.rendererGL.gl,1,1,false)
         this.setTextureGL( this.fbo.texture,1,1)
     }
     setSize(w:number,h:number){

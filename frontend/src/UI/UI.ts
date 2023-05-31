@@ -25,6 +25,7 @@ import {UI_COLOR, UI_VEC2, UI_VEC3, UI_VEC4} from "./UI_Types";
 import LVector, {LVectorSettings} from "./components/LVector";
 import LList, {LListSettings} from "./components/LList";
 import LListItem, {LListItemSettings} from "./components/LListItem";
+import WebGPU from "../../components/WebGPU";
 
 
 export default class UI {
@@ -46,6 +47,17 @@ export default class UI {
 
 
         UI_I.setWebgl(gl, canvas, settings)
+        UI.initialized =true;
+    }
+    static  setWebGPU(device:GPUDevice,canvas:HTMLCanvasElement,presentationFormat:GPUTextureFormat ,settings?: any)
+    {
+        if (UI.initialized) {
+
+        console.warn("UI already initialized, ");
+        UI_I.crashed = true;
+        return;
+        }
+        UI_I.setWebGPU(device, canvas,presentationFormat, settings)
         UI.initialized =true;
     }
 
@@ -406,5 +418,13 @@ export default class UI {
     static popID() {
         if (!UI.initialized) return
         UI_I.currentComponent.popID()
+    }
+
+    static updateGPU() {
+        UI_I.update();
+    }
+
+    static drawGPU(passEncoder: GPURenderPassEncoder) {
+        UI_I.rendererGPU.draw(passEncoder)
     }
 }

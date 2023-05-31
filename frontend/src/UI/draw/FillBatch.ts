@@ -37,6 +37,7 @@ export default class FillBatch {
         this.indices.push(this.indicesPos, this.indicesPos + 1, this.indicesPos + 2);
         this.indices.push(this.indicesPos, this.indicesPos + 2, this.indicesPos + 3);
         this.indicesPos += 4;
+
     }
 
     addShadow(rect: Rect) {

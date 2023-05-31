@@ -15,6 +15,7 @@ import NormalShader3D from "./shaders/NormalShader3D";
 import UVShader3D from "./shaders/UVShader3D";
 import TextureShader3D from "./shaders/TextureShader3D";
 import {BindGroup} from "./gpuLib/BindGroup";
+import UI from "../UI/UI";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -113,7 +114,8 @@ export default class Main{
     init()
     {
         window.onresize =this.delayedResize.bind(this);
-//UI.setWebGPU(canvas,device)
+
+        UI.setWebGPU(this.device,this.canvas,this.presentationFormat)
 
         this.camera =new Camera(this.device);
         this.sampler =this.device.createSampler({
@@ -159,6 +161,8 @@ export default class Main{
         this.mainRenderPass.add(this.model2);
         this.mainRenderPass.add(this.model3);
         this.mainRenderPass.add(this.model4);
+
+
         requestAnimationFrame(this.step.bind(this))
     }
     step()
@@ -170,16 +174,21 @@ export default class Main{
     }
     update()
     {
-        let angle =(Date.now()/1000)
+
        // this.model1.transform.position =new Vector3(Math.sin(angle),0,Math.cos(angle));
-       this.model1.transform.rotation=new Vector3(0,-angle,0);
         this.camera.ratio =this.canvas.width/this.canvas.height;
+        let angle =(Date.now()/1000)
+        this.model1.transform.rotation=new Vector3(0,-angle,0);
+        UI.pushWindow("myWindow")
+        UI.LButton("mijn bnt","ddd")
+        UI.popWindow()
         //UI.UpdateGPU
     }
     prepDraw()
     {
         BindGroup.updateGroups();
         this.mainRenderPass.updateTexture(this.canvas.width,this.canvas.height,this.context)
+        UI.updateGPU()
     }
     draw()
     {

@@ -20,8 +20,8 @@ export default class FillBatchGL {
     }
     destroy()
     {
-        this.gl.deleteBuffer(this.vertexBuffer);
-        this.gl.deleteBuffer(this.indexBuffer);
+       if(this.vertexBuffer)  this.gl.deleteBuffer(this.vertexBuffer);
+        if(this.indexBuffer)  this.gl.deleteBuffer(this.indexBuffer);
         this.numIndices = 0;
     }
     setRenderData(fillBatch:FillBatch) {

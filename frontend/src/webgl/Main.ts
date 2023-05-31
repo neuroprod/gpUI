@@ -50,7 +50,7 @@ private example:ExampleUI
 
     init() {
         this.example.init()
-       if(UI.initialized) this.textTexture.setTextureGL(UI_I.renderer.textRenderer.texture.texture, Font.textureSize.x, Font.textureSize.y);
+       if(UI.initialized) this.textTexture.setTextureGL(UI_I.rendererGL.textRenderer.texture.texture, Font.textureSize.x, Font.textureSize.y);
         this.step();
     }
 

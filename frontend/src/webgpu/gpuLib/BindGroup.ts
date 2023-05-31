@@ -7,7 +7,7 @@ export class BindGroup extends UniqueObject{
 
     public device: GPUDevice;
     public label:string;
-    public slot:number
+    public slot:number=0
 
     public bindGroupLayout: GPUBindGroupLayout;
     public bindGroup: GPUBindGroup;

@@ -67,7 +67,7 @@ export class TextureGroup extends BindGroup
     }
     public update()
     {
-        console.log("updateTextureData")
+
 
         let ent =[]
         for(let s of this.samplerLayouts)

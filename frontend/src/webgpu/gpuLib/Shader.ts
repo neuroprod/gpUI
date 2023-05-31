@@ -79,10 +79,8 @@ export default class Shader {
             r+="@group("+id+") @binding("+count+") var "+t+": texture_2d<f32>;\n"
             count++
         }
-        console.log(r);
         return r;
-       /* @group(0) @binding(0) var sampler1: sampler;
-        @group(0) @binding(1) var texture1: texture_2d<f32>;*/
+
     }
 
 

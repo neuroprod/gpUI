@@ -16,6 +16,7 @@ import Local from "./local/Local";
 import UI_Style from "./UI_Style";
 import KeyboardListener from "./input/KeyboardListener";
 import EventCenter, {EventCenterSettings} from "./components/internal/EventCenter";
+import RendererGPU from "./GPU/RendererGPU";
 
 
 export default class UI_I {
@@ -26,7 +27,7 @@ export default class UI_I {
     public static dockManager: DockManager;
     static screenSize: Vec2 = new Vec2();
     static canvasSize: Vec2 = new Vec2();
-    static renderer: RendererGL;
+
 
     static pixelRatio: number;
 
@@ -54,6 +55,8 @@ export default class UI_I {
     static eventLayer: EventCenter;
     static crashed: boolean=false;
 
+    static rendererGPU!: RendererGPU;
+    static rendererGL!: RendererGL;
 
     constructor() {
     }
@@ -114,7 +117,7 @@ export default class UI_I {
         UI_I.currentDrawBatch = UI_I.mainDrawBatch;
     }
 
-
+    //handle components
     static setComponent(localID) {
         const id = this.getID(localID);
         if (this.hasComponent(id)) {
@@ -152,6 +155,32 @@ export default class UI_I {
 
     }
 
+    static deleteComponent(comp: Component) {
+
+        this.components.delete(comp.id);
+        comp.setDirty();
+        for (let child of comp.children) {
+            child.useThisFrame = false;
+        }
+        let index = comp.parent.children.indexOf(comp);
+        comp.parent.children.splice(index, 1);
+        comp.parent.setDirty()
+        comp.parent = null;
+        comp.destroy()
+        if (comp.hasOwnDrawBatch) {
+
+            let batch = this.drawBatches.get(comp.id);
+            let index = batch.parent.children.indexOf(batch);
+            batch.parent.children.splice(index, 1);
+            batch.parent = null;
+
+            this.drawBatches.delete(comp.id);
+            if( UI_I.renderType == "gl")
+            this.rendererGL.delete(comp.id);
+        }
+
+    }
+
     static popComponent(callPop = true) {
         if (callPop) {
             this.currentComponent.onPopComponent()
@@ -160,7 +189,6 @@ export default class UI_I {
         this.currentComponent = this.currentComponent.parent;
         this.currentComponent.useThisFrame = true;
     }
-
 
     static hasComponent(id: number) {
         return this.components.has(id);
@@ -181,116 +209,14 @@ export default class UI_I {
         return hash;
     }
 
-
-    public static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement, settings?: any) {
-        UI_I.renderType = "gl";
-        UI_I.renderer = new RendererGL();
-        UI_I.renderer.init(gl, canvas);
-
-        if (settings) Local.setSettings(settings)
-        UI_I.init(canvas);
-
-    }
-
-    static delete(comp: Component) {
-
-        this.components.delete(comp.id);
-        comp.setDirty();
-        for (let child of comp.children) {
-            child.useThisFrame = false;
-        }
-        let index = comp.parent.children.indexOf(comp);
-        comp.parent.children.splice(index, 1);
-        comp.parent.setDirty()
-        comp.parent = null;
-        comp.destroy()
-        if (comp.hasOwnDrawBatch) {
-
-            let batch = this.drawBatches.get(comp.id);
-            let index = batch.parent.children.indexOf(batch);
-            batch.parent.children.splice(index, 1);
-            batch.parent = null;
-
-            this.drawBatches.delete(comp.id);
-            this.renderer.delete(comp.id);
-        }
-
-    }
-
-    public static draw() {
-
-        this.screenSize.set(this.canvas.offsetWidth, this.canvas.offsetHeight)
-        this.canvasSize.set(this.canvas.width, this.canvas.height)
-        this.dockManager.update()
-
-
-        this.components.forEach((comp) => {
-            if (comp.keepAlive) {
-                this.currentComponent = comp;
-                comp.setSubComponents()
-            }
-            if (comp.useThisFrame == false) {
-                this.delete(comp);
-            }
-            if (comp.isDirty && comp.needsChildrenSortingByRenderOrder) {
-                comp.sortChildrenByRenderOrder()
-            }
-
-        })
-
-        this.checkMouse();
-        this.checkWheel();
-        let buffer = this.keyboardListener.getBuffer()
-        let actionKey = this.keyboardListener.getActionKey()
-        if (this.focusComponent) {
-            this.focusComponent.setKeys(buffer, actionKey);
-        }
-        if (this.mainComp.isDirty) {
-
-            this.mainDrawBatch.isDirty = true;
-
-            this.mainComp.updateMouseInt();
-            this.mainComp.layoutRelativeInt();
-            this.mainComp.layoutAbsoluteInt();
-            this.mainComp.prepDrawInt();
-
-            //remove old batches
-            let drawBatchIds = new Array<number>()
-            this.mainComp.getActiveDrawBatchIds(drawBatchIds, this.mainDrawBatch)
-            for (let old of this.oldDrawBatchIDs) {
-                if (!drawBatchIds.includes(old)) {
-                    this.removeDrawBatch(old)
-                }
-            }
-            this.oldDrawBatchIDs = drawBatchIds;
-
-            //collect drawBatches
-            let drawBatches: Array<DrawBatch> = []
-            this.mainDrawBatch.collectBatches(drawBatches);
-
-
-            UI_I.renderer.setDrawBatches(drawBatches);
-            this.mainComp.isDirty = false;
-        }
-
-
-
-
-        this.components.forEach((comp) => {
-            comp.renderOrderCount = 0;
-            if (!comp.keepAlive) {
-                comp.useThisFrame = false
-            }
-        });
-        Local.saveData();
-        UI_I.renderer.draw();
-    }
-
     static removePopup(p: Component) {
         p.keepAlive = false;
 
 
     }
+
+
+
 
     ////input
     static checkMouse() {
@@ -344,6 +270,17 @@ export default class UI_I {
 
     }
 
+    static checkWheel() {
+        if (this.mouseListener.wheelDelta == 0) return;
+        if (!this.mouseOverComponent) return;
+
+        let delta = this.mouseListener.wheelDelta;
+
+        this.mouseListener.wheelDelta = 0;
+        let sc = this.mouseOverComponent.getScrollComponent();
+        if (sc) sc.setScrollDelta(delta)
+    }
+
     static setMouseDownComponent(comp: Component) {
 
         this.mouseDownComponent = comp;
@@ -382,7 +319,6 @@ export default class UI_I {
         }
 
     }
-
 
     static setPanelFocus(comp: Component) {
 
@@ -441,7 +377,102 @@ export default class UI_I {
     }
 
 
-    //draw batches
+    //impl
+    public static setWebgl(gl: WebGL2RenderingContext | WebGLRenderingContext, canvas: HTMLCanvasElement, settings?: any) {
+        UI_I.renderType = "gl";
+        UI_I.rendererGL = new RendererGL();
+        UI_I.rendererGL.init(gl, canvas);
+
+        if (settings) Local.setSettings(settings)
+        UI_I.init(canvas);
+
+    }
+
+    static  setWebGPU(device:GPUDevice,canvas:HTMLCanvasElement,presentationFormat:GPUTextureFormat ,settings?: any)
+    {
+        UI_I.renderType = "gpu";
+        UI_I.rendererGPU = new RendererGPU();
+        UI_I.rendererGPU.init(device,canvas,presentationFormat);
+        if (settings) Local.setSettings(settings)
+        UI_I.init(canvas);
+    }
+    //draw
+    public static draw()
+    {
+        this.update()
+        if(UI_I.renderType == "gl"){
+            UI_I.rendererGL.draw();
+        }
+    }
+
+    public static update() {
+
+        this.screenSize.set(this.canvas.offsetWidth, this.canvas.offsetHeight)
+        this.canvasSize.set(this.canvas.width, this.canvas.height)
+        this.dockManager.update()
+
+
+        this.components.forEach((comp) => {
+            if (comp.keepAlive) {
+                this.currentComponent = comp;
+                comp.setSubComponents()
+            }
+            if (comp.useThisFrame == false) {
+                this.deleteComponent(comp);
+            }
+            if (comp.isDirty && comp.needsChildrenSortingByRenderOrder) {
+                comp.sortChildrenByRenderOrder()
+            }
+
+        })
+
+        this.checkMouse();
+        this.checkWheel();
+        let buffer = this.keyboardListener.getBuffer()
+        let actionKey = this.keyboardListener.getActionKey()
+        if (this.focusComponent) {
+            this.focusComponent.setKeys(buffer, actionKey);
+        }
+        if (this.mainComp.isDirty) {
+
+            this.mainDrawBatch.isDirty = true;
+
+            this.mainComp.updateMouseInt();
+            this.mainComp.layoutRelativeInt();
+            this.mainComp.layoutAbsoluteInt();
+            this.mainComp.prepDrawInt();
+
+            //remove old batches
+            let drawBatchIds = new Array<number>()
+            this.mainComp.getActiveDrawBatchIds(drawBatchIds, this.mainDrawBatch)
+            for (let old of this.oldDrawBatchIDs) {
+                if (!drawBatchIds.includes(old)) {
+                    this.removeDrawBatch(old)
+                }
+            }
+            this.oldDrawBatchIDs = drawBatchIds;
+
+            //collect drawBatches
+            let drawBatches: Array<DrawBatch> = []
+            this.mainDrawBatch.collectBatches(drawBatches);
+            if(UI_I.rendererGL){
+                UI_I.rendererGL.setDrawBatches(drawBatches);
+            }else if(UI_I.rendererGPU) {
+                UI_I.rendererGPU.setDrawBatches(drawBatches);
+            }
+            this.mainComp.isDirty = false;
+        }
+
+        this.components.forEach((comp) => {
+            comp.renderOrderCount = 0;
+            if (!comp.keepAlive) {
+                comp.useThisFrame = false
+            }
+        });
+        Local.saveData();
+
+    }
+
     static pushDrawBatch(id, clipRect, isDirty) {
 
         let batch: DrawBatch;
@@ -483,14 +514,5 @@ export default class UI_I {
         }
     }
 
-    private static checkWheel() {
-        if (this.mouseListener.wheelDelta == 0) return;
-        if (!this.mouseOverComponent) return;
 
-        let delta = this.mouseListener.wheelDelta;
-
-        this.mouseListener.wheelDelta = 0;
-        let sc = this.mouseOverComponent.getScrollComponent();
-        if (sc) sc.setScrollDelta(delta)
-    }
 }

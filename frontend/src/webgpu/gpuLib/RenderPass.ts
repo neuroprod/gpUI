@@ -1,4 +1,5 @@
 import {Model} from "./Model";
+import UI from "../../UI/UI";
 
 ;
 
@@ -79,6 +80,7 @@ export default class RenderPass {
                 passEncoder.setPipeline(model.material.pipeLine);
             }
             let count =0
+
             for (let uniforms of model.material.bindGroups) {
 
                 if (bufferArray[count] != uniforms.uID) {
@@ -105,7 +107,7 @@ export default class RenderPass {
         }
 //
        // passEncoder.setScissorRect()
-        //UI.drawGPU(passEncoder)
+        UI.drawGPU(passEncoder)
         passEncoder.end();
     }
 

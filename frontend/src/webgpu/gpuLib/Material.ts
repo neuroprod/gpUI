@@ -71,7 +71,7 @@ export default class Material extends UniqueObject {
             data.slot = slot;
             slot++
         }
-console.log(this.bindGroups)
+
 
         const pipelineLayout = this.device.createPipelineLayout({
             label: 'Material_pipelineLayout_' + this.name,

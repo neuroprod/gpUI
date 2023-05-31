@@ -14,6 +14,7 @@ export default class LButton extends LComponent
 
         super(id,label,settings);
         this.buttonText =buttonText;
+
     }
     setSubComponents() {
         super.setSubComponents();

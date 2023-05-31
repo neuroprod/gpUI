@@ -1,4 +1,5 @@
 import UI_I from "../UI_I";
+import UI from "../UI";
 
 export default class Local {
     static dockData: any = null;
@@ -12,6 +13,7 @@ export default class Local {
             this.uiData["itemData"] = this.itemData
             this.uiData["dockData"] = this.dockData
         }
+        if(UI_I.rendererGPU)return
         let data = localStorage.getItem("uiData");
 
         if (data) {
@@ -51,6 +53,7 @@ export default class Local {
 
     static saveData() {
         if (!this.isDirty) return;
+        if(UI_I.rendererGPU)return
         if(UI_I.crashed)return;
         let s = JSON.stringify(this.uiData);
         localStorage.setItem("uiData", s);
