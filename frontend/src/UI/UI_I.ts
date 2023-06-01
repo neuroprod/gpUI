@@ -55,8 +55,8 @@ export default class UI_I {
     static eventLayer: EventCenter;
     static crashed: boolean=false;
 
-    static rendererGPU!: RendererGPU;
-    static rendererGL!: RendererGL;
+    static rendererGPU: RendererGPU;
+    static rendererGL: RendererGL;
 
     constructor() {
     }
