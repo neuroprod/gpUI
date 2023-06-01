@@ -1,7 +1,13 @@
+WebGL
+
 https://neuroprod.github.io/gpUI/
+
+WebGPU
+
 https://neuroprod.github.io/gpUI/webGPU
 
 
 
-helper
+helpers
+
 https://neuroprod.github.io/gpUI/charmapToBytes
