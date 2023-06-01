@@ -86,15 +86,17 @@ export default class UniformGroup extends BindGroup{
         );
         //implement multiple bindings?
         this.bindGroupLayout =this.device.createBindGroupLayout({
+            label:"BindGroupLayout_"+this.label,
             entries: [{
                 binding: 0,
                 visibility:visibility,
                 buffer: {},
             }]
         });
-        this.bindGroupLayout.label = "BindGroupLayout_"+this.label;
+
 
         this.bindGroup = this.device.createBindGroup({
+            label : "BindGroup_"+this.label,
             layout: this.bindGroupLayout,
             entries: [
                 {
@@ -105,7 +107,7 @@ export default class UniformGroup extends BindGroup{
                 },
             ],
         });
-        this.bindGroup.label = "BindGroup_"+this.label;
+
     }
     updateData(){
 

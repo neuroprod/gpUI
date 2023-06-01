@@ -138,7 +138,7 @@ export default class Viewport extends Panel {
     stopRender() {
         if(this.isDocked)return;
         this.texture.unBind()
-        let gl = UI_I.renderer.gl;
+        let gl = UI_I.rendererGL.gl;
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     }

@@ -1,14 +1,13 @@
 import Rect from "../math/Rect";
 import DrawBatch from "../draw/DrawBatch";
 import FillBatchGPU from "./FillBatchGPU";
+import TextBatchGPU from "./TextBatchGPU";
 
 export default class DrawBatchGPU {
     public id: number
-    //  public fillBatchGL: FillBatchGL|null =null;
-    // public textBatchGL: TextBatchGL|null =null;
-    //public textureBatch: TextureBatch|null =null;
-    private fillBatchGPU: FillBatchGPU;
 
+    public fillBatchGPU: FillBatchGPU;
+    public textBatchGPU: TextBatchGPU;
 
     public clipRect: Rect | null;
     public needsClipping: boolean = false;
@@ -33,7 +32,9 @@ export default class DrawBatchGPU {
         }
          if(batch.textBatch)
          {
-                // console.log(batch.textBatch)
+
+             if(!this.textBatchGPU)this.textBatchGPU =new TextBatchGPU(this.device)
+             this.textBatchGPU.setRenderData(batch.textBatch)
          }
         /* if(batch.textureBatch)
          {
@@ -43,10 +44,10 @@ export default class DrawBatchGPU {
     }
 
     destroy() {
-        /*if (this.fillBatchGL) {
-            this.fillBatchGL.destroy()
+        if (this.fillBatchGPU) {
+            this.fillBatchGPU.destroy()
         }
-        if (this.textBatchGL) {
+       /* if (this.textBatchGL) {
             this.textBatchGL.destroy()
         }*/
     }

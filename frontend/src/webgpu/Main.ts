@@ -16,6 +16,7 @@ import UVShader3D from "./shaders/UVShader3D";
 import TextureShader3D from "./shaders/TextureShader3D";
 import {BindGroup} from "./gpuLib/BindGroup";
 import UI from "../UI/UI";
+import Color from "../UI/math/Color";
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -180,7 +181,9 @@ export default class Main{
         let angle =(Date.now()/1000)
         this.model1.transform.rotation=new Vector3(0,-angle,0);
         UI.pushWindow("myWindow")
-        UI.LButton("mijn bnt","ddd")
+        UI.LButton("hello","test")
+        UI.LFloat("myfloat",2);
+        UI.LColor("color",new Color(1,0,1,0.5))
         UI.popWindow()
         //UI.UpdateGPU
     }

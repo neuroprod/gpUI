@@ -101,6 +101,7 @@ export default class Material extends UniqueObject {
             },
             primitive: {
                 topology: 'triangle-list',
+                cullMode: 'back',
             },
             depthStencil: {
                 depthWriteEnabled: true,

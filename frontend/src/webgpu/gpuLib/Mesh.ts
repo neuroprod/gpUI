@@ -55,9 +55,9 @@ export default class Mesh {
     setIndices(indices: Uint16Array) {
         this.hasIndices = true;
         this.numIndices = indices.length
-
+        let size =Math.ceil(indices.byteLength/4)*4
         this.indexBuffer = this.device.createBuffer({
-            size: indices.byteLength,
+            size: size,
             usage: GPUBufferUsage.INDEX,
             mappedAtCreation: true,
         });

@@ -125,9 +125,10 @@ struct Uniforms
 
         this.processUniforms();
         this.shader = this.device.createShaderModule({
+            label:"shader_" + this.name,
             code: this.getShader(),
         });
-        this.shader.label = "shader_" + this.name;
+
 
     }
 

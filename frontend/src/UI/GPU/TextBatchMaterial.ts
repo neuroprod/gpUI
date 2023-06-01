@@ -1,48 +1,54 @@
 
 
-export default class FillBatchMaterial{
+export default class TextBatchMaterial{
     private device: GPUDevice;
     private shader: GPUShaderModule;
     public pipeLine:GPURenderPipeline;
 
-    constructor(device: GPUDevice, presentationFormat: GPUTextureFormat, mvpBindGroupLayout: GPUBindGroupLayout)
+    constructor(device: GPUDevice, presentationFormat: GPUTextureFormat, mvpBindGroupLayout: GPUBindGroupLayout,fontBindGroupLayout: GPUBindGroupLayout)
     {
         this.device = device;
 
         this.shader = this.device.createShaderModule({
-            label:"UI_Shader_FillBatchMaterial",
+            label:"UI_Shader_TextBatchMaterial",
             code: this.getShader(),
         });
         const pipelineLayout = this.device.createPipelineLayout({
-            label: 'UI_PipelineLayout_FillBatchMaterial' ,
-            bindGroupLayouts:[mvpBindGroupLayout],
+            label: 'UI_PipelineLayout_TextBatchMaterial' ,
+            bindGroupLayouts:[mvpBindGroupLayout,fontBindGroupLayout],
         });
 
         this.pipeLine = this.device.createRenderPipeline({
-            label:  'UI_Pipeline_FillBatchMaterial',
+            label:  'UI_Pipeline_TextBatchMaterial',
             layout: pipelineLayout,
             vertex: {
                 module: this.shader,
                 entryPoint: 'mainVertex',
                 buffers: [
                     {
-                      arrayStride: 24,
-                      attributes: [
-                        {
-                          // position
-                          shaderLocation: 0,
-                          offset: 0,
-                          format: 'float32x2',
-                        },
-                        {
-                          // color
-                          shaderLocation: 1,
-                          offset: 8,
-                          format: 'float32x4',
-                        },
-                      ],
+                        arrayStride: 32,
+                        attributes: [
+                            {
+                                // position
+                                shaderLocation: 0,
+                                offset: 0,
+                                format: 'float32x2',
+                            },
+                            {
+                                // uv
+                                shaderLocation: 1,
+                                offset: 8,
+                                format: 'float32x2',
+                            },
+                            {
+                                // color
+                                shaderLocation: 2,
+                                offset: 16,
+                                format: 'float32x4',
+                            },
+                        ],
                     },
-                  ]
+                ]
                 ,
             },
             fragment: {
@@ -57,11 +63,11 @@ export default class FillBatchMaterial{
                                 dstFactor: 'one-minus-src-alpha',
                                 operation: 'add',
                             },
-                             alpha: {
-                                 srcFactor: 'one',
-                                 dstFactor: 'one-minus-src-alpha',
-                                 operation: 'add',
-                             },
+                            alpha: {
+                                srcFactor: 'one',
+                                dstFactor: 'one-minus-src-alpha',
+                                operation: 'add',
+                            },
                         },
                     },
                 ],
@@ -88,20 +94,24 @@ export default class FillBatchMaterial{
 ///////////////////////////////////////////////////////////      
 struct VertexOutput{
     @builtin(position) position : vec4f,
-    @location(0) color : vec4f,
+     @location(0) uv : vec2f,
+    @location(1) color : vec4f,
 }
 
 @group(0) @binding(0) var<uniform> mvp :  mat4x4 <f32>;
+@group(1) @binding(0) var fontSampler: sampler;
+@group(1) @binding(1) var fontTexture: texture_2d<f32>;
 @vertex
 fn mainVertex( 
     @location(0) position : vec2f,
-    @location(1) color : vec4f, 
+     @location(1) uv : vec2f,
+    @location(2) color : vec4f, 
 ) -> VertexOutput
 {
     var output : VertexOutput;
     output.position = mvp*vec4( position,0.0,1.0);
-
-    output.color =vec4f(color.xyz*color.w,color.w);
+    output.uv =vec2f (uv.x,1.0-uv.y);
+    output.color =color;
 
     return output;
 }
@@ -109,10 +119,13 @@ fn mainVertex(
 
 @fragment
 fn mainFragment(
-    @location(0) color: vec4f,
+    @location(0) uv: vec2f,
+     @location(1) color: vec4f,
 ) -> @location(0) vec4f
 {
-     return color;
+    let a :f32= textureSample(fontTexture, fontSampler, uv).x;
+    let c:vec4f  = vec4f(1.0,1.0,1.0,a)*color;
+     return c;
 }
 ///////////////////////////////////////////////////////////
 `;

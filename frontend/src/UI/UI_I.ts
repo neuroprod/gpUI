@@ -175,8 +175,12 @@ export default class UI_I {
             batch.parent = null;
 
             this.drawBatches.delete(comp.id);
-            if( UI_I.renderType == "gl")
-            this.rendererGL.delete(comp.id);
+            if( UI_I.renderType == "gl"){
+                this.rendererGL.delete(comp.id);
+            }
+            if( UI_I.renderType == "gpu"){
+                this.rendererGPU.delete(comp.id);
+            }
         }
 
     }
