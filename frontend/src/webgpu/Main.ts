@@ -16,7 +16,8 @@ import UVShader3D from "./shaders/UVShader3D";
 import TextureShader3D from "./shaders/TextureShader3D";
 import {BindGroup} from "./gpuLib/BindGroup";
 import UI from "../UI/UI";
-import Color from "../UI/math/Color";
+import ColorV from "../shared/ColorV";
+
 
 export default class Main{
     private canvas: HTMLCanvasElement;
@@ -183,7 +184,8 @@ export default class Main{
         UI.pushWindow("myWindow")
         UI.LButton("hello","test")
         UI.LFloat("myfloat",2);
-        UI.LColor("color",new Color(1,0,1,0.5))
+
+        this.material2.setUniform("color",UI.LColor("color",new ColorV(1,0,1,1)))
         UI.popWindow()
         //UI.UpdateGPU
     }

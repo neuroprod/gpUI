@@ -3,16 +3,17 @@ import {Vector2, Vector3, Vector4} from "math.gl";
 import UIUtils from "../UI/UIUtils";
 import SelectItem from "../UI/math/SelectItem";
 import {TestEnum} from "./Main";
-import Color from "../UI/math/Color";
+
 import Texture from "./glLib/Texture";
 import UITexture from "../UI/draw/UITexture";
 import GL from "./glLib/GL";
+import ColorV from "../shared/ColorV";
 
 
 export default class ExampleUI
 {
-    private color1: Color = new Color(0.12,0.63,0.86,1.00);
-    private color2: Color = new Color(0.98,0.36,0.57,0.68);
+    private color1: ColorV = new ColorV(0.12,0.63,0.86,1.00);
+    private color2: ColorV = new ColorV(0.98,0.36,0.57,0.68);
 
     private myFloat = 0.5;
     private myFloat2 = 0.5;

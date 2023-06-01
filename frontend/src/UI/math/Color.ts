@@ -34,7 +34,9 @@ export default class Color {
         const l = Math.max(this.r, this.g, this.b);
         const s = l - Math.min(this.r, this.g, this.b);
         const h = s ? l === this.r ? (this.g - this.b) / s : l === this.g ? 2 + (this.b - this.r) / s : 4 + (this.r - this.g) / s : 0;
-        return [h / (Math.PI * 2), s, l]
+        let hf = h / (Math.PI * 2);
+        if(hf<0)hf+=1;
+        return [hf, s, l]
     }
     public setHSV(h,s,v) {
         h*=360;

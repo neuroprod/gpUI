@@ -6,10 +6,11 @@ import Box from "../glLib/Box";
 import UI from "../../UI/UI";
 import {Vector3, Vector4} from "math.gl";
 import SceneCube from "./SceneCube";
-import Color from "../../UI/math/Color";
+
 import UI_IC from "../../UI/UI_IC";
 import FBO from "../glLib/FBO";
 import Quad from "../glLib/Quad";
+import ColorV from "../../shared/ColorV";
 
 export default class Scene {
     public camera: Camera;
@@ -23,9 +24,10 @@ export default class Scene {
     private currentCube: SceneCube | null;
     private gl: WebGL2RenderingContext;
 
-    private clearColor:Color =new Color(0.38,0.35,0.32,1.00)
-    private outlineColor:Color =new Color(0.22,0.22,0.22,0.34)
-    private selectColor:Color =new Color(1.00,0.66,0.00,1.00)
+    private clearColor:ColorV =new ColorV(0.38,0.35,0.32,1.00)
+    private outlineColor:ColorV =new ColorV(0.22,0.22,0.22,0.34)
+    private selectColor:ColorV =new ColorV(1.00,0.66,0.00,1.00)
+
     private outlineFBO: FBO;
     private selectFBO: FBO;
     private glMain: GL;
@@ -54,11 +56,11 @@ export default class Scene {
         this.box = new Box(glMain, 1, 1, 1)
 
 
-        this.cubes.push(new SceneCube("Floor",new Vector3(0.00,-0.50,0.00),new Vector3(10.00,0.01,10.00),new Vector3(0.00,0.00,0.00),new Color(1.00,1.00,1.00,1)));
-        this.cubes.push(new SceneCube("Cube1",new Vector3(-2.26,0.44,1.04),new Vector3(1.00,2.02,2.00),new Vector3(0.00,-0.76,0.00),new Color(0.72,0.70,0.69,1.00)));
-        this.cubes.push(new SceneCube("Cube2",new Vector3(-0.60,1.84,1.59),new Vector3(1.00,2.97,1.00),new Vector3(0.93,-0.30,2.31),new Color(0.72,0.70,0.69,1.00)));
-        this.cubes.push(new SceneCube("Cube3",new Vector3(1.75,1.57,0.63),new Vector3(1.00,5.78,2.20),new Vector3(0.00,-0.89,0.00),new Color(0.72,0.70,0.69,1.00)));
-        this.cubes.push(new SceneCube("Cube4",new Vector3(0.92,0.56,2.41),new Vector3(1.98,2.87,1.92),new Vector3(0.00,-0.66,0.00),new Color(0.72,0.70,0.69,1.00)));
+        this.cubes.push(new SceneCube("Floor",new Vector3(0.00,-0.50,0.00),new Vector3(10.00,0.01,10.00),new Vector3(0.00,0.00,0.00),new ColorV(1.00,1.00,1.00,1)));
+        this.cubes.push(new SceneCube("Cube1",new Vector3(-2.26,0.44,1.04),new Vector3(1.00,2.02,2.00),new Vector3(0.00,-0.76,0.00),new ColorV(0.72,0.70,0.69,1.00)));
+        this.cubes.push(new SceneCube("Cube2",new Vector3(-0.60,1.84,1.59),new Vector3(1.00,2.97,1.00),new Vector3(0.93,-0.30,2.31),new ColorV(0.72,0.70,0.69,1.00)));
+        this.cubes.push(new SceneCube("Cube3",new Vector3(1.75,1.57,0.63),new Vector3(1.00,5.78,2.20),new Vector3(0.00,-0.89,0.00),new ColorV(0.72,0.70,0.69,1.00)));
+        this.cubes.push(new SceneCube("Cube4",new Vector3(0.92,0.56,2.41),new Vector3(1.98,2.87,1.92),new Vector3(0.00,-0.66,0.00),new ColorV(0.72,0.70,0.69,1.00)));
 
         this.currentCube = this.cubes[0];
 
@@ -171,7 +173,7 @@ if(this.disableScene)return
         this.program.uniformMatrix4fv("view", this.camera.viewMatrix)
         for (let cube of this.cubes) {
             this.program.uniformMatrix4fv("model", cube.model)
-            this.program.uniform4fv("color", cube.color.getArray())
+            this.program.uniform4fv("color", cube.color)
             this.box.draw(this.program)
         }
         this.program.unBind()
@@ -183,7 +185,7 @@ if(this.disableScene)return
         this.programEdge.uniform2fv("screen",[this.viewPort.z,this.viewPort.w]);
         this.programEdge.uniform3fv("kernel",[1.0,1.0,0.5,-1.0,-1.0,0.5, -1.0,1.0,0.5,1.0,-1.0,0.5,1.0,0.0,1.0,-1.0,0.0,1.0,0.0,1.0,1.0,0.0,-1.0,1.0]);
         this.programEdge.uniform1i("texture",0);
-        this.programEdge.uniform4fv("color",this.outlineColor.getArray())
+        this.programEdge.uniform4fv("color",this.outlineColor)
         this.quad.draw(this.programEdge);
         this.programEdge.unBind()
 
@@ -195,7 +197,7 @@ if(this.disableScene)return
         this.programEdge.uniform2fv("screen",[this.viewPort.z*lSize,this.viewPort.w*lSize]);
         this.programEdge.uniform3fv("kernel",[lSizeK,lSizeK,0.5,-lSizeK,-lSizeK,0.5, -lSizeK,lSizeK,0.5,lSizeK,-lSizeK,0.5,1.0,0.0,1.0,-1.0,0.0,1.0,0.0,1.0,1.0,0.0,-1.0,1.0]);
         this.programEdge.uniform1i("texture",0);
-        this.programEdge.uniform4fv("color",this.selectColor.getArray())
+        this.programEdge.uniform4fv("color",this.selectColor)
         this.quad.draw(this.programEdge);
         this.programEdge.unBind()
         UI.popWindow()
