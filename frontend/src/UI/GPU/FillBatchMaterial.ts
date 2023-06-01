@@ -53,7 +53,7 @@ export default class FillBatchMaterial{
                         format: presentationFormat,
                         blend: {
                             color: {
-                                srcFactor: 'src-alpha',
+                                srcFactor: 'one',
                                 dstFactor: 'one-minus-src-alpha',
                                 operation: 'add',
                             },
@@ -69,6 +69,7 @@ export default class FillBatchMaterial{
             primitive: {
                 topology: 'triangle-list',
             },
+
             depthStencil: {
                 depthWriteEnabled: false,
                 depthCompare: 'less',
@@ -101,7 +102,7 @@ fn mainVertex(
     var output : VertexOutput;
     output.position = mvp*vec4( position,0.0,1.0);
 
-    output.color =vec4f(color.xyz*color.w,color.w);
+    output.color =color;
 
     return output;
 }
@@ -112,7 +113,7 @@ fn mainFragment(
     @location(0) color: vec4f,
 ) -> @location(0) vec4f
 {
-     return color;
+     return vec4f(color.xyz*color.w,color.w);
 }
 ///////////////////////////////////////////////////////////
 `;

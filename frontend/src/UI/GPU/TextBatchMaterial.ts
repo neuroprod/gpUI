@@ -59,7 +59,7 @@ export default class TextBatchMaterial{
                         format: presentationFormat,
                         blend: {
                             color: {
-                                srcFactor: 'src-alpha',
+                                srcFactor: 'one',
                                 dstFactor: 'one-minus-src-alpha',
                                 operation: 'add',
                             },
@@ -124,7 +124,7 @@ fn mainFragment(
 ) -> @location(0) vec4f
 {
     let a :f32= textureSample(fontTexture, fontSampler, uv).x;
-    let c:vec4f  = vec4f(1.0,1.0,1.0,a)*color;
+    let c:vec4f  = vec4f(color.xyz*a,a)*color.w;
      return c;
 }
 ///////////////////////////////////////////////////////////

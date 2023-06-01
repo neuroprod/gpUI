@@ -30,6 +30,7 @@ export default class RendererGL {
             let drawBatch = this.drawBatchesGL.get(id)
             drawBatch.destroy();
             this.drawBatchesGL.delete(id);
+            this.drawArray.splice( this.drawArray.indexOf( drawBatch),1);
         }
     }
 

@@ -24,7 +24,10 @@ export default class FillBatchGPU {
     }
 
     async setRenderData(fillBatch: FillBatch) {
-        if (fillBatch.indices.length == 0) return;
+        if (fillBatch.indices.length == 0) {
+            if(this.numIndices>0) this.destroy()
+            return;
+        }
 
         this.numIndices = fillBatch.indices.length;
 

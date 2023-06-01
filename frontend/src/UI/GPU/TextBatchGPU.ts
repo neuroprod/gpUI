@@ -24,7 +24,10 @@ export default class TextBatchGPU {
     }
 
     async setRenderData(textBatch: TextBatch) {
-        if (textBatch.indices.length == 0) return;
+        if (textBatch.indices.length == 0) {
+            if(this.numIndices>0) this.destroy()
+            return;
+        }
 
         this.numIndices = textBatch.indices.length;
 

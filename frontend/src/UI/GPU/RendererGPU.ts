@@ -120,6 +120,7 @@ export default class RendererGPU {
             let drawBatch = this.drawBatches.get(id)
             drawBatch.destroy();
             this.drawBatches.delete(id);
+            this.drawArray.splice( this.drawArray.indexOf( drawBatch),1);
             console.log("delete")
         }
     }
