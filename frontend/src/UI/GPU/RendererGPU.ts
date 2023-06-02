@@ -213,8 +213,8 @@ export default class RendererGPU {
     public setProjection() {
         if (this.width == this.canvas.width && this.height == this.canvas.height) return
 
-        this.width = this.canvas.width
-        this.height = this.canvas.height
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
         this.ortho(this.mvp,0,  this.width,    this.height,0,  1,  -1);
         this.mvpBufferData.set(this.mvp, 0)
         this.device.queue.writeBuffer(

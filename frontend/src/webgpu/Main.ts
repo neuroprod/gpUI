@@ -10,13 +10,15 @@ import Camera from "./gpuLib/Camera";
 import {Vector3,Vector4} from "math.gl";
 import ColorShader3D from "./shaders/ColorShader3D";
 import Box from "./meshes/Box";
-import UniformGroup from "./gpuLib/UniformGroup";
+
 import NormalShader3D from "./shaders/NormalShader3D";
 import UVShader3D from "./shaders/UVShader3D";
 import TextureShader3D from "./shaders/TextureShader3D";
 import {BindGroup} from "./gpuLib/BindGroup";
 import UI from "../UI/UI";
 import ColorV from "../shared/ColorV";
+import Sphere from "./meshes/Sphere";
+import Plane from "./meshes/Plane";
 
 
 export default class Main{
@@ -25,6 +27,7 @@ export default class Main{
     private device:GPUDevice;
     private mesh1: Mesh;
     private mesh2: Mesh;
+    private mesh3: Mesh;
     private material1: Material;
     private material2: Material;
     private material3: Material;
@@ -54,6 +57,7 @@ export default class Main{
     {
 
         const adapter = await navigator.gpu.requestAdapter();
+
         this.device =await adapter.requestDevice();
 
         this.canvas.width=window.innerWidth;
@@ -132,21 +136,21 @@ export default class Main{
 
 
         this.mesh1 =new Box(this.device);
-        this.mesh2 =new Box(this.device);
-
+        this.mesh2 =new Sphere(this.device);
+        this.mesh3 =new Plane(this.device);
         this.material1=new Material(this.device,"material1",normalShader,this.presentationFormat);
         this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
         this.model1.transform.position =new Vector3(2.4,0,0);
 
 
         this.material2=new Material(this.device,"material2",colorShader,this.presentationFormat);
-        this.model2 =new Model(this.device,"Model2",this.mesh2,this.material2,this.camera);
+        this.model2 =new Model(this.device,"Model2",this.mesh3,this.material2,this.camera);
         this.model2.transform.position =new Vector3(0.8,0,0);
         this.material2.setUniform("color",new Vector4(0.3,0.6,1.0,1))
 
 
         this.material3 =new Material(this.device,"material3",uvShader,this.presentationFormat);
-        this.model3 =new Model(this.device,"Model3",this.mesh2,this.material3,this.camera);
+        this.model3 =new Model(this.device,"Model3",this.mesh1,this.material3,this.camera);
         this.model3.transform.position =new Vector3(-0.8,0,0);
 
 

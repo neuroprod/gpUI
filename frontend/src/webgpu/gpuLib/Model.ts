@@ -10,14 +10,15 @@ export class Model{
     private name: string;
     constructor(device:GPUDevice,name:string,mesh:Mesh,material:Material,camera:Camera) {
         this.name =name;
-        this.transform =new Transform(device,this.name+"transform")
+
         this.material =material
+        this.transform =new Transform(device,this.name+"transform")
         this.mesh=mesh;
-        this.material.addUniformGroup(camera)
+       this.material.addUniformGroup(camera)
         this.material.addUniformGroup(this.transform)
 
-        this.material.makePipeLine();
-     
-      
+        ///this.material.addUniformGroup(camera)
+
+
     }
 }

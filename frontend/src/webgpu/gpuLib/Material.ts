@@ -57,6 +57,7 @@ export default class Material extends UniqueObject {
         for (let udata of this.bindGroups) {
             if (udata.typeID == data.typeID) return;
         }
+
         this.bindGroups.push(data);
 
     }
