@@ -172,7 +172,7 @@ export default class UI_I {
             let batch = this.drawBatches.get(comp.id);
 
             let index = batch.parent.children.indexOf(batch);
-            batch.parent.children.splice(index, 1);
+            batch.parent?.children.splice(index, 1);
             batch.parent = null;
 
             this.drawBatches.delete(comp.id);
@@ -481,9 +481,8 @@ export default class UI_I {
 
     static pushDrawBatch(id, clipRect, isDirty) {
 
-        let batch: DrawBatch;
-        if (this.drawBatches.has(id)) {
-            batch = this.drawBatches.get(id);
+        let batch= this.drawBatches.get(id);
+        if (batch) {
             batch.isDirty = isDirty;
             batch.clear()
         } else {
@@ -512,13 +511,14 @@ export default class UI_I {
     }
 
     static removeDrawBatch(id: number) {
-        if (this.drawBatches.has(id)) {
-            let batch = this.drawBatches.get(id);
-            if (batch.parent) batch.parent.removeChild(batch)
 
+            let batch = this.drawBatches.get(id);
+            if (batch.parent && batch){
+                batch.parent.removeChild(batch)
+            }
             this.drawBatches.delete(id);
 
-        }
+
     }
 
 

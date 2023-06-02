@@ -21,6 +21,8 @@ import Sphere from "./meshes/Sphere";
 import Plane from "./meshes/Plane";
 import TextureLoader from "./gpuLib/TextureLoader";
 import CanvasManager from "./gpuLib/CanvasManager";
+import Quad from "./meshes/Quad";
+import FullScreenTexture from "./shaders/FullScreenTexture";
 
 
 
@@ -53,6 +55,10 @@ export default class Main{
     private sampler: GPUSampler;
     private textureLoader: TextureLoader;
     private canvasManager: CanvasManager;
+    private quad: Quad;
+    private fullscreenShader: FullScreenTexture;
+    private materialFullScreen: Material;
+    private modelFullScreen: Model;
 
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
@@ -93,24 +99,33 @@ export default class Main{
         let normalShader =new NormalShader3D(this.device);
         let uvShader =new UVShader3D(this.device);
         let textureShader =new TextureShader3D(this.device);
+        this.fullscreenShader = new FullScreenTexture(this.device)
 
-
+        this.quad = new Quad(this.device)
         this.mesh1 =new Box(this.device);
         this.mesh2 =new Sphere(this.device);
         this.mesh3 =new Plane(this.device);
+
+
+        this.materialFullScreen = new Material(this.device,"materialFullscreen",this.fullscreenShader,this.presentationFormat);
+        this.materialFullScreen.setTexture("texture1",this.myTexture);
+        this.materialFullScreen.setSampler("sampler1",this.sampler);
+        this.materialFullScreen.depthWriteEnabled =false;
+        this.modelFullScreen =new Model(this.device,"modelFullScreen",  this.quad, this.materialFullScreen ,false);
+
         this.material1=new Material(this.device,"material1",normalShader,this.presentationFormat);
-        this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,this.camera);//model adds transform data
+        this.model1 =new Model(this.device,"Model1",this.mesh1,this.material1,true,this.camera);//model adds transform data
         this.model1.transform.position =new Vector3(2.4,0,0);
 
 
         this.material2=new Material(this.device,"material2",colorShader,this.presentationFormat);
-        this.model2 =new Model(this.device,"Model2",this.mesh3,this.material2,this.camera);
+        this.model2 =new Model(this.device,"Model2",this.mesh3,this.material2,true,this.camera);
         this.model2.transform.position =new Vector3(0.8,0,0);
         this.material2.setUniform("color",new Vector4(0.3,0.6,1.0,1))
 
 
         this.material3 =new Material(this.device,"material3",uvShader,this.presentationFormat);
-        this.model3 =new Model(this.device,"Model3",this.mesh1,this.material3,this.camera);
+        this.model3 =new Model(this.device,"Model3",this.mesh1,this.material3,true,this.camera);
         this.model3.transform.position =new Vector3(-0.8,0,0);
 
 
@@ -118,11 +133,12 @@ export default class Main{
         this.material4.setTexture("texture1",this.myTexture);
         this.material4.setSampler("sampler1",this.sampler);
 
-        this.model4 =new Model(this.device,"Model4",this.mesh2,this.material4,this.camera);
+        this.model4 =new Model(this.device,"Model4",this.mesh2,this.material4,true,this.camera);
         this.model4.transform.position =new Vector3(-2.4,0,0);
 
 
         this.mainRenderPass =new RenderPass(this.device,this.presentationFormat)
+        this.mainRenderPass.add(this.modelFullScreen)
         this.mainRenderPass.add(this.model1);
         this.mainRenderPass.add(this.model2);
         this.mainRenderPass.add(this.model3);
@@ -160,7 +176,7 @@ export default class Main{
     prepDraw()
     {
         BindGroup.updateGroups();
-        this.mainRenderPass.updateTexture(this.canvas.width,this.canvas.height,this.context)
+        this.mainRenderPass.updateForCanvas(this.canvas.width,this.canvas.height,this.context)
         UI.updateGPU()
     }
     draw()

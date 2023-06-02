@@ -19,7 +19,7 @@ export default class RenderPass {
         this.presentationFormat = presentationFormat
     }
 
-    public updateTexture(width: number, height: number, context: GPUCanvasContext) {
+    public updateForCanvas(width: number, height: number, context: GPUCanvasContext) {
 
 
         if (width != this.width || height != this.height) {

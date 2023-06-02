@@ -9,8 +9,8 @@ import {TextureGroup} from "./TextureGroup";
 export default class Material extends UniqueObject {
 
 
-    pipeLine: GPURenderPipeline;
-    shader: Shader;
+    public pipeLine: GPURenderPipeline;
+    public shader: Shader;
     public bindGroups: Array<BindGroup> = []
 
     private device: GPUDevice;
@@ -19,14 +19,20 @@ export default class Material extends UniqueObject {
     private presentationFormat: GPUTextureFormat
     private shaderUniforms: UniformGroup;
     private shaderTextures: TextureGroup;
+    private colorTargets:Array<GPUColorTargetState>=[]
 
+    public depthWriteEnabled:boolean =true;
+    public depthCompare:GPUCompareFunction='less';
+    public multiSampleCount:GPUSize32 =4;
 
-
-
-    constructor(device: GPUDevice, name: string, shader: Shader, presentationFormat: GPUTextureFormat) {
+    constructor(device: GPUDevice, name: string, shader: Shader, presentationFormat?: GPUTextureFormat) {
         super();
         this.device = device;
         this.presentationFormat = presentationFormat;
+        if(this.presentationFormat)
+        {
+            this.colorTargets.push( {format: this.presentationFormat})
+        }
         this.shader = shader;
         this.name = name;
 
@@ -45,7 +51,6 @@ export default class Material extends UniqueObject {
                 } else if (typeof value != "number") {
                     this.shaderUniforms.bufferData.set(value, f.offset)
                 }
-
                 break;
             }
         }
@@ -57,7 +62,6 @@ export default class Material extends UniqueObject {
         for (let udata of this.bindGroups) {
             if (udata.typeID == data.typeID) return;
         }
-
         this.bindGroups.push(data);
 
     }
@@ -93,25 +97,21 @@ export default class Material extends UniqueObject {
             fragment: {
                 module: this.shader.shader,
                 entryPoint: 'mainFragment',
-                targets: [
-                    {
-                        format: this.presentationFormat,
-
-                    },
-                ],
+                targets:this.colorTargets,
             },
             primitive: {
                 topology: 'triangle-list',
                 cullMode: 'back',
             },
             depthStencil: {
-                depthWriteEnabled: true,
-                depthCompare: 'less',
+
+                depthWriteEnabled: this.depthWriteEnabled,
+                depthCompare: this.depthCompare,
 
                 format: 'depth24plus',
             },
             multisample: {
-                count: 4,
+                count: this.multiSampleCount,
             },
         });
 
