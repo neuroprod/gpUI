@@ -19,6 +19,10 @@ import UI from "../UI/UI";
 import ColorV from "../shared/ColorV";
 import Sphere from "./meshes/Sphere";
 import Plane from "./meshes/Plane";
+import TextureLoader from "./gpuLib/TextureLoader";
+import CanvasManager from "./gpuLib/CanvasManager";
+
+
 
 
 export default class Main{
@@ -43,86 +47,42 @@ export default class Main{
 
     private mainRenderPass: RenderPass;
     private camera: Camera;
-    private _resizeTimeOut:  ReturnType<typeof setTimeout>;
+
 
     private myTexture:GPUTexture;
     private sampler: GPUSampler;
+    private textureLoader: TextureLoader;
+    private canvasManager: CanvasManager;
 
     constructor(canvas:HTMLCanvasElement) {
         this.canvas =canvas;
+        this.canvasManager =new CanvasManager(this.canvas);
+        this.setup().then(()=>{
 
-        this.setup();
+            this.preloader =new PreLoader(()=>{console.log("load")},this.init.bind(this));
+            this.textureLoader = new TextureLoader(this.device,this.preloader,"test.png");
+        }
+        );
     }
+
     async setup()
     {
-
         const adapter = await navigator.gpu.requestAdapter();
-
         this.device =await adapter.requestDevice();
-
-        this.canvas.width=window.innerWidth;
-        this.canvas.height=window.innerHeight;
-
-
         this.context = this.canvas.getContext('webgpu') as GPUCanvasContext;
         this.presentationFormat = navigator.gpu.getPreferredCanvasFormat();
         this.context.configure({device:this.device, format: this.presentationFormat,
             alphaMode: 'premultiplied',
         });
-
-
-//set in preloader
-        {
-            const response = await fetch(
-                'test.png'
-            );
-            const imageBitmap = await createImageBitmap(await response.blob());
-
-            this.myTexture = this.device.createTexture({
-                size: [imageBitmap.width, imageBitmap.height, 1],
-                format: 'rgba8unorm',
-                usage:
-                    GPUTextureUsage.TEXTURE_BINDING |
-                    GPUTextureUsage.COPY_DST |
-                    GPUTextureUsage.RENDER_ATTACHMENT,
-            });
-            this.device.queue.copyExternalImageToTexture(
-                { source: imageBitmap },
-                { texture: this.myTexture },
-                [imageBitmap.width, imageBitmap.height]
-            );
-        }
-        this.myTexture.label ='test.png';
-    //    this.preloader =new PreLoader(()=>{},this.init.bind(this));
-        this.init()
-
-
     }
 
-
-
-    resize()
-    {
-        this.canvas.style.width = window.innerWidth + 'px';
-        this.canvas.style.height =window.innerHeight+ 'px';
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-
-
-    }
-    delayedResize()
-    {
-        clearTimeout(this._resizeTimeOut);
-
-       this._resizeTimeOut = setTimeout (this.resize.bind(this), 100);
-
-    }
     init()
     {
-        window.onresize =this.delayedResize.bind(this);
+
 
         UI.setWebGPU(this.device,this.canvas,this.presentationFormat)
 
+        this.myTexture =  this.textureLoader.texture;
         this.camera =new Camera(this.device);
         this.sampler =this.device.createSampler({
             magFilter: 'linear',
