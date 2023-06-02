@@ -382,6 +382,7 @@ export default class UI {
 
 //shouldnt be here
     static dockingPanel(panelMain: Panel, panelChild: Panel): DockingPanel {
+        if(panelMain.parent)
         UI_I.currentComponent = panelMain.parent;
         let id = panelMain.id + Date.now() + " "
 

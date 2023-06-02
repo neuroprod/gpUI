@@ -182,10 +182,14 @@ export default class Main{
         let angle =(Date.now()/1000)
         this.model1.transform.rotation=new Vector3(0,-angle,0);
         UI.pushWindow("myWindow")
-        UI.LButton("hello","test")
+
         UI.LFloat("myfloat",2);
 
         this.material2.setUniform("color",UI.LColor("color",new ColorV(1,0,1,1)))
+        this.model4.transform.position =UI.LVector("pos",new Vector3(-2.4,0,0));
+        for(let i=0;i<10;i++){
+            UI.LButton("hello"+i)
+        }
         UI.popWindow()
         //UI.UpdateGPU
     }

@@ -24,6 +24,8 @@ export default class RendererGPU {
     private sampler: GPUSampler;
     private fontBindGroup: GPUBindGroup;
     private fontBindGroupLayout: GPUBindGroupLayout;
+    private width: number = 0;
+    private height: number = 0;
 
     constructor() {
     }
@@ -33,39 +35,39 @@ export default class RendererGPU {
         this.canvas = canvas;
         this.device = device;
         this.presentationFormat = presentationFormat
-        this.mvpBufferData =new Float32Array(16)
+        this.mvpBufferData = new Float32Array(16)
         this.mvpBuffer = this.device.createBuffer({
-            label:"UI_mvpBuffer",
-            size: 16*4,
+            label: "UI_mvpBuffer",
+            size: 16 * 4,
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         });
 
-        this.mvpBindGroupLayout =this.device.createBindGroupLayout({
-            label:"UI_mvp_BindGroupLayout",
+        this.mvpBindGroupLayout = this.device.createBindGroupLayout({
+            label: "UI_mvp_BindGroupLayout",
             entries: [{
                 binding: 0,
-                visibility:GPUShaderStage.VERTEX,
+                visibility: GPUShaderStage.VERTEX,
                 buffer: {},
             }]
         });
 
 
         this.mvpBindGroup = this.device.createBindGroup({
-            label : "UI_mvp_BindGroup",
-            layout:  this.mvpBindGroupLayout,
+            label: "UI_mvp_BindGroup",
+            layout: this.mvpBindGroupLayout,
             entries: [
                 {
                     binding: 0,
                     resource: {
-                        buffer:  this.mvpBuffer,
+                        buffer: this.mvpBuffer,
                     },
                 },
             ],
         });
 
 
-       this.fontTexture = this.device.createTexture({
-            label:"UI_fontTexture",
+        this.fontTexture = this.device.createTexture({
+            label: "UI_fontTexture",
             size: [FontTextureData.width, FontTextureData.height, 1],
             format: 'r8unorm',
             usage:
@@ -74,29 +76,29 @@ export default class RendererGPU {
                 GPUTextureUsage.RENDER_ATTACHMENT,
         });
         this.device.queue.writeTexture(
-            { texture:  this.fontTexture },
+            {texture: this.fontTexture},
             FontTextureData.getData(),
-            { bytesPerRow: FontTextureData.width  },
+            {bytesPerRow: FontTextureData.width},
             [FontTextureData.width, FontTextureData.height]
         );
-       this.sampler = device.createSampler({
+        this.sampler = device.createSampler({
             magFilter: 'linear',
             minFilter: 'linear',
         });
-        this.fontBindGroupLayout =this.device.createBindGroupLayout({
-            label:"UI_font_BindGroupLayout",
+        this.fontBindGroupLayout = this.device.createBindGroupLayout({
+            label: "UI_font_BindGroupLayout",
             entries: [{
                 binding: 0,
-                visibility:GPUShaderStage.FRAGMENT,
+                visibility: GPUShaderStage.FRAGMENT,
                 sampler: {},
-            },{
+            }, {
                 binding: 1,
-                visibility:GPUShaderStage.FRAGMENT,
+                visibility: GPUShaderStage.FRAGMENT,
                 texture: {},
             }]
         });
         this.fontBindGroup = device.createBindGroup({
-            layout:   this.fontBindGroupLayout ,
+            layout: this.fontBindGroupLayout,
             entries: [
                 {
                     binding: 0,
@@ -109,21 +111,23 @@ export default class RendererGPU {
             ],
         });
 
-        this.fillBatchMaterial = new FillBatchMaterial(device, presentationFormat,   this.mvpBindGroupLayout)
-        this.textBatchMaterial = new TextBatchMaterial(device, presentationFormat,   this.mvpBindGroupLayout, this.fontBindGroupLayout)
+        this.fillBatchMaterial = new FillBatchMaterial(device, presentationFormat, this.mvpBindGroupLayout)
+        this.textBatchMaterial = new TextBatchMaterial(device, presentationFormat, this.mvpBindGroupLayout, this.fontBindGroupLayout)
         /*this.fillRenderer = new FillRenderer(gl);
         this.textRenderer = new TextRenderer(gl);
         this.textureRenderer = new TextureRenderer(gl);*/
     }
+
     delete(id: number) {
         if (this.drawBatches.has(id)) {
             let drawBatch = this.drawBatches.get(id)
             drawBatch.destroy();
             this.drawBatches.delete(id);
-            this.drawArray.splice( this.drawArray.indexOf( drawBatch),1);
+            this.drawArray.splice(this.drawArray.indexOf(drawBatch), 1);
             console.log("delete")
         }
     }
+
     setDrawBatches(drawBatches: Array<DrawBatch>) {
         this.setProjection()
         for (let a of this.drawArray) {
@@ -167,7 +171,7 @@ export default class RendererGPU {
     }
 
     draw(passEncoder: GPURenderPassEncoder) {
-        UI_I.numDrawCalls = 0
+        UI_I.numDrawCalls = 0;
 
 
         let vpSize = UI_I.screenSize;
@@ -176,9 +180,17 @@ export default class RendererGPU {
 
         for (let batch of this.drawArray) {
 
+            if (batch.needsClipping) {
+                passEncoder.setScissorRect(batch.clipRect.pos.x, batch.clipRect.pos.y, batch.clipRect.size.x, batch.clipRect.size.y)
+            } else {
+                passEncoder.setScissorRect(0, 0, this.width, this.height)
+
+            }
             if (batch.fillBatchGPU.numIndices > 0) {
+
+
                 passEncoder.setPipeline(this.fillBatchMaterial.pipeLine);
-                passEncoder.setBindGroup(0,  this.mvpBindGroup);
+                passEncoder.setBindGroup(0, this.mvpBindGroup);
 
                 passEncoder.setVertexBuffer(0, batch.fillBatchGPU.vertexBuffer)
                 passEncoder.setIndexBuffer(batch.fillBatchGPU.indexBuffer, 'uint16');
@@ -186,8 +198,8 @@ export default class RendererGPU {
             }
             if (batch.textBatchGPU.numIndices > 0) {
                 passEncoder.setPipeline(this.textBatchMaterial.pipeLine);
-                passEncoder.setBindGroup(0,  this.mvpBindGroup);
-                passEncoder.setBindGroup(1,  this.fontBindGroup);
+                passEncoder.setBindGroup(0, this.mvpBindGroup);
+                passEncoder.setBindGroup(1, this.fontBindGroup);
                 passEncoder.setVertexBuffer(0, batch.textBatchGPU.vertexBuffer)
                 passEncoder.setIndexBuffer(batch.textBatchGPU.indexBuffer, 'uint16');
                 passEncoder.drawIndexed(batch.textBatchGPU.numIndices, 1, 0, 0);
@@ -196,9 +208,14 @@ export default class RendererGPU {
     }
 
     private setProjection() {
-        let m =new Matrix4()
-        m.ortho({left:0,right:this.canvas.width,top:0,bottom:this.canvas.height,far:1,near:-1});
-        this.mvpBufferData.set(m,0)
+        if (this.width == this.canvas.width && this.height == this.canvas.height) return
+
+        this.width = this.canvas.width
+        this.height = this.canvas.height
+
+        let m = new Matrix4()
+        m.ortho({left: 0, right: this.width, top: 0, bottom: this.height, far: 1, near: -1});
+        this.mvpBufferData.set(m, 0)
         this.device.queue.writeBuffer(
             this.mvpBuffer,
             0,

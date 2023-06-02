@@ -58,7 +58,7 @@ export default class Component {
 
     public clippingRect = new Rect();
     protected hasScrollBar: boolean = false;
-    private idStack: Array<number>=[];
+    private idStack: Array<number> = [];
 
 
     constructor(id: number, settings: ComponentSettings) {
@@ -225,6 +225,12 @@ export default class Component {
                 this.layoutRect.copySize(UI_I.screenSize)
             }
             this.clippingRect.copy(this.layoutRect)
+            if (this.parent) {
+                this.clippingRect.fitIn(this.parent.clippingRect)
+            }
+            if (this.clippingRect.size.x < 0 || this.clippingRect.size.y < 0) {
+                this.clippingRect.size.set(0, 0)
+            }
             this.layoutAbsolute();
             if (this.drawChildren) {
                 for (let child of this.children) {
@@ -245,7 +251,8 @@ export default class Component {
 
         if (this.hasOwnDrawBatch) {
             if (!this.drawChildren) return;
-            if (parent.clipRect && !parent.clipRect.containsRect(this.clippingRect)) {
+            //if (parent.clipRect && !parent.clipRect.containsRect(this.clippingRect)) {
+            if (this.clippingRect.size.x == 0) {
                 return;
             }
             arr.push(this.id)
@@ -263,22 +270,26 @@ export default class Component {
     prepDrawInt() {
 
         if (this.hasOwnDrawBatch) {
-            if (UI_I.currentDrawBatch.needsClipping) {
-                this.clippingRect.resizeToFit(UI_I.currentDrawBatch.clipRect)
-            }
+            //if (UI_I.currentDrawBatch.needsClipping) {
+            /// this.clippingRect.resizeToFit(UI_I.currentDrawBatch.clipRect)
+            //}
+            if(this.clippingRect.size.x >0)
             UI_I.pushDrawBatch(this.id, this.clippingRect, this.isDirty);
         }
         if (this.isDirty || !this.hasOwnDrawBatch) {
-            if (UI_I.currentDrawBatch.clipRect.containsRect(this.layoutRect)) this.prepDraw();
-            if (this.drawChildren) {
-                for (let child of this.children) {
-                    if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
+            // if (UI_I.currentDrawBatch.clipRect.containsRect(this.layoutRect)) this.prepDraw();
+            if (this.clippingRect.size.x > 0) {
+                this.prepDraw();
+                if (this.drawChildren) {
+                    for (let child of this.children) {
+                        // if (UI_I.currentDrawBatch.clipRect.containsRect(child.layoutRect))
                         child.prepDrawInt();
+                    }
                 }
             }
         }
         if (this.hasOwnDrawBatch) {
-
+            if(this.clippingRect.size.x >0)
             UI_I.popDrawBatch();
         }
         this.isDirty = false;
@@ -356,7 +367,7 @@ export default class Component {
         //extend
     }
 
-    getReturnValue():any{
+    getReturnValue(): any {
         //extend
         return null;
     }
@@ -411,10 +422,11 @@ export default class Component {
 
     pushID(newID: number) {
         this.idStack.push(newID);
-        this.id =newID;
+        this.id = newID;
     }
+
     popID() {
-        this.idStack.splice(this.idStack.length-1,1)
-        this.id =  this.idStack[this.idStack.length-1];
+        this.idStack.splice(this.idStack.length - 1, 1)
+        this.id = this.idStack[this.idStack.length - 1];
     }
 }

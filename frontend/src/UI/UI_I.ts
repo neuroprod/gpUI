@@ -12,7 +12,6 @@ import Vec2 from "./math/Vec2";
 import Local from "./local/Local";
 
 
-
 import UI_Style from "./UI_Style";
 import KeyboardListener from "./input/KeyboardListener";
 import EventCenter, {EventCenterSettings} from "./components/internal/EventCenter";
@@ -46,17 +45,16 @@ export default class UI_I {
     static panelDockingDividingLayer: Layer;
     static focusComponent: Component | null = null;
     static groupDepth: number = 0;
+    static eventLayer: EventCenter;
+    static crashed: boolean = false;
+    static rendererGPU: RendererGPU;
+    static rendererGL: RendererGL;
     private static mainDrawBatch: DrawBatch;
     private static mouseOverComponent: Component | null = null;
     private static mouseDownComponent: Component | null = null;
     private static canvas: HTMLCanvasElement;
     private static keyboardListener: KeyboardListener;
     private static oldDrawBatchIDs: number[] = [];
-    static eventLayer: EventCenter;
-    static crashed: boolean=false;
-
-    static rendererGPU: RendererGPU;
-    static rendererGL: RendererGL;
 
     constructor() {
     }
@@ -107,7 +105,7 @@ export default class UI_I {
         this.popComponent();
 
         UI_I.eventLayer = new EventCenter(UI_I.getID("eventLayer"), new EventCenterSettings());
-        UI_I.addComponent(  UI_I.eventLayer);
+        UI_I.addComponent(UI_I.eventLayer);
         this.popComponent();
 
         UI_I.dockManager = new DockManager(UI_I.panelDockingLayer, UI_I.overlayLayer)
@@ -162,23 +160,26 @@ export default class UI_I {
         for (let child of comp.children) {
             child.useThisFrame = false;
         }
-        let index = comp.parent.children.indexOf(comp);
-        comp.parent.children.splice(index, 1);
-        comp.parent.setDirty()
-        comp.parent = null;
+        if (comp.parent) {
+            let index = comp.parent.children.indexOf(comp);
+            comp.parent.children.splice(index, 1);
+            comp.parent.setDirty()
+            comp.parent = null;
+        }
         comp.destroy()
         if (comp.hasOwnDrawBatch) {
 
             let batch = this.drawBatches.get(comp.id);
+
             let index = batch.parent.children.indexOf(batch);
             batch.parent.children.splice(index, 1);
             batch.parent = null;
 
             this.drawBatches.delete(comp.id);
-            if( UI_I.renderType == "gl"){
+            if (UI_I.renderType == "gl") {
                 this.rendererGL.delete(comp.id);
             }
-            if( UI_I.renderType == "gpu"){
+            if (UI_I.renderType == "gpu") {
                 this.rendererGPU.delete(comp.id);
             }
         }
@@ -218,8 +219,6 @@ export default class UI_I {
 
 
     }
-
-
 
 
     ////input
@@ -285,7 +284,7 @@ export default class UI_I {
         if (sc) sc.setScrollDelta(delta)
     }
 
-    static setMouseDownComponent(comp: Component) {
+    static setMouseDownComponent(comp: Component | null) {
 
         this.mouseDownComponent = comp;
 
@@ -359,13 +358,15 @@ export default class UI_I {
         }
         let batch = this.drawBatches.get(comp.id);
         let batchParent = batch.parent;
-        index = batchParent.children.indexOf(batch);
-        batchParent.children.splice(index, 1);
-        batchParent.children.push(batch);
+        if (batchParent) {
+            index = batchParent.children.indexOf(batch);
+            batchParent.children.splice(index, 1);
+            batchParent.children.push(batch);
+        }
 
     }
 
-    static setFocusComponent(comp: Component) {
+    static setFocusComponent(comp: Component | null) {
 
         if (this.focusComponent) {
             if (this.focusComponent == comp) return;
@@ -392,19 +393,18 @@ export default class UI_I {
 
     }
 
-    static  setWebGPU(device:GPUDevice,canvas:HTMLCanvasElement,presentationFormat:GPUTextureFormat ,settings?: any)
-    {
+    static setWebGPU(device: GPUDevice, canvas: HTMLCanvasElement, presentationFormat: GPUTextureFormat, settings?: any) {
         UI_I.renderType = "gpu";
         UI_I.rendererGPU = new RendererGPU();
-        UI_I.rendererGPU.init(device,canvas,presentationFormat);
+        UI_I.rendererGPU.init(device, canvas, presentationFormat);
         if (settings) Local.setSettings(settings)
         UI_I.init(canvas);
     }
+
     //draw
-    public static draw()
-    {
+    public static draw() {
         this.update()
-        if(UI_I.renderType == "gl"){
+        if (UI_I.renderType == "gl") {
             UI_I.rendererGL.draw();
         }
     }
@@ -459,9 +459,9 @@ export default class UI_I {
             //collect drawBatches
             let drawBatches: Array<DrawBatch> = []
             this.mainDrawBatch.collectBatches(drawBatches);
-            if(UI_I.rendererGL){
+            if (UI_I.rendererGL) {
                 UI_I.rendererGL.setDrawBatches(drawBatches);
-            }else if(UI_I.rendererGPU) {
+            } else if (UI_I.rendererGPU) {
                 UI_I.rendererGPU.setDrawBatches(drawBatches);
             }
             this.mainComp.isDirty = false;
@@ -504,6 +504,7 @@ export default class UI_I {
     }
 
     static popDrawBatch() {
+        if(this.currentDrawBatch.parent)
         this.currentDrawBatch = this.currentDrawBatch.parent;
 
     }

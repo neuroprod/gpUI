@@ -7,6 +7,10 @@ export default class Rect {
     public max: Vec2 = new Vec2();
     public min: Vec2 = new Vec2();
 
+    public br: Vec2 = new Vec2();
+    public bl: Vec2 = new Vec2();
+    public tr: Vec2 = new Vec2();
+    public tl: Vec2 = new Vec2();
     constructor(pos = new Vec2(), size = new Vec2()) {
         this.pos = pos;
         this.size = size;
@@ -47,9 +51,9 @@ export default class Rect {
     }
 
     getTopRight() {
-        let p = this.pos.clone();
-        p.x += this.size.x;
-        return p;
+        this.tr.copy(this.pos);
+        this.tr.x += this.size.x;
+        return this.tr;
     }
 
     getBottomLeft() {
@@ -59,9 +63,9 @@ export default class Rect {
     }
 
     getBottomRight() {
-        let p = this.pos.clone();
-        p.add(this.size);
-        return p;
+        this.br.copy(this.pos);
+        this.br.add(this.size);
+        return this.br;
     }
 
     contains(pos: Vec2) {
@@ -127,6 +131,33 @@ export default class Rect {
 
             let dif = (this.pos.y + this.size.y) - (clipRect.pos.y + clipRect.size.y);
             this.size.y -= dif
+        }
+    }
+
+    fitIn(parentRect: Rect) {
+        if(this.pos.x<parentRect.pos.x)
+        {
+
+            this.size.x -=parentRect.pos.x-this.pos.x;
+            this.pos.x = parentRect.pos.x
+        }
+        if(this.pos.y<parentRect.pos.y)
+        {
+
+            this.size.y -=parentRect.pos.y-this.pos.y;
+            this.pos.y = parentRect.pos.y
+        }
+        let br =this.getBottomRight()
+        let brP =parentRect.getBottomRight()
+        if(br.x>brP.x)
+        {
+            this.size.x -=br.x -brP.x;
+
+        }
+        if(br.y>brP.y)
+        {
+            this.size.y -=br.y -brP.y;
+
         }
     }
 }

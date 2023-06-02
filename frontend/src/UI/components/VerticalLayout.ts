@@ -51,9 +51,11 @@ export default class VerticalLayout extends Component {
             this.size.y =Math.min(this.placeCursor.y,Utils.getMaxInnerHeight(this.parent))-this.settings.box.marginBottom-this.settings.box.marginTop
 
         }
+
         if (this.size.y < this.placeCursor.y) {
 
             if(this.needScrollBar) {
+
 
 
                 this.hasScrollBar = true;

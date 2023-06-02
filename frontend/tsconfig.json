@@ -17,6 +17,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "noUncheckedIndexedAccess": false,
     "incremental": true,
     "typeRoots": [ "./node_modules/@webgpu/types", "./node_modules/@types"]
   },

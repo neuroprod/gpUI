@@ -5,7 +5,7 @@ import UITexture from "../UI/draw/UITexture";
 import Font from "../UI/draw/Font";
 import Scene from "./scene/Scene";
 import UI from "../UI/UI";
-import uiSettings from "../uiSettings.json"
+import uiSettings from "./uiSettings.json"
 import ExampleUI from "./ExampleUI";
 import {Vector4} from "math.gl";
 
