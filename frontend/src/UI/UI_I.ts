@@ -414,7 +414,9 @@ export default class UI_I {
         this.screenSize.set(this.canvas.offsetWidth, this.canvas.offsetHeight)
         this.canvasSize.set(this.canvas.width, this.canvas.height)
         this.dockManager.update()
-
+        if (UI_I.renderType == "gpu") {
+            UI_I.rendererGPU.setProjection()
+        }
 
         this.components.forEach((comp) => {
             if (comp.keepAlive) {

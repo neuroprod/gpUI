@@ -72,8 +72,11 @@ export default class DrawBatch
         };
 
         if(this.clipRect){
-
-            array.push(this);
+            if(this.clipRect.size.x==0)return;
+            if(this.fillBatch.indices.length +this.textBatch.indices.length >0){
+                array.push(this);
+            }
+            //array.push(this);
         }
 
         for(let child of this.children)

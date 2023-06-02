@@ -3,7 +3,7 @@ import DrawBatch from "../draw/DrawBatch";
 import DrawBatchGPU from "./DrawBatchGPU";
 import UI_I from "../UI_I";
 import FillBatchMaterial from "./FillBatchMaterial";
-import {Matrix4} from "math.gl";
+
 import FontTextureData from "../draw/FontTextureData";
 import TextBatchMaterial from "./TextBatchMaterial";
 
@@ -26,7 +26,7 @@ export default class RendererGPU {
     private fontBindGroupLayout: GPUBindGroupLayout;
     private width: number = 0;
     private height: number = 0;
-
+    private mvp =new Float32Array(16)
     constructor() {
     }
 
@@ -129,7 +129,7 @@ export default class RendererGPU {
     }
 
     setDrawBatches(drawBatches: Array<DrawBatch>) {
-        this.setProjection()
+
         for (let a of this.drawArray) {
             a.useThisUpdate = false;
         }
@@ -138,23 +138,24 @@ export default class RendererGPU {
         let tempArr = []
         for (let batch of drawBatches) {
             let id = batch.id;
+            let drawBatch
             if (this.drawBatches.has(id)) {
-                let drawBatch = this.drawBatches.get(id)
+               drawBatch = this.drawBatches.get(id)
                 if (batch.isDirty) {
                     drawBatch.setBatchData(batch)
                 }
-                drawBatch.useThisUpdate = true
-                tempArr.push(drawBatch)
+
             } else {
 
-                let drawBatch = new DrawBatchGPU(batch.id, this.device)
+                drawBatch = new DrawBatchGPU(batch.id, this.device)
                 drawBatch.setBatchData(batch)
                 this.drawBatches.set(batch.id, drawBatch)
-                drawBatch.useThisUpdate = true
-                tempArr.push(drawBatch)
+
 
             }
 
+            drawBatch.useThisUpdate = true
+            tempArr.push(drawBatch)
             batch.isDirty = false;
         }
         for (let a of this.drawArray) {
@@ -183,6 +184,7 @@ export default class RendererGPU {
             if (batch.needsClipping) {
                 passEncoder.setScissorRect(batch.clipRect.pos.x, batch.clipRect.pos.y, batch.clipRect.size.x, batch.clipRect.size.y)
             } else {
+
                 passEncoder.setScissorRect(0, 0, this.width, this.height)
 
             }
@@ -197,6 +199,7 @@ export default class RendererGPU {
                 passEncoder.drawIndexed(batch.fillBatchGPU.numIndices, 1, 0, 0);
             }
             if (batch.textBatchGPU.numIndices > 0) {
+
                 passEncoder.setPipeline(this.textBatchMaterial.pipeLine);
                 passEncoder.setBindGroup(0, this.mvpBindGroup);
                 passEncoder.setBindGroup(1, this.fontBindGroup);
@@ -207,15 +210,13 @@ export default class RendererGPU {
         }
     }
 
-    private setProjection() {
+    public setProjection() {
         if (this.width == this.canvas.width && this.height == this.canvas.height) return
 
         this.width = this.canvas.width
         this.height = this.canvas.height
-
-        let m = new Matrix4()
-        m.ortho({left: 0, right: this.width, top: 0, bottom: this.height, far: 1, near: -1});
-        this.mvpBufferData.set(m, 0)
+        this.ortho(this.mvp,0,  this.width,    this.height,0,  1,  -1);
+        this.mvpBufferData.set(this.mvp, 0)
         this.device.queue.writeBuffer(
             this.mvpBuffer,
             0,
@@ -225,5 +226,27 @@ export default class RendererGPU {
         );
 
 
+    }
+    public ortho(out:Float32Array, left:number, right:number, bottom:number, top:number, near:number, far:number) {
+        let lr = 1 / (left - right);
+        let bt = 1 / (bottom - top);
+        let nf = 1 / (near - far);
+        out[0] = -2 * lr;
+        out[1] = 0;
+        out[2] = 0;
+        out[3] = 0;
+        out[4] = 0;
+        out[5] = -2 * bt;
+        out[6] = 0;
+        out[7] = 0;
+        out[8] = 0;
+        out[9] = 0;
+        out[10] = 2 * nf;
+        out[11] = 0;
+        out[12] = (left + right) * lr;
+        out[13] = (top + bottom) * bt;
+        out[14] = (far + near) * nf;
+        out[15] = 1;
+        return out;
     }
 }

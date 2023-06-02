@@ -51,12 +51,12 @@ export default class VerticalLayout extends Component {
             this.size.y =Math.min(this.placeCursor.y,Utils.getMaxInnerHeight(this.parent))-this.settings.box.marginBottom-this.settings.box.marginTop
 
         }
-
+       //this.hasOwnDrawBatch =false;
         if (this.size.y < this.placeCursor.y) {
 
             if(this.needScrollBar) {
 
-
+                //this.hasOwnDrawBatch =true;
 
                 this.hasScrollBar = true;
                 this.childrenHeight = this.placeCursor.y
@@ -67,6 +67,7 @@ export default class VerticalLayout extends Component {
 
             }else{
                 this.size.y =this.placeCursor.y
+               // this.hasOwnDrawBatch =false;
             }
 
             return true;
