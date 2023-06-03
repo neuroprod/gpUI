@@ -1,15 +1,16 @@
 import Mesh from "./Mesh";
-import Material from "./materials/Material";
+
 import Transform from "./Transform";
 import Camera from "./Camera";
+import {AbstractMaterial} from "./materials/AbstractMaterial";
 
 export class Model {
     public mesh: Mesh;
-    public material: Material;
+    public material: AbstractMaterial;
     public transform: Transform;
     private name: string;
 
-    constructor(device: GPUDevice, name: string, mesh: Mesh, material: Material, needsTransform: boolean = true, camera?: Camera) {
+    constructor(device: GPUDevice, name: string, mesh: Mesh, material: AbstractMaterial, needsTransform: boolean = true, camera?: Camera) {
         this.name = name;
 
         this.material = material

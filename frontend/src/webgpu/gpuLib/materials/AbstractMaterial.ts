@@ -15,7 +15,7 @@ export abstract class AbstractMaterial  extends UniqueObject {
     public label: string;
     private shaderUniforms: UniformGroup;
     private shaderTextures: TextureGroup;
-    private colorTargets:Array<GPUColorTargetState>=[]
+    protected colorTargets:Array<GPUColorTargetState>=[]
 
 
     protected pipelineLayout: GPUPipelineLayout;

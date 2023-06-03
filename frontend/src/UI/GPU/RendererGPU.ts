@@ -171,10 +171,11 @@ export default class RendererGPU {
 
     }
 
-    draw(passEncoder: GPURenderPassEncoder) {
+    draw(passEncoder: GPURenderPassEncoder,needsDepth:boolean) {
         UI_I.numDrawCalls = 0;
 
-
+        this.fillBatchMaterial.makePipeline(needsDepth)
+        this.textBatchMaterial.makePipeline(needsDepth)
         let vpSize = UI_I.screenSize;
 
         //this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);

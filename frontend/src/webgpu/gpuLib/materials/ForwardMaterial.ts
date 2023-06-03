@@ -2,22 +2,21 @@ import Shader from "../Shader";
 import {AbstractMaterial} from "./AbstractMaterial";
 
 
-export default class Material extends AbstractMaterial {
+export default class ForwardMaterial extends AbstractMaterial {
 
 
     public depthWriteEnabled: boolean = true;
     public multiSampleCount: GPUSize32 = 4;
     private presentationFormat: GPUTextureFormat
-    private colorTargets: Array<GPUColorTargetState> = []
+    private needsDepth: boolean =true;
 
-    constructor(device: GPUDevice, label: string, shader: Shader, presentationFormat?: GPUTextureFormat) {
+    constructor(device: GPUDevice, label: string, shader: Shader, presentationFormat: GPUTextureFormat,needsDepth:boolean =true) {
         super(device, label, shader);
-
+        this.needsDepth=needsDepth
         this.presentationFormat = presentationFormat;
         if (this.presentationFormat) {
             this.colorTargets.push({format: this.presentationFormat})
         }
-
 
     }
 
@@ -41,18 +40,19 @@ export default class Material extends AbstractMaterial {
                 topology: 'triangle-list',
                 cullMode: 'back',
             },
-            /* depthStencil: {
-
-                 depthWriteEnabled: this.depthWriteEnabled,
-                 depthCompare: this.depthCompare,
-
-                 format: 'depth24plus',
-             },*/
             multisample: {
                 count: this.multiSampleCount,
             },
         }
+        if(this.needsDepth)
+        {
+            desc.depthStencil={
+            depthWriteEnabled: this.depthWriteEnabled,
+                depthCompare: 'less',
+                format: 'depth24plus',
+            }
 
+        }
         return desc
     }
 

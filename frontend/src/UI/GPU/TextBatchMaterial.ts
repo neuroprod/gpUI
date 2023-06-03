@@ -4,23 +4,35 @@ export default class TextBatchMaterial{
     private device: GPUDevice;
     private shader: GPUShaderModule;
     public pipeLine:GPURenderPipeline;
+    private pipelineLayout: GPUPipelineLayout;
+    private presentationFormat: GPUTextureFormat;
+    private needsDepth: boolean =true;
 
     constructor(device: GPUDevice, presentationFormat: GPUTextureFormat, mvpBindGroupLayout: GPUBindGroupLayout,fontBindGroupLayout: GPUBindGroupLayout)
     {
         this.device = device;
-
+        this.presentationFormat=presentationFormat;
         this.shader = this.device.createShaderModule({
             label:"UI_Shader_TextBatchMaterial",
             code: this.getShader(),
         });
-        const pipelineLayout = this.device.createPipelineLayout({
+        this.pipelineLayout = this.device.createPipelineLayout({
             label: 'UI_PipelineLayout_TextBatchMaterial' ,
             bindGroupLayouts:[mvpBindGroupLayout,fontBindGroupLayout],
         });
 
-        this.pipeLine = this.device.createRenderPipeline({
+
+
+    }
+    makePipeline(needsDepth: boolean) {
+        if(this.pipeLine && this.needsDepth == needsDepth)return;
+
+
+        this.needsDepth =needsDepth;
+
+        let desc:GPURenderPipelineDescriptor ={
             label:  'UI_Pipeline_TextBatchMaterial',
-            layout: pipelineLayout,
+            layout: this.pipelineLayout,
             vertex: {
                 module: this.shader,
                 entryPoint: 'mainVertex',
@@ -56,7 +68,7 @@ export default class TextBatchMaterial{
                 entryPoint: 'mainFragment',
                 targets: [
                     {
-                        format: presentationFormat,
+                        format: this.presentationFormat,
                         blend: {
                             color: {
                                 srcFactor: 'one',
@@ -76,19 +88,22 @@ export default class TextBatchMaterial{
             primitive: {
                 topology: 'triangle-list',
             },
-           /* depthStencil: {
-                depthWriteEnabled: false,
-                depthCompare: 'always',
 
-                format: 'depth24plus',
-            },*/
             multisample: {
                 count: 4,
             },
-        });
+        };
+        if(needsDepth)
+        {
+            desc.depthStencil = {
+                depthWriteEnabled: false,
+                depthCompare: 'less',
 
+                format: 'depth24plus',
+            }
+        }
+        this.pipeLine = this.device.createRenderPipeline(desc)
     }
-
     getShader()
     {
         return /* wgsl */`

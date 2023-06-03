@@ -283,7 +283,7 @@ export default class UI {
         let ref = null;
         let value = null;
 
-        //v should't be here
+        //v shouldn't be here
         if (typeof property_or_value === 'string') {
             label = property_or_value;
             ref = ref_or_label;
@@ -425,7 +425,7 @@ export default class UI {
         UI_I.update();
     }
 
-    static drawGPU(passEncoder: GPURenderPassEncoder) {
-        UI_I.rendererGPU.draw(passEncoder)
+    static drawGPU(passEncoder: GPURenderPassEncoder,needsDepth:boolean) {
+        UI_I.rendererGPU.draw(passEncoder,needsDepth)
     }
 }

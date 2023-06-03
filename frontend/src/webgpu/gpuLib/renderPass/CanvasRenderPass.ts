@@ -14,11 +14,13 @@ export default class CanvasRenderPass extends AbstractRenderPass{
 
 
     private device: GPUDevice;
+    private needsDepth: boolean;
 
-    constructor(device: GPUDevice, presentationFormat: GPUTextureFormat) {
+    constructor(device: GPUDevice, presentationFormat: GPUTextureFormat,needsDepth:boolean=true) {
         super (device,"canvasRenderPass")
         this.device = device
         this.presentationFormat = presentationFormat
+        this.needsDepth = needsDepth;
     }
 
     public updateForCanvas(width: number, height: number, context: GPUCanvasContext) {
@@ -27,15 +29,15 @@ export default class CanvasRenderPass extends AbstractRenderPass{
         if (width != this.width || height != this.height) {
             this.width = width;
             this.height = height;
-
-          /*  if (this.depthTexture) this.depthTexture.destroy()
-            this.depthTexture = this.device.createTexture({
-                size: [width, height],
-                format: 'depth24plus',
-                sampleCount:4,
-                usage: GPUTextureUsage.RENDER_ATTACHMENT,
-            });*/
-
+            if(this.needsDepth) {
+                if (this.depthTexture) this.depthTexture.destroy()
+                  this.depthTexture = this.device.createTexture({
+                      size: [width, height],
+                      format: 'depth24plus',
+                      sampleCount:4,
+                      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+                  });
+            }
             if (this.texture) this.texture.destroy()
             this.texture = this.device.createTexture({
                 size: [width, height],
@@ -58,21 +60,23 @@ export default class CanvasRenderPass extends AbstractRenderPass{
                     storeOp: 'store',
                 },
             ],
-           /* depthStencilAttachment: {
-                view: this.depthTexture.createView(),
-                depthClearValue: 1.0,
-                depthLoadOp: 'clear',
-                depthStoreOp: 'store',
-            },*/
         };
+        if(this.needsDepth) {
 
+            this.renderPassDescriptor.depthStencilAttachment= {
+                view: this.depthTexture.createView(),
+                    depthClearValue: 1.0,
+                    depthLoadOp: 'clear',
+                    depthStoreOp: 'store',
+            }
+        }
 
     }
 
 
 
     protected postDraw(passEncoder: GPURenderPassEncoder) {
-        UI.drawGPU(passEncoder)
+        UI.drawGPU(passEncoder,this.needsDepth)
     }
 
 }

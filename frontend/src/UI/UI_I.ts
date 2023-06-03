@@ -481,7 +481,7 @@ export default class UI_I {
 
     static pushDrawBatch(id, clipRect, isDirty) {
 
-        let batch= this.drawBatches.get(id);
+        let batch = this.drawBatches.get(id);
         if (batch) {
             batch.isDirty = isDirty;
             batch.clear()
@@ -491,7 +491,6 @@ export default class UI_I {
             this.currentDrawBatch.addChild(batch);
 
             batch.isDirty = true;
-
         }
 
         batch.useThisUpdate = true;
@@ -505,18 +504,20 @@ export default class UI_I {
     }
 
     static popDrawBatch() {
-        if(this.currentDrawBatch.parent)
-        this.currentDrawBatch = this.currentDrawBatch.parent;
+        if (this.currentDrawBatch.parent)
+            this.currentDrawBatch = this.currentDrawBatch.parent;
 
     }
 
     static removeDrawBatch(id: number) {
 
-            let batch = this.drawBatches.get(id);
-            if (batch.parent && batch){
-                batch.parent.removeChild(batch)
-            }
-            this.drawBatches.delete(id);
+        let batch = this.drawBatches.get(id);
+        if (!batch) return;
+
+        if (batch.parent) {
+            batch.parent.removeChild(batch)
+        }
+        this.drawBatches.delete(id);
 
 
     }
