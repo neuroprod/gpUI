@@ -81,31 +81,21 @@ export default class RendererGPU {
             {bytesPerRow: FontTextureData.width},
             [FontTextureData.width, FontTextureData.height]
         );
-        this.sampler = device.createSampler({
-            magFilter: 'nearest',
-            minFilter: 'nearest',
-        });
+
         this.fontBindGroupLayout = this.device.createBindGroupLayout({
             label: "UI_font_BindGroupLayout",
-            entries: [{
+            entries: [ {
                 binding: 0,
                 visibility: GPUShaderStage.FRAGMENT,
-                sampler: {},
-            }, {
-                binding: 1,
-                visibility: GPUShaderStage.FRAGMENT,
-                texture: {},
+                texture: {sampleType: 'unfilterable-float'},
             }]
         });
         this.fontBindGroup = device.createBindGroup({
             layout: this.fontBindGroupLayout,
             entries: [
+
                 {
                     binding: 0,
-                    resource: this.sampler,
-                },
-                {
-                    binding: 1,
                     resource: this.fontTexture.createView(),
                 },
             ],

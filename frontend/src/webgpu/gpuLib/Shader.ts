@@ -139,6 +139,9 @@ struct Uniforms
             if (uniform.type == UniformType.vec4) {
                 this.uniformText += "vec4 <f32>,"
             }
+            if (uniform.type == UniformType.vec2) {
+                this.uniformText += "vec2 <f32>,"
+            }
             if (uniform.type == UniformType.float) {
                 this.uniformText += "f32,"
             }

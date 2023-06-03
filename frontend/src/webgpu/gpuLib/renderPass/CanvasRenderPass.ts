@@ -1,8 +1,8 @@
-import {Model} from "../Model";
+
 import UI from "../../../UI/UI";
 import AbstractRenderPass from "./AbstractRenderPass";
 
-;
+
 
 export default class CanvasRenderPass extends AbstractRenderPass{
 
@@ -18,7 +18,7 @@ export default class CanvasRenderPass extends AbstractRenderPass{
 
     constructor(device: GPUDevice, presentationFormat: GPUTextureFormat,needsDepth:boolean=true) {
         super (device,"canvasRenderPass")
-        this.device = device
+
         this.presentationFormat = presentationFormat
         this.needsDepth = needsDepth;
     }

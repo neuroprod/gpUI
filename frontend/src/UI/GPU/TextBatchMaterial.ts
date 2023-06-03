@@ -115,8 +115,8 @@ struct VertexOutput{
 }
 
 @group(0) @binding(0) var<uniform> mvp :  mat4x4 <f32>;
-@group(1) @binding(0) var fontSampler: sampler;
-@group(1) @binding(1) var fontTexture: texture_2d<f32>;
+
+@group(1) @binding(0) var fontTexture: texture_2d<f32>;
 @vertex
 fn mainVertex( 
     @location(0) position : vec2f,
@@ -139,7 +139,8 @@ fn mainFragment(
      @location(1) color: vec4f,
 ) -> @location(0) vec4f
 {
-    var a :f32= textureSample(fontTexture, fontSampler, uv).x;
+    //var a :f32= textureSample(fontTexture, fontSampler, uv).x;
+   var a= textureLoad(fontTexture,   vec2<i32>(floor(uv*128)),0).x;
    // a=pow(a,100.2);
     let c:vec4f  = vec4f(color.xyz*a,a)*color.w;
      return c;

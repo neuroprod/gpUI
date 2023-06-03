@@ -13,7 +13,7 @@ export class BindGroup extends UniqueObject{
     public bindGroup: GPUBindGroup;
     public typeID =0
 
-    public isDirty:boolean=false;
+    public isDirty:boolean=true;
 
 
     constructor(device:GPUDevice,label:string) {

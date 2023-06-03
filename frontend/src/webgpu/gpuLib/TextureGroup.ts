@@ -92,12 +92,17 @@ export class TextureGroup extends BindGroup
     }
     public setTexture(texture:GPUTexture,name)
     {
-        this.isDirty =true;
+
         for(let a of this.textureLayouts)
         {
             if(a.name ==name)
             {
-                a.texture =texture;
+                if(a.texture != texture)
+                {
+                    console.log("updateTexture")
+                    this.isDirty =true;
+                    a.texture =texture;
+                }
                 return;
             }
         }
