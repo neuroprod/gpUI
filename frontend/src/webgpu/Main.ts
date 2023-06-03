@@ -49,6 +49,7 @@ export default class Main {
 
     async setup() {
         const adapter = await navigator.gpu.requestAdapter();
+        ///https://omar-shehata.medium.com/how-to-use-webgpu-timestamp-query-9bf81fb5344a test this
         //this.device =await adapter.requestDevice({requiredFeatures: ["timestamp-query"],});
         this.device = await adapter.requestDevice();
         this.context = this.canvas.getContext('webgpu') as GPUCanvasContext;

@@ -13,7 +13,7 @@ export default class CanvasRenderPass extends AbstractRenderPass{
     private depthTexture: GPUTexture;
 
 
-    private device: GPUDevice;
+
     private needsDepth: boolean;
 
     constructor(device: GPUDevice, presentationFormat: GPUTextureFormat,needsDepth:boolean=true) {
