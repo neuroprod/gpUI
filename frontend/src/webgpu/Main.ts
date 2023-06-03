@@ -1,28 +1,29 @@
 import Mesh from "./gpuLib/Mesh";
 
-import Material from "./gpuLib/Material";
+import Material from "./gpuLib/materials/Material";
 
 import PreLoader from "../shared/PreLoader";
-import RenderPass from "./gpuLib/RenderPass";
+
 import {Model} from "./gpuLib/Model";
 
 import Camera from "./gpuLib/Camera";
 import {Vector3,Vector4} from "math.gl";
-import ColorShader3D from "./shaders/ColorShader3D";
-import Box from "./meshes/Box";
+import ColorShader3D from "./gpuLib/shaders/ColorShader3D";
+import Box from "./gpuLib/meshes/Box";
 
-import NormalShader3D from "./shaders/NormalShader3D";
-import UVShader3D from "./shaders/UVShader3D";
-import TextureShader3D from "./shaders/TextureShader3D";
+import NormalShader3D from "./gpuLib/shaders/NormalShader3D";
+import UVShader3D from "./gpuLib/shaders/UVShader3D";
+import TextureShader3D from "./gpuLib/shaders/TextureShader3D";
 import {BindGroup} from "./gpuLib/BindGroup";
 import UI from "../UI/UI";
 import ColorV from "../shared/ColorV";
-import Sphere from "./meshes/Sphere";
-import Plane from "./meshes/Plane";
+import Sphere from "./gpuLib/meshes/Sphere";
+import Plane from "./gpuLib/meshes/Plane";
 import TextureLoader from "./gpuLib/TextureLoader";
 import CanvasManager from "./gpuLib/CanvasManager";
-import Quad from "./meshes/Quad";
-import FullScreenTexture from "./shaders/FullScreenTexture";
+import Quad from "./gpuLib/meshes/Quad";
+import FullScreenTexture from "./gpuLib/shaders/FullScreenTexture";
+import CanvasRenderPass from "./gpuLib/renderPass/CanvasRenderPass";
 
 
 
@@ -47,7 +48,7 @@ export default class Main{
     private model3: Model;
     private model4: Model;
 
-    private mainRenderPass: RenderPass;
+    private mainRenderPass: CanvasRenderPass;
     private camera: Camera;
 
 
@@ -74,6 +75,7 @@ export default class Main{
     async setup()
     {
         const adapter = await navigator.gpu.requestAdapter();
+        //this.device =await adapter.requestDevice({requiredFeatures: ["timestamp-query"],});
         this.device =await adapter.requestDevice();
         this.context = this.canvas.getContext('webgpu') as GPUCanvasContext;
         this.presentationFormat = navigator.gpu.getPreferredCanvasFormat();
@@ -137,7 +139,7 @@ export default class Main{
         this.model4.transform.position =new Vector3(-2.4,0,0);
 
 
-        this.mainRenderPass =new RenderPass(this.device,this.presentationFormat)
+        this.mainRenderPass =new CanvasRenderPass(this.device,this.presentationFormat)
         this.mainRenderPass.add(this.modelFullScreen)
         this.mainRenderPass.add(this.model1);
         this.mainRenderPass.add(this.model2);

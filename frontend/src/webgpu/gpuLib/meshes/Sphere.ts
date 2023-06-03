@@ -1,4 +1,4 @@
-import Mesh from "../gpuLib/Mesh";
+import Mesh from "../Mesh";
 import {Vector3} from "math.gl";
 class Vector {
     x =0;

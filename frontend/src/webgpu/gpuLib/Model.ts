@@ -1,5 +1,5 @@
 import Mesh from "./Mesh";
-import Material from "./Material";
+import Material from "./materials/Material";
 import Transform from "./Transform";
 import Camera from "./Camera";
 

@@ -15,7 +15,7 @@ export default class TextBatch
 
     }
     addIcon(pos: Vec2, id:number, color: Color) {
-        pos.round()
+        //pos.round()
         let rect:Rect=new Rect(pos, Font.iconSize);
         let  char =Font.icons[id];
         this.addChar(rect, char, color)
@@ -27,6 +27,7 @@ export default class TextBatch
 
         let startPos = pos.clone();
         startPos.round()
+
         let maxChars = Math.floor(maxSize/Font.charSize.x);
        if(maxChars<1) return;
         let cutText =false;

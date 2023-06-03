@@ -1,4 +1,4 @@
-import Mesh from "../gpuLib/Mesh";
+import Mesh from "../Mesh";
 class Vector {
     x =0;
     y=0;

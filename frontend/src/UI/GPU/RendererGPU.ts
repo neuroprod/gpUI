@@ -70,10 +70,10 @@ export default class RendererGPU {
             label: "UI_fontTexture",
             size: [FontTextureData.width, FontTextureData.height, 1],
             format: 'r8unorm',
+            sampleCount:1,
             usage:
                 GPUTextureUsage.TEXTURE_BINDING |
-                GPUTextureUsage.COPY_DST |
-                GPUTextureUsage.RENDER_ATTACHMENT,
+                GPUTextureUsage.COPY_DST| GPUTextureUsage.RENDER_ATTACHMENT,
         });
         this.device.queue.writeTexture(
             {texture: this.fontTexture},
@@ -82,8 +82,8 @@ export default class RendererGPU {
             [FontTextureData.width, FontTextureData.height]
         );
         this.sampler = device.createSampler({
-            magFilter: 'linear',
-            minFilter: 'linear',
+            magFilter: 'nearest',
+            minFilter: 'nearest',
         });
         this.fontBindGroupLayout = this.device.createBindGroupLayout({
             label: "UI_font_BindGroupLayout",

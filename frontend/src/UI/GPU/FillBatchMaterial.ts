@@ -70,12 +70,12 @@ export default class FillBatchMaterial{
                 topology: 'triangle-list',
             },
 
-            depthStencil: {
+           /* depthStencil: {
                 depthWriteEnabled: false,
                 depthCompare: 'less',
 
                 format: 'depth24plus',
-            },
+            },*/
             multisample: {
                 count: 4,
             },

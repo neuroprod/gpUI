@@ -69,18 +69,19 @@ export default class TextBatchMaterial{
                                 operation: 'add',
                             },
                         },
+
                     },
                 ],
             },
             primitive: {
                 topology: 'triangle-list',
             },
-            depthStencil: {
+           /* depthStencil: {
                 depthWriteEnabled: false,
-                depthCompare: 'less',
+                depthCompare: 'always',
 
                 format: 'depth24plus',
-            },
+            },*/
             multisample: {
                 count: 4,
             },
@@ -123,7 +124,8 @@ fn mainFragment(
      @location(1) color: vec4f,
 ) -> @location(0) vec4f
 {
-    let a :f32= textureSample(fontTexture, fontSampler, uv).x;
+    var a :f32= textureSample(fontTexture, fontSampler, uv).x;
+   // a=pow(a,100.2);
     let c:vec4f  = vec4f(color.xyz*a,a)*color.w;
      return c;
 }

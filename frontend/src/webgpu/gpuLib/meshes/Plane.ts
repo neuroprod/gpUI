@@ -1,4 +1,4 @@
-import Mesh from "../gpuLib/Mesh";
+import Mesh from "../Mesh";
 
 export default class Plane extends Mesh {
 

@@ -1,6 +1,6 @@
-import Shader from "../gpuLib/Shader";
-import Camera from "../gpuLib/Camera";
-import Transform from "../gpuLib/Transform";
+import Shader from "../Shader";
+import Camera from "../Camera";
+import Transform from "../Transform";
 
 
 export default class NormalShader3D extends Shader

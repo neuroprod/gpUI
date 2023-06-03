@@ -1,4 +1,4 @@
-import Shader from "../gpuLib/Shader";
+import Shader from "../Shader";
 
 
 
