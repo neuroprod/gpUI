@@ -57,7 +57,7 @@ ${this.getShaderUniforms(1)}
 ${Camera.getShaderUniforms(2)}
 ${this.getKernel()}
 
-const radius :f32 =0.8;
+const radius :f32 =0.4;
 fn random(st : vec2f ) -> f32 {
   return fract(sin(dot(st.xy, vec2f(12.9898, 78.233))) * 43758.5453123);
 }
@@ -78,7 +78,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
      let normal=textureLoad(textureNormal,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
      let position=textureLoad(texturePosition,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
-     let randomVec =vec3f(random(uv),random(uv.yx +vec2f(33.9333)),random(uv.yx+vec2f(0.9)));
+     let randomVec =normalize(vec3f(random(uv),random(uv.yx +vec2f(3.9333)),random(uv.yx+vec2f(0.9))));
      let tangent   = normalize(randomVec - normal * dot(randomVec, normal));
      let bitangent = cross(normal, tangent);
      let TBN       = mat3x3<f32>(tangent, bitangent, normal); 
@@ -100,8 +100,10 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
         
          let sampleDistance  =distance(positionKernel,camera.cameraWorld);
          let dif = posDistance-sampleDistance;
-     
-            value+=smoothstep(0.0, radius,dif);
+        /* if(dif<radius){
+          value+=1.0;//-smoothstep(0.0, radius,dif);
+         }*/
+        value+=1.0-smoothstep(0.0, radius,dif);
          
      }
      value/=16.0;

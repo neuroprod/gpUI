@@ -9,7 +9,7 @@ export default class GBufferMaterial extends AbstractMaterial {
 
     constructor(device: GPUDevice, label: string, shader: Shader) {
         super(device, label, shader);
-        this.colorTargets.push({ format: 'rgba32float' });
+        this.colorTargets.push({ format: 'rgba16float' });
         this.colorTargets.push({ format: 'rgba16float' });
         this.colorTargets.push({ format: 'rgba8unorm' });
 

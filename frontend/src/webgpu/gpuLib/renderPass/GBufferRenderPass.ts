@@ -23,7 +23,7 @@ export default class GBufferRenderPass extends AbstractRenderPass
             this.gBufferTexturePosition = this.device.createTexture({
             size: [ this.width,   this.height],
             usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-            format: 'rgba32float',
+            format: 'rgba16float',
         });
         if(     this.gBufferTextureNormal)     this.gBufferTextureNormal.destroy();
         this.gBufferTextureNormal = this.device.createTexture({
@@ -67,7 +67,7 @@ export default class GBufferRenderPass extends AbstractRenderPass
                 },
                 {
                     view: this.gBufferTextureAlbedo.createView(),
-                    clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
+                    clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 },
                     loadOp: 'clear',
                     storeOp: 'store',
                 },

@@ -1,7 +1,7 @@
 import PreLoader from "../shared/PreLoader";
 
 
-import Camera from "./gpuLib/Camera";
+
 
 import {BindGroup} from "./gpuLib/BindGroup";
 import UI from "../UI/UI";

@@ -1,13 +1,9 @@
 import Camera from "./gpuLib/Camera";
-import ColorShader3D from "./gpuLib/shaders/ColorShader3D";
-import NormalShader3D from "./gpuLib/shaders/NormalShader3D";
-import UVShader3D from "./gpuLib/shaders/UVShader3D";
-import TextureShader3D from "./gpuLib/shaders/TextureShader3D";
+
 import FullScreenTextureShader from "./gpuLib/shaders/FullScreenTextureShader";
 import Quad from "./gpuLib/meshes/Quad";
 import Box from "./gpuLib/meshes/Box";
-import Sphere from "./gpuLib/meshes/Sphere";
-import Plane from "./gpuLib/meshes/Plane";
+
 import ForwardMaterial from "./gpuLib/materials/ForwardMaterial";
 import {Model} from "./gpuLib/Model";
 import {Vector3, Vector4} from "math.gl";
@@ -24,12 +20,15 @@ import SelectItem from "../UI/math/SelectItem";
 import UIUtils from "../UI/UIUtils";
 import TextureRenderPass from "./gpuLib/renderPass/TextureRenderPass";
 import AOShader from "./gpuLib/shaders/AOShader";
+import CombineShader from "./gpuLib/shaders/CombineShader";
 
 enum Views{
+    combine,
     ao,
     albedoGbuffer,
     normalGbuffer,
     positionGbuffer,
+
 
 }
 
@@ -77,6 +76,11 @@ export default class DeferredTest {
     private modelAO: Model;
     private models: Array<Model>=[];
 
+    private combineShader: CombineShader;
+    private materialCombine: ForwardMaterial;
+    private modelCombine: Model;
+    private combinePass: TextureRenderPass;
+
 
     constructor(device: GPUDevice, preloader: PreLoader, presentationFormat: GPUTextureFormat,canvas:HTMLCanvasElement) {
         this.device = device;
@@ -101,18 +105,22 @@ export default class DeferredTest {
         this.cube =new Box(this.device,1,0.1,0.1)
         this.shader = new ColorShaderGBuffer(this.device);
         this.material = new GBufferMaterial(this.device,"GbufferMaterial",this.shader)
-        this.material.setUniform("color", new Vector4(0.7, 0.7, 0.7, 1))
+        this.material.setUniform("color", new Vector4(1.0, 1.0, 1.0, 1))
 
-        for(let i=0;i<200;i++)
+        for(let i=0;i<600;i++)
         {
             let model =new Model(this.device,"gbuffermodel",this.cube,this.material,true,this.camera)
-            model.transform.position =new Vector3(this.randomRange(-2,2),this.randomRange(-2,2) ,this.randomRange(-2,2)  )
+            let pos = new Vector3(this.randomRange(-2,2),this.randomRange(-2,2) ,this.randomRange(-2,2)  );
+            pos.normalize()
+            pos.scale((1-(Math.pow(Math.random(),2)))*2)
+            model.transform.position =pos;
             model.transform.rotation =new Vector3(this.randomRange(-3,3),this.randomRange(-3,3) ,this.randomRange(-3,3)  )
             this.models.push(model);
             this.gBufferPass.add(model)
         }
 
-        this.aoPass = new TextureRenderPass(this.device);
+        this.aoPass = new TextureRenderPass(this.device,"r8unorm");
+        this.aoPass.update(this.canvas.width, this.canvas.height);
         this.aoShader = new AOShader(this.device);
         this.materialAO = new ForwardMaterial(this.device, "materialAO",  this.aoShader, this.aoPass.format, false);
         this.materialAO.multiSampleCount=1;
@@ -120,6 +128,18 @@ export default class DeferredTest {
         this.materialAO.setTexture("textureNormal",this.gBufferPass.gBufferTextureNormal);
         this.materialAO.setTexture("texturePosition", this.gBufferPass.gBufferTexturePosition);
         this.aoPass.add(this.modelAO)
+
+
+        this.combinePass = new TextureRenderPass(this.device);
+        this.combineShader = new CombineShader(this.device)
+        this.materialCombine = new ForwardMaterial(this.device, "materialCombine",  this.combineShader,    this.combinePass.format, false);
+        this.materialCombine.multiSampleCount=1;
+        this.modelCombine= new Model(this.device, "combine", this.quad, this.materialCombine, false,this.camera);
+        this.materialCombine.setTexture("albedo",this.gBufferPass.gBufferTextureAlbedo);
+        this.materialCombine.setTexture("ao", this.aoPass.texture);
+        this.materialCombine.setTexture("normal",this.gBufferPass.gBufferTextureNormal);
+        this.combinePass.add(this.modelCombine)
+
 
 
         this.fullscreenShader = new FullScreenTextureShader(this.device)
@@ -143,14 +163,20 @@ export default class DeferredTest {
     {
         this.camera.ratio = this.canvas.width / this.canvas.height;
         let angle  =Date.now()/5000;
-        this.camera.eye =new Vector3(Math.sin(angle)*8,0,Math.cos(angle)*8);
-        UI.pushWindow("myWindowDef")
+        this.camera.eye =new Vector3(Math.sin(angle)*6,0,Math.cos(angle)*6);
+        UI.pushWindow("myWindowDef");
+
         this.currentView = UI.LSelect("view" ,this.views)
-        this.materialFullScreen.setUniform("size",new Vector4(this.canvas.width,this.canvas.height,0,0))
-        this.materialAO.setUniform("size",new Vector4(this.canvas.width,this.canvas.height,0,0))
-        // this.model1.transform.position =new Vector3(Math.sin(angle),0,Math.cos(angle));
+
+
 
         UI.popWindow()
+
+        this.materialFullScreen.setUniform("size",new Vector4(this.canvas.width,this.canvas.height,0,0))
+        this.materialAO.setUniform("size",new Vector4(this.canvas.width,this.canvas.height,0,0))
+
+        this.materialCombine.setTexture("ao", this.aoPass.texture);
+        this.materialCombine.setUniform("size",new Vector4(this.canvas.width,this.canvas.height,0,0))
     }
 
     prepDraw(context: GPUCanvasContext)
@@ -163,18 +189,25 @@ export default class DeferredTest {
         this.materialAO.setTexture("textureNormal",this.gBufferPass.gBufferTextureNormal);
         this.materialAO.setTexture("texturePosition", this.gBufferPass.gBufferTexturePosition);
 
+        this.combinePass.update(this.canvas.width, this.canvas.height);
+        this.materialCombine.setTexture("ao", this.aoPass.texture);
+        this.materialCombine.setTexture("albedo",this.gBufferPass.gBufferTextureAlbedo);
+        this.materialCombine.setTexture("normal",this.gBufferPass.gBufferTextureNormal);
+
         this.mainRenderPass.updateForCanvas(this.canvas.width, this.canvas.height, context)
 
         if(this.currentView==Views.albedoGbuffer)    this.materialFullScreen.setTexture("texture1", this.gBufferPass.gBufferTextureAlbedo);
         else if(this.currentView==Views.normalGbuffer)    this.materialFullScreen.setTexture("texture1", this.gBufferPass.gBufferTextureNormal);
         else if(this.currentView==Views.positionGbuffer)    this.materialFullScreen.setTexture("texture1", this.gBufferPass.gBufferTexturePosition);
         else if(this.currentView==Views.ao)    this.materialFullScreen.setTexture("texture1", this.aoPass.texture);
+        else if(this.currentView==Views.combine)    this.materialFullScreen.setTexture("texture1", this.combinePass.texture);
 
     }
     draw(commandEncoder:GPUCommandEncoder)
     {
         this.gBufferPass.draw(commandEncoder);
         this.aoPass.draw(commandEncoder);
+        this.combinePass.draw(commandEncoder);
         this.mainRenderPass.draw(commandEncoder);
     }
 }
