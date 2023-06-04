@@ -98,12 +98,12 @@ export default class DeferredTest {
 
         this.gBufferPass =new GBufferRenderPass(this.device)
         this.gBufferPass.update(this.canvas.width, this.canvas.height);
-        this.cube =new Box(this.device)
+        this.cube =new Box(this.device,1,0.1,0.1)
         this.shader = new ColorShaderGBuffer(this.device);
         this.material = new GBufferMaterial(this.device,"GbufferMaterial",this.shader)
         this.material.setUniform("color", new Vector4(0.7, 0.7, 0.7, 1))
 
-        for(let i=0;i<100;i++)
+        for(let i=0;i<200;i++)
         {
             let model =new Model(this.device,"gbuffermodel",this.cube,this.material,true,this.camera)
             model.transform.position =new Vector3(this.randomRange(-2,2),this.randomRange(-2,2) ,this.randomRange(-2,2)  )
@@ -116,7 +116,7 @@ export default class DeferredTest {
         this.aoShader = new AOShader(this.device);
         this.materialAO = new ForwardMaterial(this.device, "materialAO",  this.aoShader, this.aoPass.format, false);
         this.materialAO.multiSampleCount=1;
-        this.modelAO = new Model(this.device, "modelAO", this.quad, this.materialAO, false);
+        this.modelAO = new Model(this.device, "modelAO", this.quad, this.materialAO, false,this.camera);
         this.materialAO.setTexture("textureNormal",this.gBufferPass.gBufferTextureNormal);
         this.materialAO.setTexture("texturePosition", this.gBufferPass.gBufferTexturePosition);
         this.aoPass.add(this.modelAO)
@@ -142,6 +142,8 @@ export default class DeferredTest {
     update()
     {
         this.camera.ratio = this.canvas.width / this.canvas.height;
+        let angle  =Date.now()/5000;
+        this.camera.eye =new Vector3(Math.sin(angle)*8,0,Math.cos(angle)*8);
         UI.pushWindow("myWindowDef")
         this.currentView = UI.LSelect("view" ,this.views)
         this.materialFullScreen.setUniform("size",new Vector4(this.canvas.width,this.canvas.height,0,0))

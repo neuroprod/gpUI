@@ -21,7 +21,11 @@ export default class Camera extends UniformGroup {
         this._ratio = value;
         this.isDirty =true
     }
-
+    public set eye(value: Vector3) {
+        if(this.cameraWorld.equals(value))return;
+        this.cameraWorld = value;
+        this.isDirty =true
+    }
     constructor(device: GPUDevice, name: string = "Camera") {
 
         super(device,name)

@@ -1,5 +1,6 @@
 import Shader from "../Shader";
-import {Vector4} from "math.gl";
+import {Vector3, Vector4} from "math.gl";
+import Camera from "../Camera";
 
 
 
@@ -21,9 +22,24 @@ export default class AOShader extends Shader
         this.makeShaders();
 
 
-        
-    }
 
+    }
+    getKernel()
+    {
+        let numSamples =16;
+        let s ="const kernel = array<vec3f, "+numSamples+">("
+        for (let i = 0; i < numSamples; i++) {
+            let v = new Vector3(Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0,Math.random());
+            v.normalize();
+            v.z+=1.;
+            v.normalize();
+            v.scale(Math.random())
+
+            s+= "vec3("+v.x+", "+v.y+","+v.z+"),"
+        }
+        s+=" );"
+        return s;
+    }
     getShader(): string {
 
 
@@ -38,8 +54,10 @@ struct VertexOutput
 
 ${this.getShaderTexturesSamplers(0)}
 ${this.getShaderUniforms(1)}
+${Camera.getShaderUniforms(2)}
+${this.getKernel()}
 
-
+const radius :f32 =0.8;
 fn random(st : vec2f ) -> f32 {
   return fract(sin(dot(st.xy, vec2f(12.9898, 78.233))) * 43758.5453123);
 }
@@ -60,13 +78,35 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
      let normal=textureLoad(textureNormal,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
      let position=textureLoad(texturePosition,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
-     let randomVec =vec3f(random(position.xy),random(position.yz),random(position.xz));
-     let  tangent   = normalize(randomVec - normal * dot(randomVec, normal));
+     let randomVec =vec3f(random(uv),random(uv.yx +vec2f(33.9333)),random(uv.yx+vec2f(0.9)));
+     let tangent   = normalize(randomVec - normal * dot(randomVec, normal));
      let bitangent = cross(normal, tangent);
-     let TBN       = mat3x3<f32>(tangent, bitangent, normal);  
+     let TBN       = mat3x3<f32>(tangent, bitangent, normal); 
+      
+      
+      var value  =0.0;
+     for (var i: i32 = 0; i < 16; i++) {
+        let samplePos3D = (TBN*(kernel[i]*radius))+position;
+ 
+        let posDistance  =distance(samplePos3D,camera.cameraWorld);
+        let pos2D = camera.viewProjection*vec4f(  samplePos3D,1.0);
+        var uvSample = pos2D.xy;
+        uvSample/=pos2D.w*2.0;
+        uvSample+=vec2f(0.5);
+        uvSample.y = 1.0- uvSample.y ;
+        let uvK = clamp(vec2<i32>(floor( uvSample*uniforms.size.xy)),vec2<i32>(0,0),vec2<i32>(floor(uniforms.size.xy)));
+      
+        let positionKernel=textureLoad(texturePosition,   uvK,0).xyz;
+        
+         let sampleDistance  =distance(positionKernel,camera.cameraWorld);
+         let dif = posDistance-sampleDistance;
      
-     
-     return  vec4f(TBN*normal,1.0);
+            value+=smoothstep(0.0, radius,dif);
+         
+     }
+     value/=16.0;
+       
+     return  vec4f(vec3f(1.0-value),1.0);
 }
 ///////////////////////////////////////////////////////////
 `;
