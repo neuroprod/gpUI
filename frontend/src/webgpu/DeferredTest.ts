@@ -80,6 +80,7 @@ export default class DeferredTest {
     private materialCombine: ForwardMaterial;
     private modelCombine: Model;
     private combinePass: TextureRenderPass;
+    private material2: GBufferMaterial;
 
 
     constructor(device: GPUDevice, preloader: PreLoader, presentationFormat: GPUTextureFormat,canvas:HTMLCanvasElement) {
@@ -107,9 +108,23 @@ export default class DeferredTest {
         this.material = new GBufferMaterial(this.device,"GbufferMaterial",this.shader)
         this.material.setUniform("color", new Vector4(1.0, 1.0, 1.0, 1))
 
-        for(let i=0;i<600;i++)
+        this.material2 = new GBufferMaterial(this.device,"GbufferMaterial",this.shader)
+        this.material2.setUniform("color", new Vector4(1.0, 0.0, 0.0, 1))
+
+        for(let i=0;i<500;i++)
         {
             let model =new Model(this.device,"gbuffermodel",this.cube,this.material,true,this.camera)
+            let pos = new Vector3(this.randomRange(-2,2),this.randomRange(-2,2) ,this.randomRange(-2,2)  );
+            pos.normalize()
+            pos.scale((1-(Math.pow(Math.random(),2)))*2)
+            model.transform.position =pos;
+            model.transform.rotation =new Vector3(this.randomRange(-3,3),this.randomRange(-3,3) ,this.randomRange(-3,3)  )
+            this.models.push(model);
+            this.gBufferPass.add(model)
+        }
+        for(let i=0;i<50;i++)
+        {
+            let model =new Model(this.device,"gbuffermodel",this.cube,this.material2,true,this.camera)
             let pos = new Vector3(this.randomRange(-2,2),this.randomRange(-2,2) ,this.randomRange(-2,2)  );
             pos.normalize()
             pos.scale((1-(Math.pow(Math.random(),2)))*2)

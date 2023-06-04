@@ -52,8 +52,8 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
      
      var color = textureLoad(albedo,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
      let N = textureLoad(normal,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
-     let tempLight =dot(N,vec3f(0.0,1.0,0.0))*0.2+0.8;
-     color*=vec3f((1.0-ao)*tempLight);
+     let tempLight =dot(N,vec3f(0.0,0.0,1.0))*0.2+0.8;
+     color*=vec3f((ao)*tempLight);
    
      return  vec4(color,1.0);
 }

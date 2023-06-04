@@ -108,7 +108,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
      }
      value/=16.0;
        
-     return  vec4f(vec3f(1.0-value),1.0);
+     return  vec4f(vec3f(value),1.0);
 }
 ///////////////////////////////////////////////////////////
 `;
