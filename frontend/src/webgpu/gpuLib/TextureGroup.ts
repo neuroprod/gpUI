@@ -1,5 +1,7 @@
 import {BindGroup} from "./BindGroup";
+import TextureUniform from "./TextureUniform";
 class TextureLayout{
+    textureUniform:TextureUniform;
     name:string;
     index:number;
     texture:GPUTexture;
@@ -22,10 +24,11 @@ export class TextureGroup extends BindGroup
         super(device,label);
         this.indexCount =0;
     }
-    public addTextureLayout(t:string)
+    public addTextureLayout(t:TextureUniform)
     {
         let tl=new TextureLayout()
-        tl.name =t;
+        tl.name =t.name
+        tl.textureUniform =t;
         tl.index =this.indexCount
         this.textureLayouts.push(tl);
         this.indexCount++
@@ -52,10 +55,14 @@ export class TextureGroup extends BindGroup
         }
         for(let s of this.textureLayouts)
         {
-            let e={}
-            e["binding"] =s.index;
-            e["visibility"] =GPUShaderStage.FRAGMENT
-            e["texture"] ={}
+            let e={
+                binding: s.index,
+                visibility: GPUShaderStage.FRAGMENT,
+                texture: {
+                    sampleType: s.textureUniform.samplerType,
+                },
+            }
+
             ent.push(e)
         }
 

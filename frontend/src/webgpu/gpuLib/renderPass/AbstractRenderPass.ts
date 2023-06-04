@@ -39,12 +39,16 @@ export default class AbstractRenderPass  extends UniqueObject
 
             for (let uniforms of model.material.bindGroups) {
 
-                if (bufferArray[count] != uniforms.uID) {
-                    bufferArray[count] = uniforms.uID
+               if( uniforms.typeID==-2){
+                   passEncoder.setBindGroup(count, model.transform.bindGroup);
+               }else{
+                   if (bufferArray[count] != uniforms.uID) {
+                       bufferArray[count] = uniforms.uID
+                       passEncoder.setBindGroup(count, uniforms.bindGroup);
 
-                    passEncoder.setBindGroup(count, uniforms.bindGroup);
+                       }
+               }
 
-                }
                 count++;
             }
             for(let attribute of model.material.shader.attributes)

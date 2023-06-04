@@ -3,6 +3,7 @@ import Uniform, {UniformType} from "./Uniform";
 import MathArray from "@math.gl/core/dist/classes/base/math-array";
 import Attribute from "./Attribute";
 import {TextureGroup} from "./TextureGroup";
+import TextureUniform from "./TextureUniform";
 
 
 export default class Shader {
@@ -10,7 +11,7 @@ export default class Shader {
     shader: GPUShaderModule;
 
     samplers: Array<string> = [];
-    textures: Array<string> = [];
+    textures: Array<TextureUniform> = [];
 
     uniforms: Array<Uniform> = []
     attributes: Array<Attribute> = []
@@ -76,7 +77,7 @@ export default class Shader {
         }
         for(let t of this.textures)
         {
-            r+="@group("+id+") @binding("+count+") var "+t+": texture_2d<f32>;\n"
+            r+="@group("+id+") @binding("+count+") var "+t.name+": texture_2d<f32>;\n"
             count++
         }
         return r;
@@ -113,8 +114,10 @@ struct Uniforms
         return ``;
     }
 
-    protected addTexture(texture: string) {
-        this.textures.push(texture)
+    protected addTexture(texture: string,samplerType:GPUTextureSampleType='float') {
+        let t =new TextureUniform(texture,samplerType)
+
+        this.textures.push(t)
     }
 
     protected addSampler(sampler: string) {

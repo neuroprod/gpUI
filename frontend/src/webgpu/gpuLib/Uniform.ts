@@ -3,6 +3,7 @@ import { Matrix4, NumericArray, Vector4 } from "math.gl";
 
 export enum UniformType{
     float,
+    vec2,
     vec4,
     mat4,
 
@@ -19,7 +20,7 @@ export default class UniformShaderData
     constructor(name: string, value: MathArray| number) {
 
         this.name =name;
-       
+
         if( typeof value =="number" ){
             this.defaultValue =value;
             //[value];
@@ -29,6 +30,10 @@ export default class UniformShaderData
             if(value.length==1){
                 this.type =UniformType.float;
                 this.size =1;
+            }
+            if(value.length==2){
+                this.type =UniformType.vec2;
+                this.size =2;
             }
             if(value.length==4){
                 this.type =UniformType.vec4;
@@ -47,7 +52,7 @@ export default class UniformShaderData
         return this.defaultValue.clone()
 
         //return  new this.defaultValue.constructor().copy(this.defaultValue);
-    
+
     }
 
 }

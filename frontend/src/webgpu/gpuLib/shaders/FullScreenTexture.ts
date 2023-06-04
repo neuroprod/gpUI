@@ -1,4 +1,5 @@
 import Shader from "../Shader";
+import {Vector4} from "math.gl";
 
 
 
@@ -12,15 +13,17 @@ export default class FullScreenTexture extends Shader
         this.addAttribute("position",3);
         this.addAttribute("uv0",2);
         //set needed uniforms
-        //  this.addUniform("color",new Vector4(1,0,0,1));
-        this.addSampler("sampler1");
-        this.addTexture("texture1");//implement texture types
+         this.addUniform("size",new Vector4(1,1,0,1));
+      //  this.addSampler("sampler1");
+        this.addTexture("texture1",'unfilterable-float');//implement texture types
 
 
         this.makeShaders();
     }
 
     getShader(): string {
+        console.log(this.getShaderUniforms(1))
+
         return /* wgsl */`
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
@@ -31,7 +34,7 @@ struct VertexOutput
 }
 
 ${this.getShaderTexturesSamplers(0)}
-
+${this.getShaderUniforms(1)}
 
 @vertex
 fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
@@ -45,7 +48,7 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 @fragment
 fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
-     return textureSample(texture1, sampler1, uv);
+     return  textureLoad(texture1,   vec2<i32>(floor(uv*uniforms.size.xy)),0);
 }
 ///////////////////////////////////////////////////////////
 `;
