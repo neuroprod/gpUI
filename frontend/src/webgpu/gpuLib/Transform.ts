@@ -66,10 +66,10 @@ struct Transform
     updateData()
     {
         this.worldMatrix.identity();
-        this.worldMatrix.rotateXYZ(this._rotation);
+
         this.worldMatrix.translate(this._position);
         this.worldMatrix.scale(this._scale);
-
+        this.worldMatrix.rotateXYZ(this._rotation);
 
        this.normalMatrix.copy(this.worldMatrix)
         this.normalMatrix.invert();

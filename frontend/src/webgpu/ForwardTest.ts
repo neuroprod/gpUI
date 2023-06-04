@@ -3,7 +3,7 @@ import ColorShader3D from "./gpuLib/shaders/ColorShader3D";
 import NormalShader3D from "./gpuLib/shaders/NormalShader3D";
 import UVShader3D from "./gpuLib/shaders/UVShader3D";
 import TextureShader3D from "./gpuLib/shaders/TextureShader3D";
-import FullScreenTexture from "./gpuLib/shaders/FullScreenTexture";
+import FullScreenTextureShader from "./gpuLib/shaders/FullScreenTextureShader";
 import Quad from "./gpuLib/meshes/Quad";
 import Box from "./gpuLib/meshes/Box";
 import Sphere from "./gpuLib/meshes/Sphere";

@@ -3,7 +3,7 @@ import {Vector4} from "math.gl";
 
 
 
-export default class FullScreenTexture extends Shader
+export default class FullScreenTextureShader extends Shader
 {
 
     constructor(device: GPUDevice) {
@@ -14,7 +14,7 @@ export default class FullScreenTexture extends Shader
         this.addAttribute("uv0",2);
         //set needed uniforms
          this.addUniform("size",new Vector4(1,1,0,1));
-      //  this.addSampler("sampler1");
+
         this.addTexture("texture1",'unfilterable-float');//implement texture types
 
 
@@ -22,7 +22,7 @@ export default class FullScreenTexture extends Shader
     }
 
     getShader(): string {
-        console.log(this.getShaderUniforms(1))
+
 
         return /* wgsl */`
 ///////////////////////////////////////////////////////////      

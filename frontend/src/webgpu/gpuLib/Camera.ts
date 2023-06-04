@@ -30,7 +30,7 @@ export default class Camera extends UniformGroup {
 
 
         //16 for viewProjection+ 4 forCameraWorld
-        this.makeBuffers( GPUShaderStage.VERTEX, 16 + 4)
+        this.makeBuffers( GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT, 16 + 4)
         this.isDirty =true;
 
       // this.updateData()
