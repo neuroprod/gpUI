@@ -73,7 +73,7 @@ export default class RendererGPU {
             sampleCount:1,
             usage:
                 GPUTextureUsage.TEXTURE_BINDING |
-                GPUTextureUsage.COPY_DST| GPUTextureUsage.RENDER_ATTACHMENT,
+                GPUTextureUsage.COPY_DST,
         });
         this.device.queue.writeTexture(
             {texture: this.fontTexture},
@@ -114,7 +114,7 @@ export default class RendererGPU {
             drawBatch.destroy();
             this.drawBatches.delete(id);
             this.drawArray.splice(this.drawArray.indexOf(drawBatch), 1);
-            console.log("delete")
+
         }
     }
 

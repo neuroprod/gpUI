@@ -104,9 +104,9 @@ export class TextureGroup extends BindGroup
         {
             if(a.name ==name)
             {
-                if(a.texture != texture)
+                if(a.texture !== texture)
                 {
-                    console.log("updateTexture")
+
                     this.isDirty =true;
                     a.texture =texture;
                 }

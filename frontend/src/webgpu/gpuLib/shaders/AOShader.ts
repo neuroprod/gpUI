@@ -26,7 +26,7 @@ export default class AOShader extends Shader
     }
     getKernel()
     {
-        let numSamples =16;
+        let numSamples =32;
         let s ="const kernel = array<vec3f, "+numSamples+">("
         for (let i = 0; i < numSamples; i++) {
             let v = new Vector3(Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0,Math.random());
@@ -85,7 +85,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
       
       
       var value  =0.0;
-     for (var i: i32 = 0; i < 16; i++) {
+     for (var i: i32 = 0; i < 25; i++) {
         let samplePos3D = (TBN*(kernel[i]*radius))+position;
  
         let posDistance  =distance(samplePos3D,camera.cameraWorld);
@@ -106,7 +106,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
         value+=1.0-smoothstep(0.0, radius,dif);
          
      }
-     value/=16.0;
+     value/=32.0;
        
      return  vec4f(vec3f(value),1.0);
 }
