@@ -2,7 +2,7 @@ import FontTextureData from "../../../UI/draw/FontTextureData";
 
 export default class DefaultTexture
 {
-    private static white!:GPUTexture;
+    private static white:GPUTexture;
 
     static getWhite(device:GPUDevice)
     {
