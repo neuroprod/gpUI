@@ -140,7 +140,7 @@ export default class DeferredTest {
         this.materialLight = new GBufferMaterial(this.device, "GbufferMaterial", this.shader)
         this.materialLight.setUniform("color", new Vector4(1.0, 1.0, 1.0, 1.0))
 
-        for (let i = 0; i < 350; i++) {
+        for (let i = 0; i < 100; i++) {
             let model = new Model(this.device, "gbuffermodel", this.cube, this.material1, true, this.camera)
             let pos = new Vector3(this.randomRange(-2, 2), this.randomRange(-2, 2), this.randomRange(-2, 2));
             pos.normalize()
@@ -150,7 +150,7 @@ export default class DeferredTest {
             this.models.push(model);
             this.gBufferPass.add(model)
         }
-        for (let i = 0; i < 350; i++) {
+        for (let i = 0; i < 100; i++) {
             let model = new Model(this.device, "gbuffermodel", this.cube, this.material2, true, this.camera)
             let pos = new Vector3(this.randomRange(-2, 2), this.randomRange(-2, 2), this.randomRange(-2, 2));
             pos.normalize()
@@ -160,7 +160,7 @@ export default class DeferredTest {
             this.models.push(model);
             this.gBufferPass.add(model)
         }
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 50; i++) {
             let model = new Model(this.device, "gbuffermodel", this.cube, this.material3, true, this.camera)
             let pos = new Vector3(this.randomRange(-2, 2), this.randomRange(-2, 2), this.randomRange(-2, 2));
             pos.normalize()
@@ -259,7 +259,7 @@ export default class DeferredTest {
     update() {
         this.camera.ratio = this.canvas.width / this.canvas.height;
         let angle = Date.now() / 5000;
-       this.camera.eye = new Vector3(Math.sin(angle) * 6, 0, Math.cos(angle) * 6);
+       this.camera.eye = new Vector3(Math.sin(angle) * 6, 0, Math.cos(angle) * 5);
         UI.pushWindow("myWindowDef");
 
         this.currentView = UI.LSelect("view", this.views);
