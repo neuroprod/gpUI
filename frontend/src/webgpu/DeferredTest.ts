@@ -6,7 +6,7 @@ import Box from "./gpuLib/meshes/Box";
 
 import ForwardMaterial from "./gpuLib/materials/ForwardMaterial";
 import {Model} from "./gpuLib/Model";
-import {Vector3, Vector4} from "math.gl";
+import {Vector2, Vector3, Vector4} from "math.gl";
 import CanvasRenderPass from "./gpuLib/renderPass/CanvasRenderPass";
 import PreLoader from "../shared/PreLoader";
 
@@ -181,13 +181,15 @@ export default class DeferredTest {
         UI.pushWindow("myWindowDef");
 
         this.currentView = UI.LSelect("view", this.views);
-        this.useAO = UI.LBool("AO enabled", true,);
-
-
+        UI.pushGroup("SSAO");
+        this.useAO = UI.LBool("enabled", true,);
+        this.materialAO.setUniform("radius", UI.LFloatSlider("radius",0.2,0,1));
+        this.materialAO.setUniform("strength", UI.LFloatSlider("strength",0.6,0,1))
+        UI.popGroup();
         UI.popWindow()
 
         this.materialFullScreen.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))
-        this.materialAO.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))
+        this.materialAO.setUniform("size", new Vector2(this.canvas.width, this.canvas.height))
 
 
         this.materialCombine.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))

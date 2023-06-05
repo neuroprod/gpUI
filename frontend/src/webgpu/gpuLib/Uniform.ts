@@ -27,15 +27,17 @@ export default class UniformShaderData
             this.type =UniformType.float;
             this.size =1;
         }else {
+
             if(value.length==1){
                 this.type =UniformType.float;
                 this.size =1;
             }
-            if(value.length==2){
+            else if(value.length==2){
                 this.type =UniformType.vec2;
                 this.size =2;
+
             }
-            if(value.length==4){
+            else if(value.length==4){
                 this.type =UniformType.vec4;
                 this.size =4;
             }else{

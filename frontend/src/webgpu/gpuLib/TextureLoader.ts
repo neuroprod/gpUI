@@ -10,7 +10,7 @@ export default class TextureLoader{
         preLoader.startLoad();
         this.loadURL(url).then(()=>{
             preLoader.stopLoad()
-            console.log("done")
+
         })
     }
     async loadURL(url:string){

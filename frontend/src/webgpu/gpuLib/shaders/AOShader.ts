@@ -1,5 +1,5 @@
 import Shader from "../Shader";
-import {Vector3, Vector4} from "math.gl";
+import {Vector2, Vector3, Vector4} from "math.gl";
 import Camera from "../Camera";
 
 
@@ -14,8 +14,9 @@ export default class AOShader extends Shader
         this.addAttribute("position",3);
         this.addAttribute("uv0",2);
         //set needed uniforms
-        this.addUniform("size",new Vector4(1,1,0,1));
-
+        this.addUniform("size",new Vector2(1,1));
+        this.addUniform("radius",0.5);
+        this.addUniform("strength",0.8);
         this.addTexture("textureNormal",'unfilterable-float');
         this.addTexture("texturePosition",'unfilterable-float');
 
@@ -57,7 +58,7 @@ ${this.getShaderUniforms(1)}
 ${Camera.getShaderUniforms(2)}
 ${this.getKernel()}
 
-const radius :f32 =0.4;
+
 fn random(st : vec2f ) -> f32 {
   return fract(sin(dot(st.xy, vec2f(12.9898, 78.233))) * 43758.5453123);
 }
@@ -86,7 +87,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
       
       var value  =0.0;
      for (var i: i32 = 0; i < 25; i++) {
-        let samplePos3D = (TBN*(kernel[i]*radius))+position;
+        let samplePos3D = (TBN*(kernel[i]*uniforms.radius))+position;
  
         let posDistance  =distance(samplePos3D,camera.cameraWorld);
         let pos2D = camera.viewProjection*vec4f(  samplePos3D,1.0);
@@ -103,12 +104,12 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
         /* if(dif<radius){
           value+=1.0;//-smoothstep(0.0, radius,dif);
          }*/
-        value+=1.0-smoothstep(0.0, radius,dif);
+        value+=1.0-smoothstep(0.0, uniforms.radius,dif);
          
      }
      value/=32.0;
        
-     return  vec4f(vec3f(value),1.0);
+     return  vec4f(vec3f(value*uniforms.strength+(1.0-uniforms.strength)),1.0);
 }
 ///////////////////////////////////////////////////////////
 `;

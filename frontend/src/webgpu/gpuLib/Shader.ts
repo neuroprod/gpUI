@@ -25,6 +25,7 @@ export default class Shader {
     }
 
     addUniform(name: string, value: MathArray | number) {
+
         this.uniforms.push(new Uniform(name, value))
     }
 
@@ -138,12 +139,14 @@ struct Uniforms
     private processUniforms() {
         this.uniformText = ""
         for (let uniform of this.uniforms) {
+
             this.uniformText += uniform.name + " : "
             if (uniform.type == UniformType.vec4) {
                 this.uniformText += "vec4 <f32>,"
             }
             if (uniform.type == UniformType.vec2) {
                 this.uniformText += "vec2 <f32>,"
+
             }
             if (uniform.type == UniformType.float) {
                 this.uniformText += "f32,"

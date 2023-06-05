@@ -33,8 +33,11 @@ export abstract class AbstractMaterial  extends UniqueObject {
         for (let f of this.shaderUniforms.uniforms) {
             if (f.name == name) {
                 if (typeof f.defaultValue == "number" && typeof value == "number") {
+                    if(f.defaultValue==value)return;
+                    f.defaultValue=value
                     this.shaderUniforms.bufferData[f.offset] = value
                 } else if (typeof value != "number") {
+                    if(value.equals(f.defaultValue as MathArray))return;
                     this.shaderUniforms.bufferData.set(value, f.offset)
                 }
                 break;
