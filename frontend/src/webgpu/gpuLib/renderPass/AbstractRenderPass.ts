@@ -33,6 +33,7 @@ export default class AbstractRenderPass  extends UniqueObject
                 pipelineID = model.material.uID
                 bufferArray = new Array(model.material.bindGroups.length).fill(-1);
                 model.material.makePipeLine()
+
                 passEncoder.setPipeline(model.material.pipeLine);
             }
             let count =0
