@@ -95,7 +95,7 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 @fragment
 fn mainFragment(@location(0) uvScreen: vec2f) -> @location(0) vec4f
 {
-    let roughness =0.7;
+    let roughness =0.5;
     let uvPos = vec2<i32>(floor(uvScreen*uniforms.size.xy));
      let position=textureLoad(texturePosition,  uvPos ,0).xyz;
     let fragDist = distance(position,uniforms.lightPos.xyz);
@@ -113,7 +113,7 @@ fn mainFragment(@location(0) uvScreen: vec2f) -> @location(0) vec4f
     let H = normalize(V + L);
     let NdotV = max(0.0, dot(N, V));
     let attenuation =pow(1.0-fragDist,2.0);
-    let radiance =vec3f(5.0,5.0,5.0)  * attenuation;
+    let radiance =vec3f(10.0,5.0,1.0)  * attenuation;
 
             let NDF = DistributionGGX(N, H, roughness);
         let G   = GeometrySmith(N, V, L, roughness);

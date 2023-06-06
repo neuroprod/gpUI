@@ -78,7 +78,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
     let worldPos =textureLoad(positionTexture, uvS,0).xyz;
     var color =pow( alb.xyz,vec3f(2.2));;
     let N = textureLoad(normal,  uvS,0).xyz;
-    let tempLight =(dot(N,vec3f(0.0,1.0,0.0))*0.5+0.5)*0.1+0.05 ;
+    let tempLight =(dot(N,vec3f(0.0,1.0,0.0))*0.5+0.5)*0.07+0.02 ;
     color*=vec3f((ao)*tempLight);
     color+=max(l,vec3f(0.0));
     color+= alb.xyz*alb.w*5.0;

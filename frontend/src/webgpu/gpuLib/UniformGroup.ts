@@ -121,6 +121,7 @@ export default class UniformGroup extends BindGroup{
             this.bufferData.byteOffset,
             this.bufferData.byteLength
         );
+        this.isDirty =false;
     }
 
 

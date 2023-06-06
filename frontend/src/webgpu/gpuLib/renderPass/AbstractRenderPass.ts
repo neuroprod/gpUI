@@ -59,9 +59,9 @@ export default class AbstractRenderPass  extends UniqueObject
 
             if(model.mesh.hasIndices){
                 passEncoder.setIndexBuffer( model.mesh.indexBuffer, 'uint16');
-                passEncoder.drawIndexed(model.mesh.numIndices,1,0,0);
+                passEncoder.drawIndexed(model.mesh.numIndices,model.material.shader.numInstances,0,0);
             }else{
-                passEncoder.draw(model.mesh.numVertices, 1, 0, 0);
+                passEncoder.draw(model.mesh.numVertices, model.material.shader.numInstances, 0, 0);
             }
 
         }

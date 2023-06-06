@@ -6,7 +6,7 @@ import Box from "./gpuLib/meshes/Box";
 
 import ForwardMaterial from "./gpuLib/materials/ForwardMaterial";
 import {Model} from "./gpuLib/Model";
-import {Vector2, Vector3, Vector4} from "math.gl";
+import {Matrix4, Vector2, Vector3, Vector4} from "math.gl";
 import CanvasRenderPass from "./gpuLib/renderPass/CanvasRenderPass";
 import PreLoader from "../shared/PreLoader";
 
@@ -27,6 +27,8 @@ import Sphere from "./gpuLib/meshes/Sphere";
 import ForwardAddMaterial from "./gpuLib/materials/ForwardAddMaterial";
 import ColorV from "../shared/ColorV";
 import DofBlurShader from "./gpuLib/shaders/DofBlurShader";
+import InstanceColorShaderGBuffer from "./gpuLib/shaders/InstanceColorShaderGBuffer";
+import UniformGroup from "./gpuLib/UniformGroup";
 
 enum Views {
     dofBlur,
@@ -98,7 +100,7 @@ export default class DeferredTest {
     private sphere: Sphere;
     private modelsLight: Array<Model> = [];
 
-    private boxColor1 = new ColorV(0.07, 1.00, 0.00, 1.00)
+    private boxColor1 = new ColorV(1.00, 1.00, 1.00, 1.00)
     private boxColor2 = new ColorV(0.72, 1.00, 0.00, 1.00)
     private boxColor3 = new ColorV(0.79, 0.64, 0.00, 1.00)
     private materialLight: GBufferMaterial;
@@ -112,6 +114,11 @@ export default class DeferredTest {
     private dofBlurPass2: TextureRenderPass;
     private materialDofBlur2: ForwardMaterial;
     private modelDofBlur2: Model;
+
+    private instanceShader: InstanceColorShaderGBuffer;
+    private instanceMaterial: GBufferMaterial;
+    private modelInst: Model;
+    private instanceUniforms: UniformGroup;
 
 
     constructor(device: GPUDevice, preloader: PreLoader, presentationFormat: GPUTextureFormat, canvas: HTMLCanvasElement) {
@@ -151,38 +158,40 @@ export default class DeferredTest {
 
 
         this.materialLight = new GBufferMaterial(this.device, "GbufferMaterial", this.shader)
-        this.materialLight.setUniform("color", new Vector4(1.0, 1.0, 1.0, 1.0))
+        this.materialLight.setUniform("color", new Vector4(1.0, 0.9, 0.5, 1.0))
 
-        for (let i = 0; i < 100; i++) {
-            let model = new Model(this.device, "gbuffermodel", this.cube, this.material1, true, this.camera)
+       let numInstances  =500;
+        this.instanceShader =new InstanceColorShaderGBuffer(this.device,numInstances);
+        this.instanceMaterial = new GBufferMaterial(this.device, "GbufferMaterial", this.instanceShader);
+        this.instanceUniforms =new UniformGroup(this.device,"instanceUniforms");
+        let dataSize =numInstances*16*2;
+
+        let f =new Float32Array(dataSize)
+        for (let i = 0; i <numInstances; i++) {
+            let mat =new Matrix4()
             let pos = new Vector3(this.randomRange(-2, 2), this.randomRange(-2, 2), this.randomRange(-2, 2));
             pos.normalize()
-            pos.scale((1 - (Math.pow(Math.random(), 4))) * 2)
-            model.transform.position = pos;
-            model.transform.rotation = new Vector3(this.randomRange(-3, 3), this.randomRange(-3, 3), this.randomRange(-3, 3))
-            this.models.push(model);
-            this.gBufferPass.add(model)
+            pos.scale((1 - (Math.pow(Math.random(), 3))) * 2)
+            mat.translate(pos);
+            mat.rotateX(Math.random()*3)
+            mat.rotateY(Math.random()*3)
+            f.set(mat,i*16)
+
+
+            mat.invert();
+            mat.transpose();
+
+            f.set(mat,i*16+(16*numInstances))
         }
-        for (let i = 0; i < 100; i++) {
-            let model = new Model(this.device, "gbuffermodel", this.cube, this.material2, true, this.camera)
-            let pos = new Vector3(this.randomRange(-2, 2), this.randomRange(-2, 2), this.randomRange(-2, 2));
-            pos.normalize()
-            pos.scale((1 - (Math.pow(Math.random(), 4))) * 2)
-            model.transform.position = pos;
-            model.transform.rotation = new Vector3(this.randomRange(-3, 3), this.randomRange(-3, 3), this.randomRange(-3, 3))
-            this.models.push(model);
-            this.gBufferPass.add(model)
-        }
-        for (let i = 0; i < 50; i++) {
-            let model = new Model(this.device, "gbuffermodel", this.cube, this.material3, true, this.camera)
-            let pos = new Vector3(this.randomRange(-2, 2), this.randomRange(-2, 2), this.randomRange(-2, 2));
-            pos.normalize()
-            pos.scale((1 - (Math.pow(Math.random(), 4))) * 2)
-            model.transform.position = pos;
-            model.transform.rotation = new Vector3(this.randomRange(-3, 3), this.randomRange(-3, 3), this.randomRange(-3, 3))
-            this.models.push(model);
-            this.gBufferPass.add(model)
-        }
+
+
+
+        this.instanceUniforms.makeBuffers(GPUShaderStage.VERTEX,dataSize,f);
+
+        this.instanceMaterial.addUniformGroup(this.instanceUniforms);
+        this.modelInst = new Model(this.device, "gbuffermodelInst", this.cube,  this.instanceMaterial, false, this.camera)
+        this.gBufferPass.add(this.modelInst);
+
         let positions = [];
 
         for (let i = 0; i < 50; i++) {
@@ -294,8 +303,8 @@ export default class DeferredTest {
 
         this.currentView = UI.LSelect("view", this.views);
         UI.LColor("boxColor1", this.boxColor1)
-        UI.LColor("boxColor2", this.boxColor2)
-        UI.LColor("boxColor3", this.boxColor3)
+        //UI.LColor("boxColor2", this.boxColor2)
+        //UI.LColor("boxColor3", this.boxColor3)
         UI.pushGroup("SSAO");
         this.useAO = UI.LBool("enabled", true,);
         this.materialAO.setUniform("radius", UI.LFloatSlider("radius", 0.2, 0, 1));
@@ -305,13 +314,13 @@ export default class DeferredTest {
 
         this.materialFullScreen.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))
         this.materialAO.setUniform("size", new Vector2(this.canvas.width, this.canvas.height))
-        this.material1.setUniform("color", new Vector4(this.boxColor1.r, this.boxColor1.g, this.boxColor1.b, 0))
-        this.material2.setUniform("color", new Vector4(this.boxColor2.r, this.boxColor2.g, this.boxColor2.b, 0))
-        this.material3.setUniform("color", new Vector4(this.boxColor3.r, this.boxColor3.g, this.boxColor3.b, 0))
+        //this.material1.setUniform("color", new Vector4(this.boxColor1.r, this.boxColor1.g, this.boxColor1.b, 0))
+        //this.material2.setUniform("color", new Vector4(this.boxColor2.r, this.boxColor2.g, this.boxColor2.b, 0))
+        //this.material3.setUniform("color", new Vector4(this.boxColor3.r, this.boxColor3.g, this.boxColor3.b, 0))
         for (let m of this.modelsLight) {
             m.material.setUniform("size", new Vector2(this.canvas.width, this.canvas.height))
         }
-
+        this.instanceMaterial.setUniform("color", new Vector4(this.boxColor1.r, this.boxColor1.g, this.boxColor1.b, 0));
 
         this.materialCombine.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))
         this.materialDofBlur1.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))

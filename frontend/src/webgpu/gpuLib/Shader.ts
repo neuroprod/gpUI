@@ -17,7 +17,7 @@ export default class Shader {
     attributes: Array<Attribute> = []
     private uniformText: string;
     private name: string;
-
+    public numInstances =1
 
     constructor(device: GPUDevice, name: string) {
         this.device = device;

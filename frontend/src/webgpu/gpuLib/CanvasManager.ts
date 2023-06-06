@@ -6,7 +6,7 @@ export default class CanvasManager {
         this.canvas = canvas;
         this.resize()
         window.onresize =this.delayedResize.bind(this);
-        this.pixelRatio =window.devicePixelRatio
+        this.pixelRatio =1;//window.devicePixelRatio
     }
     resize()
     {
