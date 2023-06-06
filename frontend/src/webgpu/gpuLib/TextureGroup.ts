@@ -1,5 +1,6 @@
 import {BindGroup} from "./BindGroup";
 import TextureUniform from "./TextureUniform";
+import {lazy} from "react";
 class TextureLayout{
     textureUniform:TextureUniform;
     name:string;
@@ -86,6 +87,9 @@ export class TextureGroup extends BindGroup
         }
         for(let t of this.textureLayouts)
         {
+            if(!t.texture){
+                console.log(this.label)
+            }
             let e ={}
             e["binding"] =t.index
             e["resource"] =t.texture.createView()

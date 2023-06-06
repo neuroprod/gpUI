@@ -26,8 +26,10 @@ import LightShader from "./gpuLib/shaders/LightShader";
 import Sphere from "./gpuLib/meshes/Sphere";
 import ForwardAddMaterial from "./gpuLib/materials/ForwardAddMaterial";
 import ColorV from "../shared/ColorV";
+import DofBlurShader from "./gpuLib/shaders/DofBlurShader";
 
 enum Views {
+    dofBlur,
     combine,
     light,
 
@@ -96,10 +98,15 @@ export default class DeferredTest {
     private sphere: Sphere;
     private modelsLight: Array<Model> = [];
 
-    private boxColor1 =new ColorV(0.07,1.00,0.00,1.00)
-    private boxColor2 =new ColorV(0.72,1.00,0.00,1.00)
-    private boxColor3 =new ColorV(0.79,0.64,0.00,1.00)
+    private boxColor1 = new ColorV(0.07, 1.00, 0.00, 1.00)
+    private boxColor2 = new ColorV(0.72, 1.00, 0.00, 1.00)
+    private boxColor3 = new ColorV(0.79, 0.64, 0.00, 1.00)
     private materialLight: GBufferMaterial;
+
+    private dofBlurPass: TextureRenderPass;
+    private dofBlurShader: DofBlurShader;
+    private materialDofBlur: ForwardMaterial;
+    private modelDofBlur: Model;
 
     constructor(device: GPUDevice, preloader: PreLoader, presentationFormat: GPUTextureFormat, canvas: HTMLCanvasElement) {
         this.device = device;
@@ -112,7 +119,7 @@ export default class DeferredTest {
     init() {
         this.quad = new Quad(this.device)
         this.cube = new Box(this.device, 1, 0.1, 0.1)
-        this.sphere= new Sphere(this.device,1)
+        this.sphere = new Sphere(this.device, 1)
 
 
         this.myTexture = this.textureLoader.texture;
@@ -170,23 +177,22 @@ export default class DeferredTest {
             this.models.push(model);
             this.gBufferPass.add(model)
         }
-        let positions =[];
+        let positions = [];
 
         for (let i = 0; i < 50; i++) {
             let model = new Model(this.device, "gbuffermodel", this.sphere, this.materialLight, true, this.camera)
             let pos = new Vector3(this.randomRange(-2, 2), this.randomRange(-2, 2), this.randomRange(-2, 2));
 
             pos.normalize()
-          pos.scale( 2.2)
+            pos.scale(2.2)
             positions.push(pos);
 
             model.transform.position = pos;
-            model.transform.scale = new Vector3(0.05,0.05,0.05)
-           // model.transform.rotation = new Vector3(this.randomRange(-3, 3), this.randomRange(-3, 3), this.randomRange(-3, 3))
+            model.transform.scale = new Vector3(0.05, 0.05, 0.05)
+            // model.transform.rotation = new Vector3(this.randomRange(-3, 3), this.randomRange(-3, 3), this.randomRange(-3, 3))
             this.models.push(model);
             this.gBufferPass.add(model)
         }
-
 
 
         this.lightShader = new LightShader(this.device)
@@ -195,10 +201,10 @@ export default class DeferredTest {
 
         for (let i = 0; i < positions.length; i++) {
 
-            let pos =positions[i];
+            let pos = positions[i];
             let materialLight = new ForwardAddMaterial(this.device, "materialLight", this.lightShader, this.lightPass.format, false);
             materialLight.multiSampleCount = 1;
-            materialLight.setUniform("lightPos",new Vector4(pos.x,pos.y,pos.z,1.0))
+            materialLight.setUniform("lightPos", new Vector4(pos.x, pos.y, pos.z, 1.0))
             materialLight.setTexture("textureNormal", this.gBufferPass.gBufferTextureNormal);
             materialLight.setTexture("texturePosition", this.gBufferPass.gBufferTexturePosition);
             materialLight.setTexture("textureAlbedo", this.gBufferPass.gBufferTextureAlbedo);
@@ -208,7 +214,6 @@ export default class DeferredTest {
             this.modelsLight.push(model);
             this.lightPass.add(model)
         }
-
 
 
         /*this.modelAO = new Model(this.device, "modelAO", this.quad, this.materialAO, false, this.camera);
@@ -227,6 +232,7 @@ export default class DeferredTest {
 
 
         this.combinePass = new TextureRenderPass(this.device);
+        this.combinePass.update(this.canvas.width, this.canvas.height);
         this.combineShader = new CombineShader(this.device)
         this.materialCombine = new ForwardMaterial(this.device, "materialCombine", this.combineShader, this.combinePass.format, false);
         this.materialCombine.multiSampleCount = 1;
@@ -234,9 +240,18 @@ export default class DeferredTest {
         this.materialCombine.setTexture("albedo", this.gBufferPass.gBufferTextureAlbedo);
         this.materialCombine.setTexture("ao", this.aoPass.texture);
         this.materialCombine.setTexture("normal", this.gBufferPass.gBufferTextureNormal);
+        this.materialCombine.setTexture("positionTexture", this.gBufferPass.gBufferTexturePosition);
         this.materialCombine.setTexture("light", this.lightPass.texture);
         this.combinePass.add(this.modelCombine)
 
+        this.dofBlurPass = new TextureRenderPass(this.device);
+        this.dofBlurPass.update(this.canvas.width, this.canvas.height);
+        this.dofBlurShader = new DofBlurShader(this.device)
+        this.materialDofBlur = new ForwardMaterial(this.device, "materialDofBlur", this.dofBlurShader, this.combinePass.format, false);
+        this.materialDofBlur.multiSampleCount = 1;
+        this.modelDofBlur = new Model(this.device, "combine", this.quad, this.materialDofBlur, false, this.camera);
+        this.materialDofBlur.setTexture("texture1", this.combinePass.texture);
+        this.dofBlurPass.add(this.modelDofBlur)
 
         this.fullscreenShader = new FullScreenTextureShader(this.device)
         this.materialFullScreen = new ForwardMaterial(this.device, "materialFullscreen", this.fullscreenShader, this.presentationFormat, this.mainPassNeedsDepth);
@@ -258,18 +273,18 @@ export default class DeferredTest {
 
     update() {
         this.camera.ratio = this.canvas.width / this.canvas.height;
-        let angle = Date.now() / 5000;
-       this.camera.eye = new Vector3(Math.sin(angle) * 6, 0, Math.cos(angle) * 5);
+        let angle = Date.now() / 10000;
+        this.camera.eye = new Vector3(Math.sin(angle) * 6, 0, Math.cos(angle) * 5);
         UI.pushWindow("myWindowDef");
 
         this.currentView = UI.LSelect("view", this.views);
-        UI.LColor("boxColor1",this.boxColor1)
-        UI.LColor("boxColor2",this.boxColor2)
-        UI.LColor("boxColor3",this.boxColor3)
+        UI.LColor("boxColor1", this.boxColor1)
+        UI.LColor("boxColor2", this.boxColor2)
+        UI.LColor("boxColor3", this.boxColor3)
         UI.pushGroup("SSAO");
         this.useAO = UI.LBool("enabled", true,);
-        this.materialAO.setUniform("radius", UI.LFloatSlider("radius",0.2,0,1));
-        this.materialAO.setUniform("strength", UI.LFloatSlider("strength",1,0,1))
+        this.materialAO.setUniform("radius", UI.LFloatSlider("radius", 0.2, 0, 1));
+        this.materialAO.setUniform("strength", UI.LFloatSlider("strength", 1, 0, 1))
         UI.popGroup();
         UI.popWindow()
 
@@ -278,12 +293,13 @@ export default class DeferredTest {
         this.material1.setUniform("color", new Vector4(this.boxColor1.r, this.boxColor1.g, this.boxColor1.b, 0))
         this.material2.setUniform("color", new Vector4(this.boxColor2.r, this.boxColor2.g, this.boxColor2.b, 0))
         this.material3.setUniform("color", new Vector4(this.boxColor3.r, this.boxColor3.g, this.boxColor3.b, 0))
-        for(let m of this.modelsLight){
+        for (let m of this.modelsLight) {
             m.material.setUniform("size", new Vector2(this.canvas.width, this.canvas.height))
         }
 
 
         this.materialCombine.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))
+        this.materialDofBlur.setUniform("size", new Vector4(this.canvas.width, this.canvas.height, 0, 0))
     }
 
     prepDraw(context: GPUCanvasContext) {
@@ -298,7 +314,7 @@ export default class DeferredTest {
         }
 
         this.lightPass.update(this.canvas.width, this.canvas.height)
-        for(let m of this.modelsLight){
+        for (let m of this.modelsLight) {
             m.material.setTexture("textureNormal", this.gBufferPass.gBufferTextureNormal);
             m.material.setTexture("texturePosition", this.gBufferPass.gBufferTexturePosition);
             m.material.setTexture("textureAlbedo", this.gBufferPass.gBufferTextureAlbedo);
@@ -314,6 +330,11 @@ export default class DeferredTest {
         this.materialCombine.setTexture("albedo", this.gBufferPass.gBufferTextureAlbedo);
         this.materialCombine.setTexture("normal", this.gBufferPass.gBufferTextureNormal);
         this.materialCombine.setTexture("light", this.lightPass.texture);
+        this.materialCombine.setTexture("positionTexture", this.gBufferPass.gBufferTexturePosition);
+
+        this.dofBlurPass.update(this.canvas.width, this.canvas.height);
+        this.materialDofBlur.setTexture("texture1", this.combinePass.texture);
+
         this.mainRenderPass.updateForCanvas(this.canvas.width, this.canvas.height, context)
 
         if (this.currentView == Views.albedoGbuffer) this.materialFullScreen.setTexture("texture1", this.gBufferPass.gBufferTextureAlbedo);
@@ -322,6 +343,7 @@ export default class DeferredTest {
         else if (this.currentView == Views.ao) this.materialFullScreen.setTexture("texture1", this.aoPass.texture);
         else if (this.currentView == Views.combine) this.materialFullScreen.setTexture("texture1", this.combinePass.texture);
         else if (this.currentView == Views.light) this.materialFullScreen.setTexture("texture1", this.lightPass.texture);
+        else if (this.currentView == Views.dofBlur) this.materialFullScreen.setTexture("texture1", this.dofBlurPass.texture);
     }
 
     draw(commandEncoder: GPUCommandEncoder) {
@@ -331,6 +353,8 @@ export default class DeferredTest {
             this.aoPass.draw(commandEncoder);
         }
         this.combinePass.draw(commandEncoder);
+        this.dofBlurPass.draw(commandEncoder);
         this.mainRenderPass.draw(commandEncoder);
+
     }
 }
