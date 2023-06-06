@@ -80,23 +80,23 @@ export default class ForwardTest {
 
 
 
-        this.material1 = new ForwardMaterial(this.device, "material1", this.normalShader, this.presentationFormat, this.mainPassNeedsDepth);
+        this.material1 = new ForwardMaterial(this.device, "material1", this.normalShader, this.presentationFormat, this.mainPassNeedsDepth,4);
         this.model1 = new Model(this.device, "Model1", this.mesh1, this.material1, true, this.camera);//model adds transform data
         this.model1.transform.position = new Vector3(2.4, 0, 0);
 
 
-        this.material2 = new ForwardMaterial(this.device, "material2", this.colorShader, this.presentationFormat, this.mainPassNeedsDepth);
+        this.material2 = new ForwardMaterial(this.device, "material2", this.colorShader, this.presentationFormat, this.mainPassNeedsDepth,4);
         this.model2 = new Model(this.device, "Model2", this.mesh3, this.material2, true, this.camera);
         this.model2.transform.position = new Vector3(0.8, 0, 0);
         this.material2.setUniform("color", new Vector4(0.3, 0.6, 1.0, 1))
 
 
-        this.material3 = new ForwardMaterial(this.device, "material3", this.uvShader, this.presentationFormat, this.mainPassNeedsDepth);
+        this.material3 = new ForwardMaterial(this.device, "material3", this.uvShader, this.presentationFormat, this.mainPassNeedsDepth,4);
         this.model3 = new Model(this.device, "Model3", this.mesh1, this.material3, true, this.camera);
         this.model3.transform.position = new Vector3(-0.8, 0, 0);
 
 
-        this.material4 = new ForwardMaterial(this.device, "material4", this.textureShader, this.presentationFormat, this.mainPassNeedsDepth);
+        this.material4 = new ForwardMaterial(this.device, "material4", this.textureShader, this.presentationFormat, this.mainPassNeedsDepth,4);
         this.material4.setTexture("texture1", this.myTexture);
         this.material4.setSampler("sampler1", this.sampler);
 

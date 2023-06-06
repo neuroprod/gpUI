@@ -6,13 +6,14 @@ export default class ForwardMaterial extends AbstractMaterial {
 
 
     public depthWriteEnabled: boolean = true;
-    public multiSampleCount: GPUSize32 = 4;
+    public multiSampleCount: GPUSize32 = 1;
     private presentationFormat: GPUTextureFormat
     private needsDepth: boolean =true;
 
-    constructor(device: GPUDevice, label: string, shader: Shader, presentationFormat: GPUTextureFormat,needsDepth:boolean =true) {
+    constructor(device: GPUDevice, label: string, shader: Shader, presentationFormat: GPUTextureFormat,needsDepth:boolean =true,multisampleCount:number=1) {
         super(device, label, shader);
         this.needsDepth=needsDepth
+        this.multiSampleCount =multisampleCount;
         this.presentationFormat = presentationFormat;
         if (this.presentationFormat) {
             this.colorTargets.push({format: this.presentationFormat})

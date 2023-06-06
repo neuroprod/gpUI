@@ -6,7 +6,7 @@ export default class ForwardAddMaterial extends AbstractMaterial {
 
 
     public depthWriteEnabled: boolean = true;
-    public multiSampleCount: GPUSize32 = 4;
+    public multiSampleCount: GPUSize32 = 1;
     private presentationFormat: GPUTextureFormat
     private needsDepth: boolean =true;
 

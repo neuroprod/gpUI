@@ -56,9 +56,9 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
     let rC =textureLoad(texture1,  uvPos,0);
     let base = rC.xyz;
     let m = rC.w;
-    for(var i=-3;i<4;i+=1)
+    for(var i=-2;i<3;i+=1)
     {
-        for(var j=-3;j<4;j+=1)
+        for(var j=-2;j<3;j+=1)
         {
             let uv =uvPos+vec2<i32>(j,i);
             let r =textureLoad(texture1,   uv,0);
