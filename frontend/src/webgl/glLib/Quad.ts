@@ -1,59 +1,42 @@
 import GL from "./GL";
 import Program from "./Program";
 
-export default class  Quad
-{
-    private gl: WebGL2RenderingContext;
-    private planeVertexBuffer: WebGLBuffer;
-    private PlaneUVBuffer: WebGLBuffer;
+export default class Quad {
+  private gl: WebGL2RenderingContext;
+  private planeVertexBuffer: WebGLBuffer;
+  private PlaneUVBuffer: WebGLBuffer;
 
+  constructor(glMain: GL) {
+    this.gl = glMain.gl;
+    let gl = this.gl;
 
-    constructor(glMain:GL)
-    {
+    this.planeVertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.planeVertexBuffer);
+    const vertices = [
+      -1.0, -1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0,
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-        this.gl =glMain.gl;
-        let gl = this.gl;
+    this.PlaneUVBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.PlaneUVBuffer);
+    const textureCoords = [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0];
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array(textureCoords),
+      gl.STATIC_DRAW
+    );
+  }
 
-        this.planeVertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.planeVertexBuffer);
-        const  vertices = [-1.0, -1.0, 0.0, -1.0, 1.0, 0.0,
-            1.0, -1.0, 0.0,
-            1.0, 1.0, 0.0
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+  draw(program: Program) {
+    if (program.program) {
+      let gl = this.gl;
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.planeVertexBuffer);
+      gl.vertexAttribPointer(program.vertexAttribute, 3, gl.FLOAT, false, 0, 0);
 
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.PlaneUVBuffer);
+      gl.vertexAttribPointer(program.uvAttribute0, 2, gl.FLOAT, false, 0, 0);
 
-
-
-        this.PlaneUVBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.PlaneUVBuffer);
-       const textureCoords = [
-
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 0.0,
-            1.0, 1.0,
-
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
-
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-
-
-    draw(program:Program)
-    {
-        if(program.program) {
-            let gl = this.gl;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.planeVertexBuffer);
-            gl.vertexAttribPointer(program.vertexAttribute, 3, gl.FLOAT, false, 0, 0);
-
-                gl.bindBuffer(gl.ARRAY_BUFFER, this.PlaneUVBuffer);
-                gl.vertexAttribPointer(program.uvAttribute0, 2, gl.FLOAT, false, 0, 0);
-
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-        }
-
-    }
-
+  }
 }

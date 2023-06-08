@@ -2,27 +2,23 @@ import Shader from "../Shader";
 import Camera from "../Camera";
 import Transform from "../Transform";
 
+export default class TextureShader3D extends Shader {
+  constructor(device: GPUDevice) {
+    super(device, "TextureShader3D");
 
-export default class TextureShader3D extends Shader
-{
+    //set needed atributes
+    this.addAttribute("position", 3);
+    this.addAttribute("uv0", 2);
+    //set needed uniforms
+    //  this.addUniform("color",new Vector4(1,0,0,1));
+    this.addSampler("sampler1");
+    this.addTexture("texture1"); //implement texture types
 
-    constructor(device: GPUDevice) {
-        super(device,'TextureShader3D');
+    this.makeShaders();
+  }
 
-        //set needed atributes
-        this.addAttribute("position",3);
-        this.addAttribute("uv0",2);
-        //set needed uniforms
-      //  this.addUniform("color",new Vector4(1,0,0,1));
-        this.addSampler("sampler1");
-        this.addTexture("texture1");//implement texture types
-
-
-        this.makeShaders();
-    }
-
-    getShader(): string {
-        return /* wgsl */`
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -51,5 +47,5 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

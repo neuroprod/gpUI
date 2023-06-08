@@ -5,7 +5,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "format": "prettier \"./src/**/*.{js,jsx,ts,tsx,scss,md}\" --write --loglevel warn"
   },
   "dependencies": {
     "@math.gl/types": "^3.6.3",

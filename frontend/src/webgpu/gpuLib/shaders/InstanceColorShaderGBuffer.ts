@@ -3,22 +3,19 @@ import Camera from "../Camera";
 import Transform from "../Transform";
 import { Vector4 } from "math.gl";
 
-export default class InstanceColorShaderGBuffer extends Shader
-{
+export default class InstanceColorShaderGBuffer extends Shader {
+  constructor(device: GPUDevice, numInstances: number) {
+    super(device, "InstanceColorShaderGBuffer");
 
+    this.addAttribute("position", 3);
+    this.addAttribute("normal", 3);
+    this.addUniform("color", new Vector4(1, 0, 0, 1));
+    this.numInstances = numInstances;
+    this.makeShaders();
+  }
 
-    constructor(device: GPUDevice,numInstances:number) {
-        super(device,'InstanceColorShaderGBuffer');
-
-        this.addAttribute("position",3);
-        this.addAttribute("normal",3);
-        this.addUniform("color",new Vector4(1,0,0,1));
-        this.numInstances =numInstances;
-        this.makeShaders();
-    }
-
-    getShader(): string {
-        return /* wgsl */`
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -67,5 +64,5 @@ fn mainFragment( @location(0) fragPosition: vec3f, @location(1) fragNormal: vec3
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

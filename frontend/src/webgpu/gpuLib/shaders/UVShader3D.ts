@@ -2,22 +2,18 @@ import Shader from "../Shader";
 import Camera from "../Camera";
 import Transform from "../Transform";
 
+export default class UVShader3D extends Shader {
+  constructor(device: GPUDevice) {
+    super(device, "UVShader3D");
 
-export default class UVShader3D extends Shader
-{
+    this.addAttribute("position", 3);
+    this.addAttribute("uv0", 2);
 
-    constructor(device: GPUDevice) {
-        super(device,'UVShader3D');
+    this.makeShaders();
+  }
 
-        this.addAttribute("position",3);
-        this.addAttribute("uv0",2);
-
-
-        this.makeShaders();
-    }
-
-    getShader(): string {
-        return /* wgsl */`
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -48,5 +44,5 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

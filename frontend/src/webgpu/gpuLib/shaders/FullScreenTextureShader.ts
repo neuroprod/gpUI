@@ -1,30 +1,23 @@
 import Shader from "../Shader";
-import {Vector4} from "math.gl";
+import { Vector4 } from "math.gl";
 
+export default class FullScreenTextureShader extends Shader {
+  constructor(device: GPUDevice) {
+    super(device, "TextureShader3D");
 
+    //set needed atributes
+    this.addAttribute("position", 3);
+    this.addAttribute("uv0", 2);
+    //set needed uniforms
+    this.addUniform("size", new Vector4(1, 1, 0, 1));
 
-export default class FullScreenTextureShader extends Shader
-{
+    this.addTexture("texture1", "unfilterable-float"); //implement texture types
 
-    constructor(device: GPUDevice) {
-        super(device,'TextureShader3D');
+    this.makeShaders();
+  }
 
-        //set needed atributes
-        this.addAttribute("position",3);
-        this.addAttribute("uv0",2);
-        //set needed uniforms
-         this.addUniform("size",new Vector4(1,1,0,1));
-
-        this.addTexture("texture1",'unfilterable-float');//implement texture types
-
-
-        this.makeShaders();
-    }
-
-    getShader(): string {
-
-
-        return /* wgsl */`
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -54,5 +47,5 @@ color.w =1.0;
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

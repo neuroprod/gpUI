@@ -1,33 +1,27 @@
 import Shader from "../Shader";
-import {Vector4} from "math.gl";
+import { Vector4 } from "math.gl";
 import Camera from "../Camera";
 
+export default class CombineShader extends Shader {
+  constructor(device: GPUDevice) {
+    super(device, "CombineShader");
 
+    //set needed atributes
+    this.addAttribute("position", 3);
+    this.addAttribute("uv0", 2);
+    //set needed uniforms
+    this.addUniform("size", new Vector4(1, 1, 0, 1));
 
-export default class CombineShader extends Shader
-{
+    this.addTexture("ao", "unfilterable-float");
+    this.addTexture("albedo", "unfilterable-float");
+    this.addTexture("normal", "unfilterable-float");
+    this.addTexture("light", "unfilterable-float");
+    this.addTexture("positionTexture", "unfilterable-float");
+    this.makeShaders();
+  }
 
-    constructor(device: GPUDevice) {
-        super(device,'CombineShader');
-
-        //set needed atributes
-        this.addAttribute("position",3);
-        this.addAttribute("uv0",2);
-        //set needed uniforms
-        this.addUniform("size",new Vector4(1,1,0,1));
-
-        this.addTexture("ao",'unfilterable-float');
-        this.addTexture("albedo",'unfilterable-float');
-        this.addTexture("normal",'unfilterable-float');
-        this.addTexture("light",'unfilterable-float');
-        this.addTexture("positionTexture",'unfilterable-float');
-        this.makeShaders();
-    }
-
-    getShader(): string {
-
-
-        return /* wgsl */`
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -91,5 +85,5 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

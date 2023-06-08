@@ -1,30 +1,27 @@
 import Shader from "../Shader";
 import Camera from "../Camera";
 import Transform from "../Transform";
-import {Vector2, Vector4} from "math.gl";
+import { Vector2, Vector4 } from "math.gl";
 
-export default class LightShader extends Shader
-{
+export default class LightShader extends Shader {
+  constructor(device: GPUDevice) {
+    super(device, "LightShader");
 
-    constructor(device: GPUDevice) {
-        super(device,'LightShader');
+    this.addAttribute("position", 3);
 
-        this.addAttribute("position",3);
+    this.addUniform("color", new Vector4(1, 1, 1, 1));
+    this.addUniform("lightPos", new Vector4(1, 1, 1, 1));
+    this.addUniform("size", new Vector2(1, 1));
+    this.addUniform("extra", new Vector2(1, 1));
+    this.addTexture("textureNormal", "unfilterable-float");
+    this.addTexture("texturePosition", "unfilterable-float");
+    this.addTexture("textureAlbedo", "unfilterable-float");
 
-        this.addUniform("color",new Vector4(1,1,1,1));
-        this.addUniform("lightPos",new Vector4(1,1,1,1));
-        this.addUniform("size",new Vector2(1,1));
-        this.addUniform("extra",new Vector2(1,1));
-        this.addTexture("textureNormal",'unfilterable-float')
-        this.addTexture("texturePosition",'unfilterable-float')
-        this.addTexture("textureAlbedo",'unfilterable-float')
+    this.makeShaders();
+  }
 
-
-        this.makeShaders();
-    }
-
-    getShader(): string {
-        return /* wgsl */`
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -137,5 +134,5 @@ fn mainFragment(@location(0) uvScreen: vec2f) -> @location(0) vec4f
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

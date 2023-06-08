@@ -3,19 +3,17 @@ import Camera from "../Camera";
 import Transform from "../Transform";
 import { Vector4 } from "math.gl";
 
-export default class ColorShader3D extends Shader
-{
+export default class ColorShader3D extends Shader {
+  constructor(device: GPUDevice) {
+    super(device, "ColorShader3D");
 
-    constructor(device: GPUDevice) {
-        super(device,'ColorShader3D');
+    this.addAttribute("position", 3);
+    this.addUniform("color", new Vector4(1, 0, 0, 1));
+    this.makeShaders();
+  }
 
-        this.addAttribute("position",3);
-        this.addUniform("color",new Vector4(1,0,0,1));
-        this.makeShaders();
-    }
-
-    getShader(): string {
-      return /* wgsl */`
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -44,5 +42,5 @@ fn mainFragment() -> @location(0) vec4f
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

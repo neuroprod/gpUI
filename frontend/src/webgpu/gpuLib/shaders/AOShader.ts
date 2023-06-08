@@ -1,50 +1,44 @@
 import Shader from "../Shader";
-import {Vector2, Vector3, Vector4} from "math.gl";
+import { Vector2, Vector3, Vector4 } from "math.gl";
 import Camera from "../Camera";
 
+export default class AOShader extends Shader {
+  constructor(device: GPUDevice) {
+    super(device, "AOShader");
 
+    //set needed atributes
+    this.addAttribute("position", 3);
+    this.addAttribute("uv0", 2);
+    //set needed uniforms
+    this.addUniform("size", new Vector2(1, 1));
+    this.addUniform("radius", 0.5);
+    this.addUniform("strength", 0.8);
+    this.addTexture("textureNormal", "unfilterable-float");
+    this.addTexture("texturePosition", "unfilterable-float");
 
-export default class AOShader extends Shader
-{
+    this.makeShaders();
+  }
+  getKernel() {
+    let numSamples = 16;
+    let s = "const kernel = array<vec3f, " + numSamples + ">(";
+    for (let i = 0; i < numSamples; i++) {
+      let v = new Vector3(
+        Math.random() * 2.0 - 1.0,
+        Math.random() * 2.0 - 1.0,
+        Math.random()
+      );
+      v.normalize();
+      v.z += 1;
+      v.normalize();
+      v.scale(Math.random());
 
-    constructor(device: GPUDevice) {
-        super(device,'AOShader');
-
-        //set needed atributes
-        this.addAttribute("position",3);
-        this.addAttribute("uv0",2);
-        //set needed uniforms
-        this.addUniform("size",new Vector2(1,1));
-        this.addUniform("radius",0.5);
-        this.addUniform("strength",0.8);
-        this.addTexture("textureNormal",'unfilterable-float');
-        this.addTexture("texturePosition",'unfilterable-float');
-
-        this.makeShaders();
-
-
-
+      s += "vec3(" + v.x + ", " + v.y + "," + v.z + "),";
     }
-    getKernel()
-    {
-        let numSamples =16;
-        let s ="const kernel = array<vec3f, "+numSamples+">("
-        for (let i = 0; i < numSamples; i++) {
-            let v = new Vector3(Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0,Math.random());
-            v.normalize();
-            v.z+=1.;
-            v.normalize();
-            v.scale(Math.random())
-
-            s+= "vec3("+v.x+", "+v.y+","+v.z+"),"
-        }
-        s+=" );"
-        return s;
-    }
-    getShader(): string {
-
-
-        return /* wgsl */`
+    s += " );";
+    return s;
+  }
+  getShader(): string {
+    return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
 struct VertexOutput
 {
@@ -113,5 +107,5 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 }
 ///////////////////////////////////////////////////////////
 `;
-    }
+  }
 }

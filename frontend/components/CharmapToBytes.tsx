@@ -5,7 +5,7 @@ import Main from "../src/TextureTool/Main";
 
 
 export default class CharmapToBytes extends React.Component {
-    private main: Main;
+    private main!: Main;
 
     componentDidMount() {
 
