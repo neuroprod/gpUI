@@ -1,7 +1,7 @@
 export default class FillBatchMaterial {
   private device: GPUDevice;
   private shader: GPUShaderModule;
-  public pipeLine: GPURenderPipeline;
+  public pipeLine!: GPURenderPipeline;
   private pipelineLayout: GPUPipelineLayout;
   private presentationFormat: GPUTextureFormat;
   private needsDepth: boolean = true;

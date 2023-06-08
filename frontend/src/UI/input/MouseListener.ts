@@ -115,7 +115,7 @@ export default class MouseListener {
     this.isDirty = 1;
   }
 
-  setMousePosition(e: MouseEvent) {
+  setMousePosition(e: any) {
     this.mousePos.x = e.offsetX;
     this.mousePos.y = e.offsetY;
     this.isDirty = 1;

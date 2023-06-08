@@ -4,7 +4,7 @@ export default class FontTexture {
   public texture: WebGLTexture;
 
   constructor(gl: WebGL2RenderingContext | WebGLRenderingContext) {
-    this.texture = gl.createTexture();
+    this.texture = <WebGLTexture>gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);

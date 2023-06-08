@@ -20,7 +20,7 @@ export class LNumberSettings extends LComponentSettings {
 }
 
 export default class LNumber extends LComponent {
-  private value: number;
+  private value: number=0;
   private stringRef: string;
   private ref: any;
 
@@ -42,7 +42,7 @@ export default class LNumber extends LComponent {
     type: NumberType = NumberType.FLOAT
   ) {
     super(id, label, settings);
-    this.value = value;
+    if(value) this.value = value;
     this.stringRef = label;
     this.ref = ref;
 

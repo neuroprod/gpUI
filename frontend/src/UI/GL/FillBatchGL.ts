@@ -10,8 +10,8 @@ export default class FillBatchGL {
   numIndices = 0;
   constructor(gl: WebGL2RenderingContext | WebGLRenderingContext) {
     this.gl = gl;
-    this.vertexBuffer = gl.createBuffer();
-    this.indexBuffer = gl.createBuffer();
+    this.vertexBuffer =<WebGLBuffer>gl.createBuffer();
+    this.indexBuffer = <WebGLBuffer>gl.createBuffer();
   }
   destroy() {
     if (this.vertexBuffer) this.gl.deleteBuffer(this.vertexBuffer);

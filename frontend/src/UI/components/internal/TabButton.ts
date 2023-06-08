@@ -26,14 +26,14 @@ export class TabButtonSettings extends ComponentSettings {
 
 export default class TabButton extends Component {
   private label: string;
-  private textPos: Vec2;
-  private textMaxSize: number;
+  private textPos: Vec2=new Vec2();
+  private textMaxSize: number=0;
   index: number = 0;
   private numItems: number = 1;
-  private selected: boolean;
+  private selected: boolean=false;
   private tryDrag: boolean = false;
   release: boolean = false;
-  private marginLeft: number;
+  private marginLeft: number=0;
 
   constructor(id: number, label: string, settings: TabButtonSettings) {
     super(id, settings);

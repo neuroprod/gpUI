@@ -23,7 +23,7 @@ export default class DragPopUp extends PopUpWindow {
   private btnOkSettings: ButtonBaseSettings;
   private btnCancelSettings: ButtonBaseSettings;
 
-  private value: number;
+
   private hCompBtnSettings: ComponentSettings;
   private precision: number;
   private sliderSettings: LSliderSettings;

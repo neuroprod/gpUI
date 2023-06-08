@@ -28,7 +28,7 @@ export class LComponentSettings extends ComponentSettings {
 export default class LComponent extends Component {
   valueDirty: boolean = false;
   protected label: string;
-  private maxLabelWidth: number;
+  private maxLabelWidth: number=0;
   private labelPos = new Vec2();
   private iconPos = new Vec2();
   constructor(id: number, label: string, settings: LComponentSettings) {

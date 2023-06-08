@@ -22,7 +22,7 @@ export class SeparatorSettings extends ComponentSettings {
 export default class Separator extends Component {
   protected label: string;
 
-  private maxLabelWidth: number;
+  private maxLabelWidth: number=0;
   private labelPos = new Vec2();
 
   private showLabel: boolean;

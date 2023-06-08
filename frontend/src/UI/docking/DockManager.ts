@@ -185,7 +185,11 @@ export default class DockManager {
   }
 
   public saveLocal() {
-    let data = { panelData: [], dockData: {} };
+    let data =
+        {
+          panelData : [],
+          dockData: {}
+        };
 
     for (let i = 0; i < this.dockingPanels.length; i++) {
       let p = this.dockingPanels[i];
@@ -194,6 +198,7 @@ export default class DockManager {
         this.dockingPanels.splice(i, 1);
         i--;
       } else {
+        // @ts-ignore
         data.panelData.push(p.getSaveData());
       }
     }

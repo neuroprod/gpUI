@@ -248,8 +248,9 @@ export default class Component {
         return;
       }
       arr.push(this.id);
-
-      parent = UI_I.drawBatches.get(this.id);
+      let parentBatch =UI_I.drawBatches.get(this.id);
+      if(!parentBatch)return;
+      parent = parentBatch;
     }
     if (this.drawChildren) {
       for (let child of this.children) {

@@ -22,6 +22,7 @@ export default class DrawBatch {
   }
 
   removeFromParent() {
+    if(this.parent)
     this.parent.removeChild(this);
   }
   removeChild(drawBatch: DrawBatch) {
@@ -36,7 +37,7 @@ export default class DrawBatch {
     drawBatch.textureBatch.clear();
     drawBatch.parent = null;
   }
-  addChild(drawBatch) {
+  addChild(drawBatch:DrawBatch) {
     if (drawBatch.parent) {
       drawBatch.removeFromParent();
     }

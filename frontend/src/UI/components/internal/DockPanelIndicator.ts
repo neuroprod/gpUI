@@ -14,7 +14,7 @@ export class DockPanelIndicatorSettings extends ComponentSettings {
 
 export default class DockPanelIndicator extends Component {
   private item: DockTabData;
-  private isOverDrag: Boolean;
+  private isOverDrag: Boolean=false;
   constructor(
     id: number,
     item: DockTabData,

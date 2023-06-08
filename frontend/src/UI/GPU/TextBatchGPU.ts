@@ -1,8 +1,8 @@
 import TextBatch from "../draw/TextBatch";
 
 export default class TextBatchGPU {
-  public vertexBuffer: GPUBuffer;
-  public indexBuffer: GPUBuffer;
+  public vertexBuffer!: GPUBuffer;
+  public indexBuffer!: GPUBuffer;
   numIndices: number = 0;
   numVertices: number = 0;
   private device: GPUDevice;

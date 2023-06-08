@@ -23,7 +23,7 @@ export default class LBoolean extends LComponent {
   ) {
     super(id, "", settings);
     this.labelCheck = label;
-    if (ref == null) {
+    if (ref == null && value!=null) {
       this.value = value;
     } else {
       this.value = ref[label];

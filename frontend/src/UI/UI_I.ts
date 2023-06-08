@@ -201,7 +201,7 @@ export default class UI_I {
       this.currentComponent.onPopComponent();
     }
 
-    this.currentComponent = this.currentComponent.parent;
+    this.currentComponent = <Component>this.currentComponent.parent;
     this.currentComponent.useThisFrame = true;
   }
 
@@ -295,7 +295,7 @@ export default class UI_I {
     }
   }
 
-  static setMouseOverComponent(comp) {
+  static setMouseOverComponent(comp:Component|null) {
     if (comp === this.mouseOverComponent) {
       return;
     }
@@ -499,7 +499,8 @@ export default class UI_I {
     let batch = new DrawBatch(id, clipRect);
     this.drawBatches.set(id, batch);
 
-    this.drawBatches.get(parentDrawBatchID).addChild(batch);
+    let parent =this.drawBatches.get(parentDrawBatchID)
+    if(parent)parent.addChild(batch);
   }
 
   static popDrawBatch() {

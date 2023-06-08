@@ -33,9 +33,9 @@ export class InputBaseSettings extends ComponentSettings {
 
 export default class InputBase extends Component {
   private text: string;
-  private textPos: Vec2;
+  private textPos: Vec2=new Vec2();
   private cursorDrawPos: Vec2 = new Vec2();
-  private textMaxSize: number;
+  private textMaxSize: number=0;
   private charWidth: number;
   private cursorPos: number = 0;
   private isDragging: boolean = false;

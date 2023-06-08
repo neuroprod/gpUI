@@ -1,14 +1,14 @@
 export default class FBO {
-  public texture: WebGLTexture;
+  public texture!: WebGLTexture;
 
   private gl: WebGL2RenderingContext | WebGLRenderingContext;
 
   private width: number;
   private height: number;
 
-  private fbo: WebGLFramebuffer;
-  private renderbuffer: WebGLRenderbuffer;
-  private _resizeTimeOut: NodeJS.Timeout;
+  private fbo!: WebGLFramebuffer;
+  private renderbuffer!: WebGLRenderbuffer;
+  private _resizeTimeOut!: NodeJS.Timeout;
   private repeat: boolean = false;
 
   constructor(
@@ -28,10 +28,10 @@ export default class FBO {
 
   makeBuffers() {
     let gl = this.gl;
-    this.fbo = gl.createFramebuffer();
+    this.fbo = <WebGLFramebuffer>gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
 
-    this.texture = this.gl.createTexture();
+    this.texture = <WebGLTexture>this.gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
     gl.texImage2D(
       gl.TEXTURE_2D,
@@ -58,7 +58,7 @@ export default class FBO {
 
     gl.bindTexture(gl.TEXTURE_2D, null);
 
-    this.renderbuffer = gl.createRenderbuffer();
+    this.renderbuffer = <WebGLRenderbuffer>gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderbuffer);
     gl.renderbufferStorage(
       gl.RENDERBUFFER,
@@ -85,7 +85,7 @@ export default class FBO {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
-  resize(width, height) {
+  resize(width:number, height:number) {
     if (this.width == width && this.height == height) return;
     this.width = width;
     this.height = height;
@@ -94,7 +94,7 @@ export default class FBO {
     this.makeBuffers();
   }
 
-  delayedResize(width, height) {
+  delayedResize(width:number, height:number) {
     if (this.width == width && this.height == height) return;
     this.width = width;
     this.height = height;

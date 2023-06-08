@@ -295,7 +295,7 @@ export default class UI_IC {
     return v;
   }
 
-  static colorButton(name, color, settings?: ColorButtonSettings) {
+  static colorButton(name:string, color:Color, settings?: ColorButtonSettings) {
     if (!UI_I.setComponent(name)) {
       if (!settings) settings = new ColorButtonSettings();
       let comp = new ColorButton(UI_I.getID(name), color, settings);
@@ -307,7 +307,7 @@ export default class UI_IC {
   }
 
   //doesn't call pop!!!
-  static dirtyButton(name, settings?: DirtyButtonSettings) {
+  static dirtyButton(name:string, settings?: DirtyButtonSettings) {
     if (!UI_I.setComponent(name)) {
       if (!settings) settings = new DirtyButtonSettings();
       let comp = new DirtyButton(UI_I.getID(name), settings);
@@ -317,7 +317,7 @@ export default class UI_IC {
     return comp.getReturnValue();
   }
 
-  static texture(name, texture: UITexture, settings?: TextureSettings) {
+  static texture(name:string, texture: UITexture, settings?: TextureSettings) {
     if (!UI_I.setComponent(name)) {
       if (!settings) settings = new TextureSettings();
       let comp = new Texture(UI_I.getID(name), texture, settings);
@@ -337,7 +337,7 @@ export default class UI_IC {
     return retValue;
   }
 
-  static settingsButton(name, settings?: SettingsButtonSettings) {
+  static settingsButton(name:string, settings?: SettingsButtonSettings) {
     if (!UI_I.setComponent(name)) {
       if (!settings) settings = new SettingsButtonSettings();
       let comp = new SettingsButton(UI_I.getID(name), settings);

@@ -31,10 +31,10 @@ export default class Event extends Component {
   private showTime = 2000;
 
   private textPos: Vec2 = new Vec2();
-  private maxTextWidth: number;
+  private maxTextWidth: number=0;
 
   private labelPos: Vec2 = new Vec2();
-  private maxLabelWidth: number;
+  private maxLabelWidth: number=0;
   private isError: boolean = false;
   private rightRect: Rect = new Rect();
   private leftRect: Rect = new Rect();

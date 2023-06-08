@@ -20,7 +20,7 @@ export default class GroupTitle extends Component {
   private label: string;
   private textPos: Vec2 = new Vec2();
   private iconPos: Vec2 = new Vec2();
-  private textMaxSize: number;
+  private textMaxSize: number=0;
   private isOpen: boolean;
 
   constructor(
