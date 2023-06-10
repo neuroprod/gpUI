@@ -66,8 +66,7 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
     let uvS =  vec2<i32>(floor(uv*uniforms.size.xy));
-      let uvSH =  vec2<i32>(floor(uv*uniforms.size.xy*0.5));
-    let ao = textureLoad(ao, uvSH,0).x;
+    let ao = textureLoad(ao, uvS,0).x;
     var l = textureLoad(light, uvS,0).xyz;
     let alb =textureLoad(albedo, uvS,0);
     let worldPos =textureLoad(positionTexture, uvS,0).xyz;
