@@ -29,6 +29,7 @@ import ColorV from "../shared/ColorV";
 import DofBlurShader from "./gpuLib/shaders/DofBlurShader";
 import InstanceColorShaderGBuffer from "./gpuLib/shaders/InstanceColorShaderGBuffer";
 import UniformGroup from "./gpuLib/UniformGroup";
+import TimeStampQuery from "./gpuLib/TimeStampQuery";
 
 enum Views {
   dofBlur,
@@ -107,6 +108,8 @@ export default class DeferredTest {
   private instanceMaterial: GBufferMaterial;
   private modelInst: Model;
   private instanceUniforms: UniformGroup;
+  public useTimeStampQuery: boolean;
+  public tsq!: TimeStampQuery;
 
   constructor(
     device: GPUDevice,
@@ -122,6 +125,12 @@ export default class DeferredTest {
   }
 
   init() {
+
+    if(this.useTimeStampQuery)
+    {
+      this.tsq =new TimeStampQuery(this.device)
+    }
+
     this.quad = new Quad(this.device);
     this.cube = new Box(this.device, 1, 0.1, 0.1);
     this.sphere = new Sphere(this.device, 1);
@@ -283,9 +292,7 @@ export default class DeferredTest {
       this.lightPass.add(model);
     }
 
-    /*this.modelAO = new Model(this.device, "modelAO", this.quad, this.materialAO, false, this.camera);
-        this.materialAO.setTexture("textureNormal", this.gBufferPass.gBufferTextureNormal);
-        this.materialAO.setTexture("texturePosition", this.gBufferPass.gBufferTexturePosition);*/
+
 
     this.aoPass = new TextureRenderPass(this.device, "r8unorm");
     this.aoPass.update(this.canvas.width, this.canvas.height);
@@ -435,7 +442,14 @@ export default class DeferredTest {
     let angle = Date.now() / 10000;
     this.camera.eye = new Vector3(Math.sin(angle) * 6, 0, Math.cos(angle) * 5);
     UI.pushWindow("myWindowDef");
-
+    if(this.tsq){
+      UI.LText(this.tsq.totalTime+"ms","render Time");
+      UI.LText(this.tsq.timeArray[0]+"ms","gbuffer pass");
+      UI.LText(this.tsq.timeArray[1]+"ms","ao pass");
+      UI.LText(this.tsq.timeArray[2]+"ms","light pass");
+      UI.LText(this.tsq.timeArray[3]+"ms","combine pass");
+      UI.LText(this.tsq.timeArray[4]+"ms","dof pass");
+    }
     this.currentView = UI.LSelect("view", this.views);
     UI.LColor("boxColor1", this.boxColor1);
     //UI.LColor("boxColor2", this.boxColor2)
@@ -578,14 +592,22 @@ export default class DeferredTest {
   }
 
   draw(commandEncoder: GPUCommandEncoder) {
+
+    if(this.tsq)this.tsq.start(commandEncoder);
     this.gBufferPass.draw(commandEncoder);
+    if(this.tsq)this.tsq.setStamp(commandEncoder,1);
     this.lightPass.draw(commandEncoder);
+    if(this.tsq)this.tsq.setStamp(commandEncoder,2);
     if (this.useAO) {
       this.aoPass.draw(commandEncoder);
     }
+    if(this.tsq)this.tsq.setStamp(commandEncoder,3);
     this.combinePass.draw(commandEncoder);
+    if(this.tsq)this.tsq.setStamp(commandEncoder,4);
     this.dofBlurPass1.draw(commandEncoder);
     this.dofBlurPass2.draw(commandEncoder);
+    if(this.tsq)this.tsq.setStamp(commandEncoder,5);
     this.mainRenderPass.draw(commandEncoder);
+    if(this.tsq)this.tsq.stop(commandEncoder);
   }
 }

@@ -22,6 +22,7 @@ export default class Main {
   private forwardTest: ForwardTest;
   private deferredTest: DeferredTest;
   private showForward: boolean = false;
+  private useTimeStampQuery: boolean =true;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -40,14 +41,20 @@ export default class Main {
         this.presentationFormat,
         this.canvas
       );
+      this.deferredTest.useTimeStampQuery =this.useTimeStampQuery;
     });
   }
 
   async setup() {
     const adapter = await navigator.gpu.requestAdapter();
+    //--disable-dawn-features=disallow_unsafe_apis
+    // on mac: /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-dawn-features=disallow_unsafe_apis
     ///https://omar-shehata.medium.com/how-to-use-webgpu-timestamp-query-9bf81fb5344a test this
-    //this.device =await adapter.requestDevice({requiredFeatures: ["timestamp-query"],});
-    this.device = await adapter.requestDevice();
+    if(this.useTimeStampQuery) {
+      this.device = await adapter.requestDevice({requiredFeatures: ["timestamp-query"],});
+    }else{
+      this.device = await adapter.requestDevice();
+    }
     this.context = this.canvas.getContext("webgpu") as GPUCanvasContext;
     this.presentationFormat = navigator.gpu.getPreferredCanvasFormat();
     this.context.configure({
@@ -106,5 +113,8 @@ export default class Main {
     }
 
     this.device.queue.submit([commandEncoder.finish()]);
+    if (!this.showForward &&  this.useTimeStampQuery) {
+      this.deferredTest.tsq.finish();
+    }
   }
 }
