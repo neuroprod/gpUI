@@ -506,7 +506,7 @@ export default class DeferredTest {
     this.gBufferPass.update(this.canvas.width, this.canvas.height);
 
     if (this.useAO) {
-      this.aoPass.update(this.canvas.width, this.canvas.height);
+      this.aoPass.update(this.canvas.width/2, this.canvas.height/2);
       this.materialAO.setTexture(
         "textureNormal",
         this.gBufferPass.gBufferTextureNormal

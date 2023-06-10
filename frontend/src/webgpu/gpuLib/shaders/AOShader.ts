@@ -80,7 +80,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
       
       
       var value  =0.0;
-     for (var i: i32 = 0; i < 8; i++) {
+     for (var i: i32 = 0; i < 16; i++) {
         let samplePos3D = (TBN*(kernel[i]*uniforms.radius))+position;
  
         let posDistance  =distance(samplePos3D,camera.cameraWorld);
@@ -101,7 +101,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
         value+=1.0-smoothstep(0.02, uniforms.radius,dif);
          
      }
-     value/=8.0;
+     value/=16.0;
        
      return  vec4f(vec3f(value*uniforms.strength+(1.0-uniforms.strength)),1.0);
 }
