@@ -22,7 +22,7 @@ export default class Main {
   private forwardTest: ForwardTest;
   private deferredTest: DeferredTest;
   private showForward: boolean = false;
-  private useTimeStampQuery: boolean =true;
+  private useTimeStampQuery: boolean =false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
