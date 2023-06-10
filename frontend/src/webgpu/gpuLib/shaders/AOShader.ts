@@ -71,7 +71,7 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 
 fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
-     let normal=textureLoad(textureNormal,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
+     let normal=textureLoad(textureNormal,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz*2.0-1.0;
      let position=textureLoad(texturePosition,   vec2<i32>(floor(uv*uniforms.size.xy)),0).xyz;
      let randomVec =normalize(vec3f(random(uv),random(uv.yx +vec2f(3.9333)),random(uv.yx+vec2f(0.9))));
      let tangent   = normalize(randomVec - normal * dot(randomVec, normal));
@@ -98,7 +98,7 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
       /* if(dif<radius){
           value+=1.0;//-smoothstep(0.0, radius,dif);
          }*/
-        value+=1.0-smoothstep(0.02, uniforms.radius,dif);
+        value+=1.0-smoothstep(0.00, uniforms.radius,dif);
          
      }
      value/=8.0;

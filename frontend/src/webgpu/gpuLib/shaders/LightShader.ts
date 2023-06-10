@@ -102,7 +102,7 @@ fn mainFragment(@location(0) uvScreen: vec2f) -> @location(0) vec4f
     }
  
     let albedo=pow(textureLoad(textureAlbedo,   uvPos ,0).xyz,vec3f(2.2));
-    let N=textureLoad(textureNormal,  uvPos ,0).xyz;
+    let N=textureLoad(textureNormal,  uvPos ,0).xyz*2.0-1.0;
     
     let F0 = vec3f(0.04);
   

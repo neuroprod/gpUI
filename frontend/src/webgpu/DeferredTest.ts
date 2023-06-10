@@ -452,6 +452,7 @@ export default class DeferredTest {
       UI.LText(this.tsq.timeArray[2]+"ms","ao pass");
       UI.LText(this.tsq.timeArray[3]+"ms","combine pass");
       UI.LText(this.tsq.timeArray[4]+"ms","dof pass");
+      UI.LText(this.tsq.timeArray[5]+"ms","final pass");
     }
     this.currentView = UI.LSelect("view", this.views);
     UI.LColor("boxColor1", this.boxColor1);

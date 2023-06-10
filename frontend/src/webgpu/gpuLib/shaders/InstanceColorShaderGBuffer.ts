@@ -57,7 +57,7 @@ fn mainFragment( @location(0) fragPosition: vec3f, @location(1) fragNormal: vec3
 {
   var output : GBufferOutput;
   output.position = vec4(fragPosition, 1.0);
-  output.normal = vec4(normalize(fragNormal), 1.0);
+  output.normal = vec4(normalize(fragNormal)*0.5+0.5, 1.0);
   output.albedo = uniforms.color;
 
   return output;
