@@ -96,7 +96,8 @@ export default class DeferredTest {
   private boxColor3 = new ColorV(0.79, 0.64, 0.0, 1.0);
   private materialLight: GBufferMaterial;
 
-  private dofBlurShader: DofBlurShader;
+  private dofBlurShaderH: DofBlurShader;
+  private dofBlurShaderV: DofBlurShader;
   private dofBlurPass1: TextureRenderPass;
   private materialDofBlur1: ForwardMaterial;
   private modelDofBlur1: Model;
@@ -360,20 +361,20 @@ export default class DeferredTest {
     this.materialCombine.setTexture("light", this.lightPass.texture);
     this.combinePass.add(this.modelCombine);
 
-    this.dofBlurShader = new DofBlurShader(this.device);
-
+    this.dofBlurShaderH = new DofBlurShader(this.device,true);
+    this.dofBlurShaderV = new DofBlurShader(this.device,false);
     this.dofBlurPass1 = new TextureRenderPass(this.device);
     this.dofBlurPass1.update(this.canvas.width, this.canvas.height);
     this.materialDofBlur1 = new ForwardMaterial(
       this.device,
       "materialDofBlur",
-      this.dofBlurShader,
+      this.dofBlurShaderH,
       this.combinePass.format,
       false
     );
     this.modelDofBlur1 = new Model(
       this.device,
-      "combine",
+      "dofH",
       this.quad,
       this.materialDofBlur1,
       false,
@@ -387,7 +388,7 @@ export default class DeferredTest {
     this.materialDofBlur2 = new ForwardMaterial(
       this.device,
       "materialDofBlur",
-      this.dofBlurShader,
+      this.dofBlurShaderV,
       this.combinePass.format,
       false
     );

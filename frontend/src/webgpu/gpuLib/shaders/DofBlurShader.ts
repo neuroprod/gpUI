@@ -2,9 +2,10 @@ import Shader from "../Shader";
 import { Vector4 } from "math.gl";
 
 export default class DofBlurShader extends Shader {
-  constructor(device: GPUDevice) {
+  private horizontal: boolean;
+  constructor(device: GPUDevice,horizontal:boolean=true) {
     super(device, "dofBlurShader");
-
+    this.horizontal =horizontal;
     //set needed atributes
     this.addAttribute("position", 3);
     this.addAttribute("uv0", 2);
@@ -15,7 +16,11 @@ export default class DofBlurShader extends Shader {
 
     this.makeShaders();
   }
-
+  getDir():string
+  {
+    if(this.horizontal)return "1,0";
+    return "0,1"
+  }
   getShader(): string {
     return /* wgsl */ `
 ///////////////////////////////////////////////////////////      
@@ -49,16 +54,16 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
     let rC =textureLoad(texture1,  uvPos,0);
     let base = rC.xyz;
     let m = rC.w;
-    for(var i=-2;i<3;i+=1)
+    let dir =vec2<i32>(${this.getDir()});
+    for(var i=-3;i<4;i+=1)
     {
-        for(var j=-2;j<3;j+=1)
-        {
-            let uv =uvPos+vec2<i32>(j,i);
+        
+            let uv =uvPos+dir*i;
             let r =textureLoad(texture1,   uv,0);
 
             color+=r.xyz *r.w;
             div+=r.w;
-        }
+        
     }
 
  
