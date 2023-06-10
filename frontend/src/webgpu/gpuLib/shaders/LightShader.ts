@@ -95,6 +95,7 @@ fn mainFragment(@location(0) uvScreen: vec2f) -> @location(0) vec4f
     let roughness =0.5;
     let uvPos = vec2<i32>(floor(uvScreen*uniforms.size.xy));
      let position=textureLoad(texturePosition,  uvPos ,0).xyz;
+      if(position.x>1000.0){return  vec4f(0.0);}
     let fragDist = distance(position,uniforms.lightPos.xyz);
     if(fragDist>1.0){
         return vec4f(0.0);
@@ -127,7 +128,7 @@ fn mainFragment(@location(0) uvScreen: vec2f) -> @location(0) vec4f
         //irradiance+=radiance * NdotL;
         // add to outgoing radiance Lo
        let NdotL = max(dot(N, L), 0.0);
-       let color= (kD * albedo / PI + specular) * radiance * NdotL;
+       var color= (kD * albedo / PI + specular) * radiance * NdotL;
 
 
     return vec4f(color,1.0);
