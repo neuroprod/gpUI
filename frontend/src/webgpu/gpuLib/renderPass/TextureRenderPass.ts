@@ -6,6 +6,7 @@ export default class TextureRenderPass extends AbstractRenderPass {
   height: number = 1;
   public texture: GPUTexture;
   public format: GPUTextureFormat;
+  private depthTexture: GPUTexture;
 
   constructor(device: GPUDevice, format: GPUTextureFormat = "rgba8unorm") {
     super(device, "TextureRenderPass");
@@ -39,6 +40,11 @@ export default class TextureRenderPass extends AbstractRenderPass {
           storeOp: "store",
         },
       ],
+
     };
+
+
   }
+
+
 }

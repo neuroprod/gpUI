@@ -6,7 +6,7 @@ export default class GBufferRenderPass extends AbstractRenderPass {
   public gBufferTexturePosition: GPUTexture;
   public gBufferTextureNormal: GPUTexture;
   public gBufferTextureAlbedo: GPUTexture;
-  private depthTexture: GPUTexture;
+  public depthTexture: GPUTexture;
 
   constructor(device: GPUDevice) {
     super(device, "GBufferRenderPass");
@@ -28,7 +28,7 @@ export default class GBufferRenderPass extends AbstractRenderPass {
       size: [this.width, this.height],
       usage:
         GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-      format: "rgba16float",
+      format: "rgb10a2unorm",
     });
     if (this.gBufferTextureAlbedo) this.gBufferTextureAlbedo.destroy();
     this.gBufferTextureAlbedo = this.device.createTexture({
@@ -42,7 +42,7 @@ export default class GBufferRenderPass extends AbstractRenderPass {
     this.depthTexture = this.device.createTexture({
       size: [width, height],
       format: "depth24plus",
-      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT| GPUTextureUsage.TEXTURE_BINDING,
     });
 
     this.renderPassDescriptor = {

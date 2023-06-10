@@ -30,6 +30,7 @@ import DofBlurShader from "./gpuLib/shaders/DofBlurShader";
 import InstanceColorShaderGBuffer from "./gpuLib/shaders/InstanceColorShaderGBuffer";
 import UniformGroup from "./gpuLib/UniformGroup";
 import TimeStampQuery from "./gpuLib/TimeStampQuery";
+import TextureDepthRenderPass from "./gpuLib/renderPass/TextureDepthRenderPass";
 
 enum Views {
   dofBlur,
@@ -86,7 +87,7 @@ export default class DeferredTest {
   private combinePass: TextureRenderPass;
 
   private lightShader: LightShader;
-  private lightPass: TextureRenderPass;
+  private lightPass: TextureDepthRenderPass;
   private sphere: Sphere;
   private modelsLight: Array<Model> = [];
 
@@ -250,7 +251,8 @@ export default class DeferredTest {
     }
 
     this.lightShader = new LightShader(this.device);
-    this.lightPass = new TextureRenderPass(this.device, "rgba8unorm");
+    this.lightPass = new TextureDepthRenderPass(this.device, "rgba8unorm");
+    this.lightPass.setDepthTexture(this.gBufferPass.depthTexture);
     this.lightPass.update(this.canvas.width, this.canvas.height);
 
     for (let i = 0; i < positions.length; i++) {
@@ -260,7 +262,7 @@ export default class DeferredTest {
         "materialLight",
         this.lightShader,
         this.lightPass.format,
-        false
+        true
       );
       materialLight.setUniform(
         "lightPos",
@@ -445,8 +447,8 @@ export default class DeferredTest {
     if(this.tsq){
       UI.LText(this.tsq.totalTime+"ms","render Time");
       UI.LText(this.tsq.timeArray[0]+"ms","gbuffer pass");
-      UI.LText(this.tsq.timeArray[1]+"ms","ao pass");
-      UI.LText(this.tsq.timeArray[2]+"ms","light pass");
+      UI.LText(this.tsq.timeArray[1]+"ms","light pass");
+      UI.LText(this.tsq.timeArray[2]+"ms","ao pass");
       UI.LText(this.tsq.timeArray[3]+"ms","combine pass");
       UI.LText(this.tsq.timeArray[4]+"ms","dof pass");
     }
@@ -514,8 +516,9 @@ export default class DeferredTest {
         this.gBufferPass.gBufferTexturePosition
       );
     }
-
+    this.lightPass.setDepthTexture(this.gBufferPass.depthTexture);
     this.lightPass.update(this.canvas.width, this.canvas.height);
+
     for (let m of this.modelsLight) {
       m.material.setTexture(
         "textureNormal",

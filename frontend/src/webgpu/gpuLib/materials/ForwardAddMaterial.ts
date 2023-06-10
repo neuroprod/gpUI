@@ -60,7 +60,7 @@ export default class ForwardAddMaterial extends AbstractMaterial {
     };
     if (this.needsDepth) {
       desc.depthStencil = {
-        depthWriteEnabled: this.depthWriteEnabled,
+        depthWriteEnabled: false,
         depthCompare: "less",
         format: "depth24plus",
       };
