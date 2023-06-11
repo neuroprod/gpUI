@@ -11,6 +11,7 @@ export default class Camera extends UniformGroup {
   private name: string;
 
   private _ratio: number = 1;
+  private viewProjectionInv!: Matrix4;
   public get ratio(): number {
     return this._ratio;
   }
@@ -30,7 +31,7 @@ export default class Camera extends UniformGroup {
     this.name = name;
 
     //16 for viewProjection+ 4 forCameraWorld
-    this.makeBuffers(GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, 16 + 4);
+    this.makeBuffers(GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, 16+16 + 4);
     this.isDirty = true;
 
     // this.updateData()
@@ -42,6 +43,7 @@ export default class Camera extends UniformGroup {
 struct Camera
 {
     viewProjection : mat4x4 <f32>,
+    viewProjectionInv : mat4x4 <f32>,
     cameraWorld : vec3<f32>,
 }
 @group( ${id} ) @binding(0)  var<uniform> camera : Camera;
@@ -67,8 +69,11 @@ struct Camera
     this.viewProjection.multiplyRight(this.projection);
     this.viewProjection.multiplyRight(this.view);
     this.isDirty = true;
+    this.viewProjectionInv =this.viewProjection.clone();
+    this.viewProjectionInv.invert();
 
     this.bufferData.set(this.viewProjection, 0);
-    this.bufferData.set(this.cameraWorld, 16);
+    this.bufferData.set(this.viewProjectionInv, 16);
+    this.bufferData.set(this.cameraWorld, 32);
   }
 }

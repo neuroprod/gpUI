@@ -47,12 +47,16 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 @fragment
 fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
-
     let uvPos =vec2<i32>(floor(uv*uniforms.size.xy ));
+    let rC =textureLoad(texture1,  uvPos,0);
+   /* if(rC.w<0.001){
+        return rC; //this is faster if there is not to much blur
+    }*/
+ 
     var color =vec3f(0.0);
     var div =0.0;
     var w = 0.0;
-    let rC =textureLoad(texture1,  uvPos,0);
+    
     let base = rC.xyz;
     let m = rC.w;
     let dir =vec2<i32>(${this.getDir()});
