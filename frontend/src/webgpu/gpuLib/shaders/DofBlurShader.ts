@@ -1,5 +1,5 @@
 import Shader from "../Shader";
-import { Vector4 } from "math.gl";
+import {Vector2, Vector4} from "math.gl";
 
 export default class DofBlurShader extends Shader {
   private horizontal: boolean;
@@ -10,8 +10,9 @@ export default class DofBlurShader extends Shader {
     this.addAttribute("position", 3);
     this.addAttribute("uv0", 2);
     //set needed uniforms
-    this.addUniform("size", new Vector4(1, 1, 0, 1));
-
+    this.addUniform("size", new Vector2(1, 1));
+    this.addUniform("steps",6);
+    this.addUniform("extra",0);
     this.addTexture("texture1", "unfilterable-float"); //implement texture types
 
     this.makeShaders();
@@ -55,7 +56,8 @@ fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
     let base = rC.xyz;
     let m = rC.w;
     let dir =vec2<i32>(${this.getDir()});
-    for(var i=-3;i<4;i+=1)
+    let step =i32 (round(uniforms.steps/2));
+    for(var i=-step;i<(step+1);i+=1)
     {
         
             let uv =uvPos+dir*i;

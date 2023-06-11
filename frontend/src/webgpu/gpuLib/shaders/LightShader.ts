@@ -9,7 +9,7 @@ export default class LightShader extends Shader {
 
     this.addAttribute("position", 3);
 
-    this.addUniform("color", new Vector4(1, 1, 1, 1));
+    this.addUniform("color", new Vector4(20, 10, 1, 1));
     this.addUniform("lightPos", new Vector4(1, 1, 1, 1));
     this.addUniform("size", new Vector2(1, 1));
     this.addUniform("extra", new Vector2(1, 1));
@@ -111,24 +111,23 @@ fn mainFragment(@location(0) uvScreen: vec2f) -> @location(0) vec4f
     let H = normalize(V + L);
     let NdotV = max(0.0, dot(N, V));
     let attenuation =pow(1.0-fragDist,2.0);
-    let radiance =vec3f(10.0,5.0,1.0)  * attenuation;
+    let radiance =uniforms.color.xyz  * attenuation;
 
-            let NDF = DistributionGGX(N, H, roughness);
-        let G   = GeometrySmith(N, V, L, roughness);
-       let F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+    let NDF = DistributionGGX(N, H, roughness);
+    let G   = GeometrySmith(N, V, L, roughness);
+    let F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
-        let kS = F;
-        let kD = vec3(1.0) - kS;
+    let kS = F;
+    let kD = vec3(1.0) - kS;
       
 
-        let numerator    = NDF * G * F;
-        let denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
-        let specular     = numerator / denominator;
+    let numerator    = NDF * G * F;
+    let denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+    let specular     = numerator / denominator;
 
-        //irradiance+=radiance * NdotL;
-        // add to outgoing radiance Lo
-       let NdotL = max(dot(N, L), 0.0);
-       var color= (kD * albedo / PI + specular) * radiance * NdotL;
+       
+    let NdotL = max(dot(N, L), 0.0);
+    var color= (kD * albedo / PI + specular) * radiance * NdotL;
 
 
     return vec4f(color,1.0);

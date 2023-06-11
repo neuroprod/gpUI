@@ -50,11 +50,15 @@ export default class Main {
     //--disable-dawn-features=disallow_unsafe_apis
     // on mac: /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-dawn-features=disallow_unsafe_apis
     ///https://omar-shehata.medium.com/how-to-use-webgpu-timestamp-query-9bf81fb5344a test this
-    if(this.useTimeStampQuery) {
-      this.device = await adapter.requestDevice({requiredFeatures: ["timestamp-query"],});
-    }else{
-      this.device = await adapter.requestDevice();
+
+    const requiredFeatures:Array<GPUFeatureName> = ["shader-f16","rg11b10ufloat-renderable"];
+    if (adapter.features.has('timestamp-query')) {
+      requiredFeatures.push('timestamp-query');
+      this.useTimeStampQuery =true;
     }
+
+    this.device = await adapter.requestDevice({requiredFeatures: requiredFeatures,});
+
     this.context = this.canvas.getContext("webgpu") as GPUCanvasContext;
     this.presentationFormat = navigator.gpu.getPreferredCanvasFormat();
     this.context.configure({

@@ -112,6 +112,7 @@ export default class DeferredTest {
   private instanceUniforms: UniformGroup;
   public useTimeStampQuery: boolean;
   public tsq!: TimeStampQuery;
+  private useDOF:boolean =true;
 
   constructor(
     device: GPUDevice,
@@ -252,7 +253,7 @@ export default class DeferredTest {
     }
 
     this.lightShader = new LightShader(this.device);
-    this.lightPass = new TextureDepthRenderPass(this.device, "rgba8unorm");
+    this.lightPass = new TextureDepthRenderPass(this.device, "rg11b10ufloat");
     this.lightPass.setDepthTexture(this.gBufferPass.depthTexture);
     this.lightPass.update(this.canvas.width, this.canvas.height);
 
@@ -449,9 +450,9 @@ export default class DeferredTest {
       UI.LText(this.tsq.totalTime+"ms","render Time");
       UI.LText(this.tsq.timeArray[0]+"ms","gbuffer pass");
       UI.LText(this.tsq.timeArray[1]+"ms","light pass");
-      UI.LText(this.tsq.timeArray[2]+"ms","ao pass");
+      UI.LText(this.tsq.timeArray[2]+"ms ","ao pass");
       UI.LText(this.tsq.timeArray[3]+"ms","combine pass");
-      UI.LText(this.tsq.timeArray[4]+"ms","dof pass");
+      UI.LText(this.tsq.timeArray[4]+"ms  ","dof pass");
       UI.LText(this.tsq.timeArray[5]+"ms","final pass");
     }
     this.currentView = UI.LSelect("view", this.views);
@@ -460,11 +461,17 @@ export default class DeferredTest {
     //UI.LColor("boxColor3", this.boxColor3)
     UI.pushGroup("SSAO");
     this.useAO = UI.LBool("enabled", true);
-    this.materialAO.setUniform("radius", UI.LFloatSlider("radius", 0.2, 0, 1));
+    this.materialAO.setUniform("radius", UI.LFloatSlider("radius", 0.4, 0, 1));
     this.materialAO.setUniform(
       "strength",
       UI.LFloatSlider("strength", 1, 0, 1)
     );
+    UI.popGroup();
+    UI.pushGroup("DOF");
+    this.useDOF = UI.LBool("enabled", true);
+    let dofSize =UI.LFloatSlider("size/samples", 6, 2, 20);
+    this.materialDofBlur1.setUniform("steps", dofSize);
+    this.materialDofBlur2.setUniform("steps", dofSize);
     UI.popGroup();
     UI.popWindow();
 
@@ -496,11 +503,11 @@ export default class DeferredTest {
     );
     this.materialDofBlur1.setUniform(
       "size",
-      new Vector4(this.canvas.width, this.canvas.height, 0, 0)
+      new Vector2(this.canvas.width, this.canvas.height)
     );
     this.materialDofBlur2.setUniform(
       "size",
-      new Vector4(this.canvas.width, this.canvas.height, 0, 0)
+      new Vector2(this.canvas.width, this.canvas.height)
     );
   }
 
@@ -558,13 +565,13 @@ export default class DeferredTest {
       "positionTexture",
       this.gBufferPass.gBufferTexturePosition
     );
+    if (this.useAO) {
+      this.dofBlurPass1.update(this.canvas.width, this.canvas.height);
+      this.materialDofBlur1.setTexture("texture1", this.combinePass.texture);
 
-    this.dofBlurPass1.update(this.canvas.width, this.canvas.height);
-    this.materialDofBlur1.setTexture("texture1", this.combinePass.texture);
-
-    this.dofBlurPass2.update(this.canvas.width, this.canvas.height);
-    this.materialDofBlur2.setTexture("texture1", this.dofBlurPass1.texture);
-
+      this.dofBlurPass2.update(this.canvas.width, this.canvas.height);
+      this.materialDofBlur2.setTexture("texture1", this.dofBlurPass1.texture);
+    }
     this.mainRenderPass.updateForCanvas(
       this.canvas.width,
       this.canvas.height,
@@ -586,14 +593,20 @@ export default class DeferredTest {
         "texture1",
         this.gBufferPass.gBufferTexturePosition
       );
-    else if (this.currentView == Views.ao)
+    else if (this.currentView === Views.ao)
       this.materialFullScreen.setTexture("texture1", this.aoPass.texture);
-    else if (this.currentView == Views.combine)
+    else if (this.currentView === Views.combine)
       this.materialFullScreen.setTexture("texture1", this.combinePass.texture);
-    else if (this.currentView == Views.light)
+    else if (this.currentView === Views.light)
       this.materialFullScreen.setTexture("texture1", this.lightPass.texture);
-    else if (this.currentView == Views.dofBlur)
-      this.materialFullScreen.setTexture("texture1", this.dofBlurPass2.texture);
+    else if (this.currentView === Views.dofBlur){
+      if(this.useDOF){
+        this.materialFullScreen.setTexture("texture1", this.dofBlurPass2.texture);
+      }else{
+        this.materialFullScreen.setTexture("texture1", this.combinePass.texture);
+      }
+
+    }
   }
 
   draw(commandEncoder: GPUCommandEncoder) {
@@ -609,8 +622,10 @@ export default class DeferredTest {
     if(this.tsq)this.tsq.setStamp(commandEncoder,3);
     this.combinePass.draw(commandEncoder);
     if(this.tsq)this.tsq.setStamp(commandEncoder,4);
-    this.dofBlurPass1.draw(commandEncoder);
-    this.dofBlurPass2.draw(commandEncoder);
+    if(this.useDOF) {
+      this.dofBlurPass1.draw(commandEncoder);
+      this.dofBlurPass2.draw(commandEncoder);
+    }
     if(this.tsq)this.tsq.setStamp(commandEncoder,5);
     this.mainRenderPass.draw(commandEncoder);
     if(this.tsq)this.tsq.stop(commandEncoder);
