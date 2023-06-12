@@ -32,7 +32,7 @@ export default class TextureRenderPass extends AbstractRenderPass {
           view: this.texture.createView(),
           clearValue: {
             r: 0,
-            g: 0,
+            g: 1,
             b: 0,
             a: 1.0,
           },

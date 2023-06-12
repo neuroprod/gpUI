@@ -42,6 +42,7 @@ fn mainVertex( ${this.getShaderAttributes()} ) -> VertexOutput
 fn mainFragment(@location(0) uv: vec2f,) -> @location(0) vec4f
 {
 var color = textureLoad(texture1,   vec2<i32>(floor(uv*uniforms.size.xy)),0);
+
 color.w =1.0;
      return color;
 }

@@ -51,7 +51,7 @@ export default class Main {
     // on mac: /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-dawn-features=disallow_unsafe_apis
     ///https://omar-shehata.medium.com/how-to-use-webgpu-timestamp-query-9bf81fb5344a test this
 
-    const requiredFeatures:Array<GPUFeatureName> = ["shader-f16","rg11b10ufloat-renderable"];
+    const requiredFeatures:Array<GPUFeatureName> = ["rg11b10ufloat-renderable"];
     if (adapter.features.has('timestamp-query')) {
       requiredFeatures.push('timestamp-query');
       this.useTimeStampQuery =true;

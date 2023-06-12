@@ -3,12 +3,12 @@ import Mesh from "./Mesh";
 import Transform from "./Transform";
 import Camera from "./Camera";
 import { AbstractMaterial } from "./materials/AbstractMaterial";
+import {AbstractModel} from "./AbstractModel";
 
-export class Model {
-  public mesh: Mesh;
-  public material: AbstractMaterial;
-  public transform: Transform;
-  private name: string;
+export class Model extends AbstractModel {
+
+
+
 
   constructor(
     device: GPUDevice,
@@ -18,11 +18,8 @@ export class Model {
     needsTransform: boolean = true,
     camera?: Camera
   ) {
-    this.name = name;
+    super(name,mesh,material);
 
-    this.material = material;
-
-    this.mesh = mesh;
     if (camera) this.material.addUniformGroup(camera);
     if (needsTransform) {
       this.transform = new Transform(device, this.name + "transform");

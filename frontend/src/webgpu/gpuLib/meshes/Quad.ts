@@ -32,7 +32,7 @@ export default class Quad extends Mesh {
     ]);
     this.setUV0(uvData);
 
-    const indices: Uint16Array = new Uint16Array([0, 2, 1, 2, 0, 3]);
+    const indices: Uint16Array = new Uint16Array([0, 2, 1 ,2, 0, 3]);
     this.setIndices(indices);
   }
 }

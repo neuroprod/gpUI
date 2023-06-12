@@ -7,7 +7,7 @@ export default class Transform extends UniformGroup {
   private normalMatrix: Matrix4;
   private _position: Vector3 = new Vector3();
   private _scale: Vector3 = new Vector3(1, 1, 1);
-  private _rotation: Vector3 = new Vector3();
+  private _rotation: Vector3 = new Vector3(0,0,0);
 
   public get position(): Vector3 {
     return this._position;
